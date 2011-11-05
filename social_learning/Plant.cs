@@ -21,6 +21,7 @@ namespace social_learning
         public bool AvailableForEating(IAgent agent)
         {
             return !whosEatenMe.Contains(agent);
+            //return whosEatenMe.Count == 0;
         }
 
         public void EatenBy(IAgent agent)

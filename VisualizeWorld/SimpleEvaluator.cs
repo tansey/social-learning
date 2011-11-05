@@ -58,7 +58,7 @@ namespace VisualizeWorld
         /// </summary>
         public void Reset()
         {
-            // TODO: What do we want to do when we reset?
+            _world.Reset();
         }
 
         /// <summary>
@@ -100,6 +100,9 @@ namespace VisualizeWorld
                 genomeList[i].EvaluationInfo.SetFitness(agents[i].Fitness);
                 genomeList[i].EvaluationInfo.AlternativeFitness = agents[i].Fitness;
             }
+
+            _evaluationCount += (ulong)agents.Length;
+            _world.Reset();
         }
     }
 }

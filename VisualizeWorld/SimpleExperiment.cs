@@ -83,7 +83,7 @@ namespace VisualizeWorld
         {
             var species = new List<PlantSpecies>();
             for (int i = 0; i < 5; i++)
-                species.Add(new PlantSpecies() { Name = "Species_" + i, Radius = 10, Reward = i });
+                species.Add(new PlantSpecies() { Name = "Species_" + i, Radius = 5, Reward = i });
 
             Random random = new Random();
             var agents = new List<IAgent>();
@@ -93,7 +93,10 @@ namespace VisualizeWorld
                 agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
             }
 
-            _world = new World(agents, species, 500, 500, 10);
+            _world = new World(agents, species, 500, 500, 50)
+            {
+                AgentHorizon = 50
+            };
         }
 
         /// <summary>

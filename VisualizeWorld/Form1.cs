@@ -26,6 +26,9 @@ namespace VisualizeWorld
         public Form1()
         {
             InitializeComponent();
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.UserPaint |
+                          ControlStyles.DoubleBuffer, true);
             _experiment = new SimpleExperiment();
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
             const int NUM_AGENTS = 500;
@@ -57,15 +60,22 @@ namespace VisualizeWorld
 
         }
 
+        int gens = 0;
+        const int STARTER_GENS = 0;
+
         // If the world has changed either because of a new generation or because the world has stepped forward,
         // redraw the world and any other stats we are displaying.
         void world_Changed(object sender, EventArgs e)
         {
             if (this.InvokeRequired == false)
-                this.Invalidate();
+            {
+                if (gens > STARTER_GENS)
+                    this.Invalidate();
+            }
             else
             {
-                Thread.Sleep(10);
+                if (gens > STARTER_GENS)
+                    Thread.Sleep(1);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -95,21 +105,32 @@ namespace VisualizeWorld
             }
 
             // Draw the agents
-            int i = 0;
+            int i = -1;
             foreach (var agent in world.Agents)
             {
-                g.FillPie(new SolidBrush(agentColors[i]), new Rectangle((int)((agent.X - 10) * scaleX),
-                                                   (int)((agent.Y - 10) * scaleY),
-                                                   (int)(20 * scaleX),
-                                                   (int)(20 * scaleY)),
-                                                   agent.Orientation - 90,
-                                                   180);
-                g.DrawEllipse(new Pen(Color.Black), new Rectangle((int)((agent.X - 3) * scaleX),
-                                   (int)((agent.Y - 3) * scaleY),
-                                   (int)(6 * scaleX),
-                                   (int)(6 * scaleY)));
                 i++;
+                if (i % 20 != 0)
+                    continue;
+
+                //var agent = world.Agents.First();
+                g.FillPie(new SolidBrush(agentColors[i]), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
+                                                    (int)((agent.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
+                                                    (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
+                                                    (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleY)),
+                                                    agent.Orientation - 90,
+                                                    180);
+                g.DrawEllipse(new Pen(Color.Black), new Rectangle((int)((agent.X - 3) * scaleX),
+                                    (int)((agent.Y - 3) * scaleY),
+                                    (int)(6 * scaleX),
+                                    (int)(6 * scaleY)));
             }
+
+            g.FillRectangle(Brushes.White, 0, 0, 150, 15);
+
+            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
+                                            DefaultFont, Brushes.Black, 0, 0);
+                
+        
         }
 
         private void stepButton_Click(object sender, EventArgs e)
@@ -136,6 +157,7 @@ namespace VisualizeWorld
 
         private void startEvolution()
         {
+            gens = 0;
 
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
@@ -150,13 +172,22 @@ namespace VisualizeWorld
             _ea.StartContinue();
         }
 
-        static void ea_UpdateEvent(object sender, EventArgs e)
+        void ea_UpdateEvent(object sender, EventArgs e)
         {
             Console.WriteLine(string.Format("gen={0:N0} bestFitness={1:N6}", _ea.CurrentGeneration, _ea.Statistics._maxFitness));
-            MessageBox.Show("New Gen!");
+            
+            this.BeginInvoke(new incDel(incrementGens));
+            //MessageBox.Show("New Gen! Best individual: " + _ea.CurrentChampGenome.EvaluationInfo.AlternativeFitness);
+
             // Save the best genome to file
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { _ea.CurrentChampGenome }, false);
             doc.Save(CHAMPION_FILE);
+        }
+        delegate void incDel();
+        private void incrementGens()
+        {
+            gens++;
+
         }
 
         private void stopEvolution()

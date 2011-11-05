@@ -50,14 +50,18 @@ namespace social_learning
             {
                 var sensors = calculateSensors(agent);
                 agent.Step(sensors);
-                if (agent.X > Height)
-                    agent.X = Width;
+                if (agent.X >= Height)
+                    agent.X = Width;   
                 if (agent.Y > Height)
                     agent.Y = Height;
-                if (agent.X <= 0)
-                    agent.X = 1;
-                if (agent.Y <= 0)
-                    agent.Y = 1;
+                if (agent.X < 0)
+                    agent.X = 0;
+                if (agent.Y < 0)
+                    agent.Y = 0;
+
+                if (agent.X == 0 || agent.Y == 0 || agent.X == Width || agent.Y == Height)
+                    agent.Orientation = (agent.Orientation - 180) % 360;
+
                 foreach (var plant in Plants)
                     if (calculateDistance(agent, plant) < plant.Species.Radius && plant.AvailableForEating(agent))
                     {
@@ -83,12 +87,11 @@ namespace social_learning
         /// </summary>
         public void Reset()
         {
-            //TODO: Reset all agents, plants, etc.
             foreach (var agent in Agents)
             {
-                agent.X = random.Next(Width);
-                agent.Y = random.Next(Height);
-                agent.Orientation = random.Next(360);
+                agent.X = Width / 2; //random.Next(Width);
+                agent.Y = Height / 2; //random.Next(Height);
+                agent.Orientation = 0;// random.Next(360);
                 agent.Fitness = 0;
             }
 
@@ -127,6 +130,7 @@ namespace social_learning
                 // Add 1/distance to the sensor
                 sensors[sIdx] += 1.0 / dist;
             }
+
             return sensors;
         }
 
