@@ -1,5 +1,5 @@
-c:\local_apps\social_learning\social_learning\bin\Debug\social_learning.dll
-c:\local_apps\social_learning\social_learning\bin\Debug\social_learning.pdb
-c:\local_apps\social_learning\social_learning\obj\Debug\ResolveAssemblyReference.cache
-c:\local_apps\social_learning\social_learning\obj\Debug\social_learning.dll
-c:\local_apps\social_learning\social_learning\obj\Debug\social_learning.pdb
+C:\local_apps\social_learning\social_learning\obj\Debug\ResolveAssemblyReference.cache
+C:\local_apps\social_learning\social_learning\bin\Debug\social_learning.dll
+C:\local_apps\social_learning\social_learning\bin\Debug\social_learning.pdb
+C:\local_apps\social_learning\social_learning\obj\Debug\social_learning.dll
+C:\local_apps\social_learning\social_learning\obj\Debug\social_learning.pdb

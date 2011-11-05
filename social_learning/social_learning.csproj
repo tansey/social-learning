@@ -40,10 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Agent.cs" />
     <Compile Include="DumbAgent.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="Plant.cs" />
     <Compile Include="PlantSpecies.cs" />
+    <Compile Include="SpinningAgent.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

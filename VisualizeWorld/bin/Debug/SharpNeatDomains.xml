@@ -1,0 +1,2543 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SharpNeatDomains</name>
+    </assembly>
+    <members>
+        <member name="T:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator">
+            <summary>
+            Function regression task.
+            The function to be regressed is read from the config data. There is always one output.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.MaxError">
+            <summary>
+            The maximum error for the evaluator. The output at each sample point is in the range 0 to 1. Thus the error at each point has a maximum of 1.0.
+            The error for the evaulator as a whole is the root mean square error (RMSE) over all sample points. Thus max error is always 1.0
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.#ctor(SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo[],SharpNeat.Domains.FunctionRegression.IFunction)">
+            <summary>
+            Construct a function regress evaluator with the provided parameter sampling info and function to regress.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the XOR problem domain and return its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.GetFunction(SharpNeat.Domains.FunctionRegression.FunctionId)">
+            <summary>
+            Get an instance of the function class for the specified function type.
+            </summary>
+            <param name="fnId"></param>
+            <returns></returns>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNv">
+            <summary>
+            Evaluator for the double pole balancing task with no velocity (NV) inputs.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator">
+            <summary>
+            Evaluator for the double pole balancing task.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.TimeDelta">
+            <summary>Time increment interval in seconds.</summary>
+        </member>
+        <member name="F:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.MUP">
+            <summary>Uplifting moment?</summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.#ctor">
+            <summary>
+            Construct evaluator with default task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.#ctor(System.Double,System.Int32,System.Double)">
+            <summary>
+            Construct evaluator with the provided task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.performAction(System.Double[],System.Double)">
+            <summary>
+            Calculates a state update for the next timestep using current model state and a single action from the
+            controller. The action is a continuous variable with range [0:1]. 0 -> push left, 1 -> push right.
+            </summary>
+            <param name="state">Model state.</param>
+            <param name="output">Push force.</param>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNv.#ctor">
+            <summary>
+            Construct evaluator with default task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNv.#ctor(System.Double,System.Int32,System.Double)">
+            <summary>
+            Construct evaluator with the provided task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNv.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator">
+            <summary>
+            Boxes Visual Discrimination Task.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.VisualFieldEdgeLength">
+            <summary>
+            Width and length of the visual field in the 'real' coordinate system that 
+            substrate nodes are located within (and therefore sensor and output pixels).
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.MeanLineInSquareRootMeanSquareLength">
+             <summary>
+             The root mean square distance (rmsd) between two random points in the unit square.
+             An agent that attempts this problem domain by selecting random points will produce this value as a score 
+             when the size of the visual field is 1x1 (the unit square). For other visual field sizes we can obtain the
+             random agent's score  by simply multiplying this value by the edge length of the visual field (the score scales 
+             linearly with the edge length).
+            
+             This value can be derived starting with the function for the mean length of a line between two random points
+             in the unit square, as given in: http://mathworld.wolfram.com/SquareLinePicking.html
+             
+             Alternatively the value can be experimentally determined/approximated. The value here was found computationally.
+             </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.MaxFitness">
+            <summary>
+            Maximum fitness for this evaulator. Problem domain is considered perfectly 'solved' if this score is achieved.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator._visualFieldResolution">
+            <summary>
+            The resoltion of the visual and output fields.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator._visualPixelSize">
+            <summary>
+            The width and height of a visual field pixel in the real coordinate system.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator._visualOriginPixelXY">
+            <summary>
+            The X and Y position of the visual field's origin pixel in the real coordinate system (the center position of the origin pixel).
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator._evalCount">
+            <summary>
+            Number of evaluations.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator._stopConditionSatisfied">
+            <summary>
+            Indicates if some stop condition has been achieved.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.ApplyVisualFieldToBlackBox(SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField,SharpNeat.Phenomes.IBlackBox,System.Int32,System.Double,System.Double)">
+            <summary>
+            Apply the provided test case to the provided black box's inputs (visual input field).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.FindMaxActivationOutput(SharpNeat.Phenomes.IBlackBox,System.Int32,System.Double@,System.Double@)">
+            <summary>
+            Determine the coordinate of the pixel with the highest activation.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.#ctor(System.Int32)">
+            <summary>
+            Construct with the specified sensor and output pixel array resolution.
+            </summary>
+            <param name="visualFieldResolution"></param>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+             <summary>
+             Evaluate the provided IBlackBox against the XOR problem domain and return its fitness score.
+             
+             Fitness value explanation.
+             1) Max distance from target position in each trial is sqrt(2)*VisualFieldEdgeLength (target in one corner and selected target in 
+             opposite corner). 
+            
+             2) An agents is scored by squaring the distance of its selected target from the actual target, squaring the value,
+             taking the average over all test cases and then taking the square root. This is referred to as the root mean squared distance (RMSD) 
+             and is effectively an  implementation of least squares (least squared error). The square root term converts values back into units 
+             of distance (rather than squared distance)
+            
+             3) An agent selecting points at random will score VisualFieldEdgeLength * MeanLineInSquareRootMeanSquareLength. Any agent scoring 
+             this amount or less is assigned a fitness of zero. All other scores are scaled and translated into the range 0-100 where 0 is no better
+             or worse than a random agent, and 100 is perfectly selecting the correct target for all test cases (distance of zero between target and 
+             selected target).
+             
+             4)  In addition to this the range of output values is scaled to 0-10 and added to the final score, this encourages solutions with a wide
+             output range between the highest activation (the selected pixel) and the lowest activation (this encourages prominent/clear selection).
+            
+             An alternative scheme is fitness = 1/RMSD  (separately handling the special case where RMSD==0).
+             However, this gives a non-linear increase in fitness as RMSD decreases linearly, which in turns produces a 'spikier' fitness landscape
+             which is more likely to cause genomes and species to get caught in a local maximum.
+             </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            Note. The XOR problem domain has no internal state. This method does nothing.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.RunTrial(SharpNeat.Phenomes.IBlackBox,SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField,System.Int32,System.Double@)">
+            <summary>
+            Run a single trial
+            1) Generate random test case with the box orientation specified by largeBoxRelativePos.
+            2) Apply test case visual field to black box inputs.
+            3) Activate black box.
+            4) Determine black box output with highest output, this is the selected pixel.
+            
+            Returns square of distance between target pixel (center of large box) and pixel selected by the black box.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator">
+            <summary>
+            Evaulator for the prey capture task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator.#ctor(System.Int32,System.Int32,System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>
+            Construct with the provided task parameter arguments.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the XOR problem domain and return its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D">
+            <summary>
+            Domain View for function regression with one input and one output.
+            Plots function on 2D graph.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.AbstractDomainView">
+            <summary>
+            Abstract class for problem domain visualization.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.AbstractDomainView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.AbstractDomainView.WindowSize">
+            <summary>
+            Gets the desired initial size for the view window.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D.#ctor(SharpNeat.Domains.FunctionRegression.IFunction,System.Double,System.Double,System.Int32,SharpNeat.Core.IGenomeDecoder{SharpNeat.Genomes.Neat.NeatGenome,SharpNeat.Phenomes.IBlackBox})">
+            <summary>
+            Constructs with the details of teh function regression problem to be visualized. 
+            </summary>
+            <param name="func">The function being regressed.</param>
+            <param name="xMin">The minimum value of the input range being sampled.</param>
+            <param name="xIncr">The increment between input sample values.</param>
+            <param name="sampleCount">The number of samples over the input range.</param>
+            <param name="genomeDecoder">Genome decoder.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionView2D.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.IFunction">
+            <summary>
+            Represents a mathematical function with a 1 or more real valued inputs and a single output. 
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.IFunction.GetValue(System.Double[])">
+            <summary>
+            Get the funection value for th specified function arguments.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.IFunction.InputCount">
+            <summary>
+            Gets the number of inputs the function expects.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment">
+            <summary>
+            Binary 11-multiplexer task.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.INeatExperiment">
+            <summary>
+            Interface for classes that aggregate a number of experimental parameters and component creation routines.
+            INeatExperiment is a layer onto of the core SharpNeatLib that provides a convenient packaging up of various
+            parts of an experiment into one object that can be plugged in to the SharpNeat GUI.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.INeatExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.INeatExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.IGuiNeatExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.IGuiNeatExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerEvaluator">
+            <summary>
+            Binary 6-Multiplexer task.
+            Two inputs supply a binary number between 0 and 3. This number selects one of the
+            further 4 inputs (six inputs in total). The correct response is the selected input's
+            input signal (0 or 1).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the Binary 6-Multiplexer problem domain and return
+            its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            Note. The Binary Multiplexer problem domain has no internal state. This method does nothing.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator">
+            <summary>
+            Evaluator for the single pole balancing task.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.TimeDelta">
+            <summary>Time increment interval in seconds.</summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.#ctor">
+            <summary>
+            Construct evaluator with default task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.#ctor(System.Double,System.Int32,System.Double)">
+            <summary>
+            Construct evaluator with the provided task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.SimulateTimestep(SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData,System.Boolean)">
+            <summary>
+            Calculates a state update for the next timestep using current model state and a single 'action' from the
+            controller. The action specifies if the controller is pushing the cart left or right. Note that this is a binary 
+            action and therefore full force is always applied to the cart in some direction. This is the standard model for
+            the single pole balancing task.
+            </summary>
+            <param name="state">Model state.</param>
+            <param name="action">push direction, left(false) or right(true). Force magnitude is fixed.</param>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment">
+            <summary>
+            Function regression task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.FunctionRegressionExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.FunctionId">
+            <summary>
+            Enumeration of function IDs for the function regression task.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.XmlUtils">
+            <summary>
+            Static helper methods for reading value from XML configuration data in DOM form.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.GetValueAsInt(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as an integer. If element is missing or parsing fails then
+            throws an ArgumentException.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.TryGetValueAsInt(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as an integer. If element is missing or parsing fails then
+            returns null.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.GetValueAsDouble(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as a double. If element is missing or parsing fails then
+            throws an ArgumentException.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.TryGetValueAsDouble(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as a double. If element is missing or parsing fails then
+            returns null.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.GetValueAsBool(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as a boolean. If element is missing or parsing fails then
+            throws an ArgumentException.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.TryGetValueAsBool(System.Xml.XmlElement,System.String)">
+            <summary>
+            Parse the inner text of element with the given name as a boolean. If element is missing or parsing fails then
+            returns null.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.GetValueAsString(System.Xml.XmlElement,System.String)">
+            <summary>
+            Read the inner text of element with the given name. If element is missing then throws an ArgumentException.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XmlUtils.TryGetValueAsString(System.Xml.XmlElement,System.String)">
+            <summary>
+            Read the inner text of element with the given name. If element is missing then returns null.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment">
+            <summary>
+            INeatExperiment for the prey capture task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.ExperimentUtils">
+            <summary>
+            Static helper methods for experiment initialization.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.ExperimentUtils.CreateActivationScheme(System.Xml.XmlElement,System.String)">
+            <summary>
+            Create a network activation scheme from the scheme setting in the provided config XML.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SharpNeat.Domains.ExperimentUtils.CreateComplexityRegulationStrategy(System.String,System.Nullable{System.Int32})">
+            <summary>
+            Create a complexity regulation strategy based on the provided XML config values.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.ExperimentUtils.ReadParallelOptions(System.Xml.XmlElement)">
+            <summary>
+            Read Parallel Extensions options from config XML.
+            </summary>
+            <param name="xmlConfig"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SharpNeat.Domains.ExperimentUtils.ReadRbfAuxArgMutationConfig(System.Xml.XmlElement,System.Double@,System.Double@)">
+            <summary>
+            Read Radial Basis Function settings from config XML.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscriminationView.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscriminationView.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscriminationView.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscriminationView._visualFieldResolution">
+            <summary>
+            The sensor and output pixel array resolution.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscriminationView._experiment">
+            <summary>
+            The experiment class that containsconfig settings parsed from the experiment config XML.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscriminationView._visualPixelSize">
+            <summary>
+            The width and height of a pixel in the real coordinate system.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscriminationView._visualOriginPixelXY">
+            <summary>
+            The X and Y position of the origin pixel in the real coordinate system (the center position of the origin pixel).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscriminationView.#ctor(SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment)">
+            <summary>
+            Construct with an INeatExperiment. This provides config data parsed from the experiment config XML and a method for
+            creating genome decoders for different visual resolutions.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscriminationView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.AbstractGenomeView">
+            <summary>
+            Abstract class for genome visualization controls.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.AbstractGenomeView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.Xor.XorExperiment">
+            <summary>
+            INeatExperiment for the XOR logic gate problem domain. 
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.Xor.XorExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.Xor.XorExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData">
+            <summary>
+            Model state variables for single pole balancing task.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData._cartPosX">
+            <summary>
+            Cart position (meters from origin).
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData._cartVelocityX">
+            <summary>
+            Cart velocity (m/s).
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData._poleAngle">
+            <summary>
+            Pole angle (radians). Straight up = 0.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData._poleAngularVelocity">
+            <summary>
+            Pole angular velocity (radians/sec).
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.SinglePoleBalancing.SinglePoleStateData._action">
+            <summary>
+            Action applied during most recent timestep.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.PreyCapture.PreyCaptureView">
+            <summary>
+            View for the prey capture task.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PreyCapture.PreyCaptureView._agent">
+            <summary>
+            The agent used by the simulation thread.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PreyCapture.PreyCaptureView._simThread">
+            <summary>
+            Thread for running simulation.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PreyCapture.PreyCaptureView._simRunningFlag">
+            <summary>
+            Indicates is a simulation is running. Access is thread synchronised using Interlocked.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PreyCapture.PreyCaptureView._simStartEvent">
+            <summary>
+            Event that signals simulation thread to start a simulation.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.#ctor(SharpNeat.Core.IGenomeDecoder{SharpNeat.Genomes.Neat.NeatGenome,SharpNeat.Phenomes.IBlackBox},SharpNeat.Domains.PreyCapture.PreyCaptureWorld)">
+            <summary>
+            Construct the view with an appropriately configured world and a genome decoder for decoding genomes as they are passed into RefreshView().
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.SimulationThread">
+            <summary>
+            Simulate prey capture until thread is terminated.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.RunTrial">
+            <summary>
+            Run a single prey capture trial.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PreyCapture.PreyCaptureView.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureView.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer">
+            <summary>
+            This is a circular buffer of double precision floating point numbers, customised
+            for use in the double pole experiments. 
+            
+            This buffer maintains a total of all of the values it contains, adjusting for
+            values that are overwritten when the buffer overwrites old values.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.#ctor(System.Int32)">
+            <summary>
+            Construct buffer with the specified capacity.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Clear">
+            <summary>
+            Clear the buffer.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Enqueue(System.Double)">
+            <summary>
+            Add an item to the front of the buffer.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Dequeue">
+            <summary>
+            Remove an item from the back of the queue.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Pop">
+            <summary>
+            Pop an item from the head/top of the queue.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Length">
+            <summary>
+            The length of the buffer.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.JiggleBuffer.Total">
+            <summary>
+            The sum of all values on in the buffer.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment">
+            <summary>
+            Binary 11-multiplexer task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.RbfBinaryElevenMultiplexerExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.XorBlackBoxEvaluator">
+            <summary>
+            A black box evaluator for the XOR logic gate problem domain. 
+            
+            XOR (also known as Exclusive OR) is a type of logical disjunction on two operands that results in
+            a value of true if and only if exactly one of the operands has a value of 'true'. A simple way 
+            to state this is 'one or the other but not both.'.
+            
+            This evaulator therefore requires that the black box to be evaluated has has two inputs and one 
+            output all using the range 0..1
+            
+            In turn each of the four possible test cases are applied to the two inputs, the network is activated
+            and the output is evaulated. If a 'false' response is requried we expect an output of zero, for true
+            we expect a 1.0. Fitness for each test case is the difference between the output and the wrong output, 
+            thus a maximum of 1 can be scored on each test case giving a maximum of 4. In addition each outputs is
+            compared against a threshold of 0.5, if all four outputs are on teh correct side of the threshold then
+            10.0 is added to the total fitness. Therefore a black box that answers correctly but very close to the
+            threshold will score just above 10, and a black box that answers correctly with perfect 0.0 and 1.0 
+            answers will score a maximum of 14.0.
+            
+            The first type of evaulation punishes for difference from the required outputs and therefore represents
+            a smooth fitness space (we can evolve gradually towards better scores). The +10 score for 4 correct
+            responses is 'all or nothing', in other words it is a fitness space with a large step and no indication
+            of where the step is, which on it's own would be a poor fitness space as it required evolution to stumble
+            on the correct network by random rather than ascending a gradient in the fitness space. If however we do 
+            stumble on a black box that answers correctly but close to the threshold, then we would like that box to 
+            obtain a higher score than a network with, say, 3 strong correct responses and but wrong overall. We can
+            improve the correct box's output difference from threshold value gradually, while the box with 3 correct
+            responses may actually be in the wrong area of the fitness space alltogether - in the wrong 'ballpark'.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XorBlackBoxEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the XOR problem domain and return its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.XorBlackBoxEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            Note. The XOR problem domain has no internal state. This method does nothing.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.XorBlackBoxEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.XorBlackBoxEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment">
+            <summary>
+            INeatExperiment for the single pole balancing task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.SinglePoleBalancing.SinglePoleBalancingExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.PolarPoint">
+            <summary>
+            Defines a 2D point in the polar coordinate space.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PolarPoint._r">
+            <summary>
+            Radial coordinate.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.PolarPoint._t">
+            <summary>
+            Angular coordinate (theta).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PolarPoint.#ctor(System.Double,System.Double)">
+            <summary>
+            Construct with provided coordinate values.
+            </summary>
+            <param name="r">Radial coordinate (distance between points).</param>
+            <param name="t">Angular coordinate (theta).</param>
+        </member>
+        <member name="M:SharpNeat.Domains.PolarPoint.FromCartesian(SharpNeat.Domains.IntPoint)">
+            <summary>
+            Create a point in the polar coordinate system from the provided cartesian coordinates.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PolarPoint.Radial">
+            <summary>
+            Radial coordinate.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PolarPoint.Theta">
+            <summary>
+            Angular coordinate (theta).
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.NeatGenomeView">
+            <summary>
+            General purpose form for hosting genome view controls.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.NeatGenomeView.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.NeatGenomeView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.NeatGenomeView.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.NeatGenomeView.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.NeatGenomeView.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo">
+            <summary>
+            Parameter sampling info. Describes the value range to sample, the number of samples within
+            that range and the increment between samples.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo._min">
+            <summary>Sample range minimum.</summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo._max">
+            <summary>Sample range maximum.</summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo._incr">
+            <summary>Intra sample increment.</summary>
+        </member>
+        <member name="F:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo._sampleCount">
+            <summary>Sample count.</summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.ParameterSamplingInfo.#ctor(System.Double,System.Double,System.Int32)">
+            <summary>
+            Construct with the provided parameter info.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.CppnGenomeView">
+            <summary>
+            GUI control for visualizing CPPN genomes.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.CppnGenomeView.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.CppnGenomeView.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SharpNeat.Domains.CppnGenomeView.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.CppnGenomeView.#ctor(SharpNeat.Network.IActivationFunctionLibrary)">
+            <summary>
+            Construct with the provided CPPN activation function library to draw CPPNs with (genome nodes contain an index into this library).
+            </summary>
+            <param name="actFnLib"></param>
+        </member>
+        <member name="M:SharpNeat.Domains.CppnGenomeView.RefreshView(System.Object)">
+            <summary>
+            Refresh/update the view with the provided genome.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment">
+            <summary>
+            Binary 3-multiplexer task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment">
+            <summary>
+            Binary 6-multiplexer task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.BinarySixMultiplexerExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerEvaluator">
+            <summary>
+            Binary 11-Multiplexer task.
+            Three inputs supply a binary number between 0 and 7. This number selects one of the
+            further 8 inputs (eleven inputs in total). The correct response is the selected input's
+            input signal (0 or 1).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the Binary 6-Multiplexer problem domain and return
+            its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            Note. The Binary Multiplexer problem domain has no internal state. This method does nothing.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryElevenMultiplexer.BinaryElevenMultiplexerEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment">
+            <summary>
+            Function regression task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.FunctionRegression.RbfFunctionRegressionExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerEvaluator">
+            <summary>
+            Binary 3-Multiplexer task.
+            One binary input selects which of two other binary inputs to output. 
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerEvaluator.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox against the Binary 6-Multiplexer problem domain and return
+            its fitness score.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerEvaluator.Reset">
+            <summary>
+            Reset the internal state of the evaluation scheme if any exists.
+            Note. The Binary Multiplexer problem domain has no internal state. This method does nothing.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerEvaluator.EvaluationCount">
+            <summary>
+            Gets the total number of evaluations that have been performed.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinaryThreeMultiplexer.BinaryThreeMultiplexerEvaluator.StopConditionSatisfied">
+            <summary>
+            Gets a value indicating whether some goal fitness has been achieved and that
+            the the evolutionary algorithm/search should stop. This property's value can remain false
+            to allow the algorithm to run indefinitely.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment">
+            <summary>
+            Binary 6-multiplexer task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BinarySixMultiplexer.RbfBinarySixMultiplexerExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.IntPoint">
+            <summary>
+            Defines a 2D point with integer cartesian coordinates.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.IntPoint._x">
+            <summary>
+            X-axis coordinate.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.IntPoint._y">
+            <summary>
+            Y-axis coordinate.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.IntPoint.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Construct point with the specified coordinates.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.IntPoint.CalculateDistance(SharpNeat.Domains.IntPoint,SharpNeat.Domains.IntPoint)">
+            <summary>
+            Calculate Euclidean distance between two points.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.IntPoint.CalculateDistance(SharpNeat.Domains.IntPoint,System.Int32,System.Int32)">
+            <summary>
+            Calculate Euclidean distance between two points.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.PreyCapture.PreyCaptureWorld">
+            <summary>
+            The prey capture task's grid world. Encapsulates agent's sensor and motor hardware and the prey's simple stochastic movement.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.#ctor(System.Int32,System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>
+            Constructs with the provided world parameter arguments.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.RunTrial(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Runs one trial of the provided agent in the world. Returns true if the agent captures the prey within
+            the maximum number of timesteps allowed.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.InitPositions">
+            <summary>
+            Initialise agent and prey positions. The prey is positioned randomly with at least 4 empty squares between it and a wall (in all directions).
+            The agent is positioned randomly but such that the prey is within sensor range (distance 2 or less).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.SetAgentInputsAndActivate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Determine the agent's position in the world relative to the prey and walls, and set its sensor inputs accordingly.
+            </summary>
+            <param name="agent"></param>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.MoveAgent(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Allow the agent to move one square based on its decision. Note that the agent can choose to not move.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.MovePrey">
+            <summary>
+            Move the prey. The prey moves by a simple set of stochastic rules that make it more likely to move away from
+            the agent, and moreso when it is close.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.IsPreyCaptured">
+            <summary>
+            Gets a boolean that indicates if the prey has been captured.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.CalcAngleDelta(System.Double,System.Double)">
+            <summary>
+            Calculates minimum angle between two vectors (specified by angle only).
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.GridSize">
+            <summary>
+            Gets the size of the square grid in terms of the length of an edge in number of squares.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.PreyInitMoves">
+            <summary>
+            Gets the number of moves the prey is allowed to move before the agent can move.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.SensorRange">
+            <summary>
+            Gets the sensor range of the agent.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.AgentPosition">
+            <summary>
+            Gets the grid square position of the agent.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.PreyPosition">
+            <summary>
+            Gets the grid square position of the prey.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.PreyCapture.PreyCaptureWorld.MaxTimesteps">
+            <summary>
+            Gets the maximum number of simulation timesteps to run without the agent capturing the prey.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNvAntiWiggle">
+            <summary>
+            Evaluator for the double pole balancing task with no velocity (NV) inputs and an alternative
+            evaulation scheme that punsihes fast oscillations (anti-wiggle).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNvAntiWiggle.#ctor">
+            <summary>
+            Construct evaluator with default task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNvAntiWiggle.#ctor(System.Double,System.Int32,System.Double)">
+            <summary>
+            Construct evaluator with the provided task arguments/variables.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingEvaluatorNvAntiWiggle.Evaluate(SharpNeat.Phenomes.IBlackBox)">
+            <summary>
+            Evaluate the provided IBlackBox.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField">
+            <summary>
+            Represents test cases for the Boxes visual discrimination task. The test case field is fixed at a resolution of 11x11
+            the visual field of the agents being evaluated on teh task can have a variable visual field resolution - the visual 
+            field pixels sample the 11x11 pixels in the test field.
+            </summary>
+        </member>
+        <member name="F:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.TestFieldResolution">
+            <summary>Resolution of the test field pixel grid.</summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.InitTestCase(System.Int32)">
+            <summary>
+            (Re)initialize with a fresh test case.
+            Returns the target point (center of large box).
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.GetPixel(System.Double,System.Double)">
+            <summary>
+            Gets the value of the pixel at a position in the 'real/sensor' coordinate space (continuous x and y, -1 to 1).
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.SmallBoxTopLeft">
+            <summary>
+            Gets the coordinate of the small box (the small box occupies a single pixel).
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.TestCaseField.LargeBoxTopLeft">
+            <summary>
+            Gets the coordinate of the large box's top left pixel.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment">
+            <summary>
+            INeatExperiment for the single pole balancing task.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            Create a genome factory with our neat genome parameters object and the appropriate number of input and output neuron genes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.DoublePoleBalancing.DoublePoleBalancingExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="T:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment">
+             <summary>
+             Boxes Visual Discrimination Task, as described in:
+             'A Hypercube-Based Encoding for Evolving Large-Scale Neural Networks', Kenneth O. Stanley, David B. D'Ambrosio,
+             and Jason Gauci (2009) http://eplex.cs.ucf.edu/publications/2009/stanley.alife09.html
+            
+             The task involves a visual field of 11x11 binary pixels (on/off, black/white). The field contains two boxes, one
+             small and one large box that has an edge length 3x that of the smaller box. The goal is to identify the center
+             pixel of the larger box.
+            
+             A single evaluation consists of 75 test cases with the two boxes randomly positioned. The root mean squared
+             distance between selected and target pixels is scaled and translated to a range of 0-100, where 0 = no better
+             than an agent randomly selecting pixels and 100 = perfect. In addition to this the range of output values is
+             scaled to 0-10 and added to the final score, this encourages solutions with a wide output range between the 
+             highest activation (the selected pixel) and the lowest activation (this encourages prominent/clear selection).
+            
+             The problem domain view allows the performance of the best genome to be observed. The view also allows the 
+             HyperNEAT genome to be decoded using a range of visual field pixel resolutions beyond the 11x11 resolution that
+             genomes are trained with. The ability to do this is a feature of HyperNEAT - the evolved genomes are Compositional
+             Pattern Producing Networks (CPPNs). A CPPN defines the connection strength between nodes positioned in some
+             euclidean space and therefore we can use a CPPN to produce neural networks with more nodes by increasing the 
+             number and density of nodes.
+             </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.#ctor">
+            <summary>
+            Default constructor.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.Initialize(System.String,System.Xml.XmlElement)">
+            <summary>
+            Initialize the experiment with some optional XML configutation data.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.LoadPopulation(System.Xml.XmlReader)">
+            <summary>
+            Load a population of genomes from an XmlReader and returns the genomes in a new list.
+            The genome factory for the genomes can be obtained from any one of the genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.SavePopulation(System.Xml.XmlWriter,System.Collections.Generic.IList{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Save a population of genomes to an XmlWriter.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateGenomeDecoder">
+            <summary>
+            Create a genome decoder for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateGenomeFactory">
+            <summary>
+            Create a genome factory for the experiment.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateEvolutionAlgorithm">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            Uses the experiments default population size defined in the experiment's config XML.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateEvolutionAlgorithm(System.Int32)">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a population size parameter that specifies how many genomes to create in an initial randomly
+            generated population.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateEvolutionAlgorithm(SharpNeat.Core.IGenomeFactory{SharpNeat.Genomes.Neat.NeatGenome},System.Collections.Generic.List{SharpNeat.Genomes.Neat.NeatGenome})">
+            <summary>
+            Create and return a NeatEvolutionAlgorithm object ready for running the NEAT algorithm/search. Various sub-parts
+            of the algorithm are also constructed and connected up.
+            This overload accepts a pre-built genome population and their associated/parent genome factory.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateGenomeView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying genomes.
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateDomainView">
+            <summary>
+            Create a System.Windows.Forms derived object for displaying output for a domain (e.g. show best genome's output/performance/behaviour in the domain). 
+            </summary>
+        </member>
+        <member name="M:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.CreateGenomeDecoder(System.Int32,System.Boolean)">
+            <summary>
+            Creates a genome decoder. We split this code into a separate  method so that it can be re-used by the problem domain visualization code
+            (it needs to decode genomes to phenomes in order to create a visualization).
+            </summary>
+            <param name="visualFieldResolution">The visual field's pixel resolution, e.g. 11 means 11x11 pixels.</param>
+            <param name="lengthCppnInput">Indicates if the CPPNs being decoded have an extra input for specifying connection length.</param>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.Name">
+            <summary>
+            Gets the name of the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.Description">
+            <summary>
+            Gets human readable explanatory text for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.InputCount">
+            <summary>
+            Gets the number of inputs required by the network/black-box that the underlying problem domain is based on.
+            6 inputs. 2 * (x,y,z) CPPN substrate node position coordinates, plus one optional connection length input.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.OutputCount">
+            <summary>
+            Gets the number of outputs required by the network/black-box that the underlying problem domain is based on.
+            2 outputs.CPPN weight output and bias weight output.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.DefaultPopulationSize">
+            <summary>
+            Gets the default population size to use for the experiment.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.NeatEvolutionAlgorithmParameters">
+            <summary>
+            Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
+            modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+            at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.NeatGenomeParameters">
+            <summary>
+            Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
+            to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.VisualFieldResolution">
+            <summary>
+            Gets the visual resolution for the task, as loaded from the experiment config XML.
+            </summary>
+        </member>
+        <member name="P:SharpNeat.Domains.BoxesVisualDiscrimination.BoxesVisualDiscriminationExperiment.LengthCppnInput">
+            <summary>
+            Gets the CPPN length input flag, as loaded from the experiment config XML.
+            </summary>
+        </member>
+    </members>
+</doc>

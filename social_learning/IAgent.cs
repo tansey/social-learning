@@ -13,5 +13,6 @@ namespace social_learning
         double Fitness { get; set; }
 
         void Step(double[] sensors);
+        void Reset();
     }
 }

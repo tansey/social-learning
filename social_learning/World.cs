@@ -23,6 +23,9 @@ namespace social_learning
         public int Height { get; set; }
         public int Width { get; set; }
 
+        public delegate void ChangedEventHandler(object sender, EventArgs e);
+        public event ChangedEventHandler Changed;
+
         public World(IEnumerable<IAgent> agents, IEnumerable<PlantSpecies> species, int height, int width, int numPlantsPerSpecies)
         {
             Agents = agents;
@@ -37,6 +40,10 @@ namespace social_learning
                     Plants.Add(new Plant(s) { X = random.Next() % width, Y = random.Next() % height });
         }
 
+        /// <summary>
+        /// Moves all agents in the world forward by one step and collects food for any agents on top of
+        /// a plant.
+        /// </summary>
         public void Step()
         {
             foreach (var agent in Agents)
@@ -61,9 +68,38 @@ namespace social_learning
                         // TODO: Update the population if the reward was good/bad
                     }
             }
-
+            onChanged(EventArgs.Empty);
         }
 
+        // Notify any listeners that the world state has changed
+        private void onChanged(EventArgs e)
+        {
+            if (Changed != null)
+                Changed(this, e);
+        }
+
+        /// <summary>
+        /// Resets the world to the initial state.
+        /// </summary>
+        public void Reset()
+        {
+            //TODO: Reset all agents, plants, etc.
+            foreach (var agent in Agents)
+            {
+                agent.X = random.Next(Width);
+                agent.Y = random.Next(Height);
+                agent.Orientation = random.Next(360);
+                agent.Fitness = 0;
+            }
+
+            foreach (var plant in Plants)
+                plant.Reset();
+
+            // Notify any listeners that the world state has changed
+            onChanged(EventArgs.Empty);
+        }
+
+        #region Helper methods for calculating mathy things
         private double[] calculateSensors(IAgent agent)
         {
             double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE];
@@ -85,6 +121,9 @@ namespace social_learning
                 // Identify the appropriate sensor
                 var sIdx = getSensorIndex(agent, plant);
 
+                if (sIdx == -1)
+                    continue;
+
                 // Add 1/distance to the sensor
                 sensors[sIdx] += 1.0 / dist;
             }
@@ -102,13 +141,14 @@ namespace social_learning
                 if ((startSensor + i * sensorWidth) % 360 < pos && (startSensor + (i + 1) * sensorWidth) % 360 >= pos)
                     return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + i;
 
-            throw new Exception("Something went wrong! (Eli screwed up the formula)");
+            return -1;
+            //throw new Exception("Something went wrong! (Eli screwed up the formula)");
         }
 
         private static double calculateDistance(IAgent agent, Plant plant)
         {
             return Math.Sqrt((agent.X - plant.X) * (agent.X - plant.X) + (agent.Y - plant.Y) * (agent.Y - plant.Y));
         }
-
-   }
+        #endregion
+    }
 }

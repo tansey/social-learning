@@ -27,5 +27,10 @@ namespace social_learning
         {
             whosEatenMe.Add(agent);
         }
+
+        public void Reset()
+        {
+            whosEatenMe.Clear();
+        }
     }
 }

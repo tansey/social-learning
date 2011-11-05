@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <PopulationSize>50</PopulationSize>
+  <SpecieCount>5</SpecieCount>
+  <Activation>
+    <Scheme>CyclicFixedIters</Scheme>
+    <Iters>1</Iters>
+  </Activation>
+  <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
+  <ComplexityThreshold>50</ComplexityThreshold>
+  <Description>
+    Foraging Evolution
+ 
+    Fitness is the sum of the scores of the plants an individual ate.
+  </Description>
+  <MaxTimeSteps>500</MaxTimeSteps>
+</Config>
