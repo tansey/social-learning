@@ -1,0 +1,11 @@
+c:\local_apps\social_learning\VisualizeWorld\bin\Debug\VisualizeWorld.exe
+c:\local_apps\social_learning\VisualizeWorld\bin\Debug\VisualizeWorld.pdb
+c:\local_apps\social_learning\VisualizeWorld\bin\Debug\social_learning.dll
+c:\local_apps\social_learning\VisualizeWorld\bin\Debug\social_learning.pdb
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\VisualizeWorld.Form1.resources
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\VisualizeWorld.Properties.Resources.resources
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\GenerateResource.read.1.tlog
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\GenerateResource.write.1.tlog
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\VisualizeWorld.exe
+c:\local_apps\social_learning\VisualizeWorld\obj\x86\Debug\VisualizeWorld.pdb
