@@ -125,8 +125,9 @@ namespace VisualizeWorld
             _eaParams.SpecieCount = _specieCount;
             _neatGenomeParams = new NeatGenomeParameters()
             {
-                //ActivationFn = PlainSigmoid.__DefaultInstance,
+                ActivationFn = PlainSigmoid.__DefaultInstance,
                 InitialInterconnectionsProportion = 1,
+                
             };
         }
 

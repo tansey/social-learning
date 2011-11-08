@@ -102,13 +102,22 @@ namespace VisualizeWorld
             float scaleX = e.ClipRectangle.Width / (float)world.Width;
             float scaleY = e.ClipRectangle.Height / (float)world.Height;
 
+            var agents = world.Agents.Take(15);
+
             // Draw the plants
             foreach (var plant in world.Plants)
             {
-                if (!plant.AvailableForEating(world.Agents.First()))
-                    continue;
+                SolidBrush brush = null;
 
-                var brush = new SolidBrush(plantColors[plant.Species.SpeciesId]);
+                foreach(var agent in agents)
+                    if (plant.EatenByRecently(world.CurrentStep, 10, agent))
+                    {
+                        brush = new SolidBrush(Color.Red);
+                        break;
+                    }
+                if(brush == null)
+                    brush = new SolidBrush(plantColors[plant.Species.SpeciesId]);
+
                 g.FillEllipse(brush, new Rectangle((int)((plant.X - plant.Species.Radius) * scaleX),
                                                    (int)((plant.Y - plant.Species.Radius) * scaleY),
                                                    (int)((plant.Species.Radius * 2) * scaleX),
@@ -118,7 +127,7 @@ namespace VisualizeWorld
 
             // Draw the agents
             int i = -1;
-            foreach (var agent in world.Agents.Take(15))
+            foreach (var agent in agents)
             {
                 i++;
                 //if (i % 10 != 0)

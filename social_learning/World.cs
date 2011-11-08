@@ -9,6 +9,7 @@ namespace social_learning
     {
         private Random random = new Random();
         const int SENSORS_PER_PLANT_TYPE = 8;
+        private int _step;
 
         public IEnumerable<IAgent> Agents { get; set; }
         public double AgentHorizon { get; set; }
@@ -22,6 +23,7 @@ namespace social_learning
 
         public int Height { get; set; }
         public int Width { get; set; }
+        public int CurrentStep { get { return _step; } }
 
         public delegate void ChangedEventHandler(object sender, EventArgs e);
         public event ChangedEventHandler Changed;
@@ -66,13 +68,14 @@ namespace social_learning
                     if (calculateDistance(agent, plant) < plant.Species.Radius && plant.AvailableForEating(agent))
                     {
                         // Eat the plant
-                        plant.EatenBy(agent);
+                        plant.EatenBy(agent, _step);
                         agent.Fitness += plant.Species.Reward;
 
                         // TODO: Update the population if the reward was good/bad
                     }
             }
             onChanged(EventArgs.Empty);
+            _step++;
         }
 
         // Notify any listeners that the world state has changed
@@ -101,6 +104,9 @@ namespace social_learning
                 plant.X = random.Next(Width);
                 plant.Y = random.Next(Height);
             }
+
+            _step = 0;
+
             // Notify any listeners that the world state has changed
             onChanged(EventArgs.Empty);
         }
