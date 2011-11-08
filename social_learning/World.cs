@@ -96,8 +96,11 @@ namespace social_learning
             }
 
             foreach (var plant in Plants)
+            {
                 plant.Reset();
-
+                plant.X = random.Next(Width);
+                plant.Y = random.Next(Height);
+            }
             // Notify any listeners that the world state has changed
             onChanged(EventArgs.Empty);
         }
@@ -130,6 +133,10 @@ namespace social_learning
                 // Add 1/distance to the sensor
                 sensors[sIdx] += 1.0 / dist;
             }
+
+            foreach (var sensor in sensors)
+                if (sensor > 1)
+                    throw new Exception("Invalid sensor value: " + sensor);
 
             return sensors;
         }

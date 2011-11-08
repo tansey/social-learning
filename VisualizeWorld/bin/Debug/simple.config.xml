@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Config>
-  <PopulationSize>150</PopulationSize>
+  <PopulationSize>100</PopulationSize>
   <SpecieCount>10</SpecieCount>
   <Activation>
     <Scheme>CyclicFixedIters</Scheme>
@@ -13,5 +13,11 @@
  
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
-  <MaxTimeSteps>500</MaxTimeSteps>
+  <MaxTimeSteps>1000</MaxTimeSteps>
+  <PlantSpecies>1</PlantSpecies>
+  <PlantRadius>5</PlantRadius>
+  <WorldWidth>500</WorldWidth>
+  <WorldHeight>500</WorldHeight>
+  <PlantsPerSpecies>100</PlantsPerSpecies>
+  <AgentHorizon>50</AgentHorizon>
 </Config>

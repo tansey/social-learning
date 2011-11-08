@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using social_learning;
 using SharpNeat.Phenomes;
+using System.Windows.Forms;
 
 namespace VisualizeWorld
 {
     public class NeuralAgent : Agent
     {
         public IBlackBox Brain { get; set; }
-
+        
         public NeuralAgent(IBlackBox brain)
         {
             Brain = brain;
@@ -29,7 +30,11 @@ namespace VisualizeWorld
             var output = Brain.OutputSignalArray[0];
 
             // [0,1] -> [-180,180]
-            return (float)(output - 0.5) * 360;
+            var result = (float)(output-0.5) * 360;
+
+            //MessageBox.Show(result.ToString());
+
+            return result;
         }
 
         public override void Reset()

@@ -29,16 +29,16 @@ namespace VisualizeWorld
             this.SetStyle(ControlStyles.AllPaintingInWmPaint |
                           ControlStyles.UserPaint |
                           ControlStyles.DoubleBuffer, true);
-            _experiment = new SimpleExperiment();
-            _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
+            
             const int NUM_AGENTS = 500;
-            plantColors = new Color[NUM_AGENTS]; 
+            plantColors = new Color[NUM_AGENTS];
             agentColors = new Color[NUM_AGENTS];
             for (int i = 0; i < NUM_AGENTS; i++)
             {
                 agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                 plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
             }
+            
             /*
             var species = new List<PlantSpecies>();
             for (int i = 0; i < 5; i++)
@@ -69,13 +69,13 @@ namespace VisualizeWorld
         {
             if (this.InvokeRequired == false)
             {
-                if (gens > STARTER_GENS)
+                //if (gens > STARTER_GENS)
                     this.Invalidate();
             }
             else
             {
                 if (gens > STARTER_GENS)
-                    Thread.Sleep(1);
+                    Thread.Sleep(10);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -84,8 +84,20 @@ namespace VisualizeWorld
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            if (_experiment == null || _experiment.World == null)
+                return;
+
             Graphics g = e.Graphics;
             World world = _experiment.World;
+
+            if (gens < STARTER_GENS)
+            {
+                g.FillRectangle(Brushes.White, 0, 0, 150, 15);
+
+                g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
+                                                DefaultFont, Brushes.Black, 0, 0);
+                return;
+            }
 
             float scaleX = e.ClipRectangle.Width / (float)world.Width;
             float scaleY = e.ClipRectangle.Height / (float)world.Height;
@@ -106,11 +118,11 @@ namespace VisualizeWorld
 
             // Draw the agents
             int i = -1;
-            foreach (var agent in world.Agents)
+            foreach (var agent in world.Agents.Take(15))
             {
                 i++;
-                if (i % 20 != 0)
-                    continue;
+                //if (i % 10 != 0)
+                //    continue;
 
                 //var agent = world.Agents.First();
                 g.FillPie(new SolidBrush(agentColors[i]), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
@@ -129,7 +141,6 @@ namespace VisualizeWorld
 
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
                                             DefaultFont, Brushes.Black, 0, 0);
-                
         
         }
 
@@ -146,6 +157,15 @@ namespace VisualizeWorld
                 stopEvolution();
                 return;
             }
+
+            _experiment = new SimpleExperiment();
+            
+            // Load config XML.
+            XmlDocument xmlConfig = new XmlDocument();
+            xmlConfig.Load("simple.config.xml");
+            _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
+
+            _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
             
             btnEvolve.Text = "Stop!";
             btnStep.Enabled = false;
@@ -159,10 +179,6 @@ namespace VisualizeWorld
         {
             gens = 0;
 
-            // Load config XML.
-            XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load("simple.config.xml");
-            _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
 
             // Create evolution algorithm and attach update event.
             _ea = _experiment.CreateEvolutionAlgorithm();

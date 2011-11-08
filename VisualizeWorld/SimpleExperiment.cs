@@ -14,6 +14,8 @@ using social_learning;
 using System.Threading.Tasks;
 using System;
 using System.Windows.Forms;
+using System.Linq;
+using SharpNeat.Network;
 
 namespace VisualizeWorld
 {
@@ -34,7 +36,7 @@ namespace VisualizeWorld
         const int SENSORS_PER_PLANT_TYPE = 8;
         const int PLANT_TYPES = 5;
 
-        public int InputCount { get { return SENSORS_PER_PLANT_TYPE * PLANT_TYPES; } }
+        public int InputCount { get { return SENSORS_PER_PLANT_TYPE * _world.PlantTypes.Count(); } }
         public int OutputCount { get { return 1; } }
 
         public string Description
@@ -81,22 +83,7 @@ namespace VisualizeWorld
 
         public SimpleExperiment()
         {
-            var species = new List<PlantSpecies>();
-            for (int i = 0; i < 5; i++)
-                species.Add(new PlantSpecies() { Name = "Species_" + i, Radius = 5, Reward = i });
-
-            Random random = new Random();
-            var agents = new List<IAgent>();
-            const int NUM_AGENTS = 10;
-            for (int i = 0; i < NUM_AGENTS; i++)
-            {
-                agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
-            }
-
-            _world = new World(agents, species, 500, 500, 50)
-            {
-                AgentHorizon = 50
-            };
+            
         }
 
         /// <summary>
@@ -112,10 +99,35 @@ namespace VisualizeWorld
             _complexityThreshold = XmlUtils.TryGetValueAsInt(xmlConfig, "ComplexityThreshold");
             _description = XmlUtils.TryGetValueAsString(xmlConfig, "Description");
             _maxTimeSteps = (ulong)XmlUtils.TryGetValueAsInt(xmlConfig, "MaxTimeSteps");
+
+            var species = new List<PlantSpecies>();
+            for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
+                species.Add(new PlantSpecies() { Name = "Species_" + i, 
+                                                 Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
+                                                 Reward = 100 });
+
+            Random random = new Random();
+            var agents = new List<IAgent>();
+            const int NUM_AGENTS = 10;
+            for (int i = 0; i < NUM_AGENTS; i++)
+            {
+                agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
+            }
+
+            _world = new World(agents, species, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), 
+                                                XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"),
+                                                XmlUtils.GetValueAsInt(xmlConfig, "PlantsPerSpecies"))
+            {
+                AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon")
+            };
             
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
-            _neatGenomeParams = new NeatGenomeParameters();
+            _neatGenomeParams = new NeatGenomeParameters()
+            {
+                //ActivationFn = PlainSigmoid.__DefaultInstance,
+                InitialInterconnectionsProportion = 1,
+            };
         }
 
         /// <summary>
