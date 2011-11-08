@@ -36,10 +36,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpNeatDomains">
-      <HintPath>..\..\..\Users\Wesley\Downloads\SharpNeatV2\bin\SharpNeatDomains.dll</HintPath>
+      <HintPath>..\lib\SharpNeatDomains.dll</HintPath>
     </Reference>
     <Reference Include="SharpNeatLib">
-      <HintPath>..\..\..\Users\Wesley\Downloads\SharpNeatV2\bin\SharpNeatLib.dll</HintPath>
+      <HintPath>..\lib\SharpNeatLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
