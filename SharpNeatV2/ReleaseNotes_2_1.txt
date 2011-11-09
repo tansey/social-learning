@@ -1,0 +1,100 @@
+SharpNEAT 2.1
+2011-09-16
+Colin Green
+
+Changes from previous release (2.0.1).
+=====================================
+
+
+Major New Features
+------------------
+
+ * Support for evolution of acyclic networks. This includes:
+
+   * Development of NeatGenome and associated classes to support efficient
+     evolution of acyclic networks.
+
+   * Development of neural network classes to efficiently execute neural
+     networks.
+
+   * Development of network visualization to layout nodes by layer. This also
+     affects how cylcic networks are laid out because the algorithm that 
+     determines which layer a node is in for acylcic nets was extended to also
+     calculate a sensible layer number for cyclic networks, This greatly 
+     improves how the networks are laid out with respect to gaining 
+     understanding of the network architecture from its visual rendering.
+     
+   * Modified all function regression and binary logic themed experiments to 
+     use acyclic networks.
+
+
+
+ * Added support for Box2D (2D physics engine) based problem domains and 
+   visualisation of Box2D worlds with OpenGL.
+
+   * New experiment - Single pole balancing using Box2D, including 
+     visualization.   
+     
+   * New experiment - Inverted double pendulum using Box2D, including 
+     visualization.   
+
+
+   
+
+Other Developments
+------------------
+
+ * Improved assertions when running in debug mode. This improves code quailty
+   by reducing the number of undetected defects in released code.
+
+ * New ZigguratGaussianSampler class for generating Gaussian noise for 
+   mutations and simulations (where required). This approach has a much reduced
+   requirement for calls to expensive floating point operations such as 
+   Math.Sqr() and Math.Log(). Typically this is about 2x faster than sampling
+   by using the previously used and simpler Box-Muller method.
+
+ * FastRandom now seeds using random numbers from a global FastRandom. This 
+   prevents multiple instances from obtaining the same seed from the system
+   tick count when initialising within the same clock tick.
+
+ * Log(n) function regression experiment.
+
+ * XOR and binary multiplexer experiments modified to use fitness score based 
+   on squared error. This change improves search efficiency.
+ 
+ * Function regression experiments changed to have peaks and troughs at y = 0.9
+   and 0.1 respectively. This avoids requiring activation functions to output
+   values at the extremes of their ranges.
+
+ * CPPNs modified to use a Gaussian activation function instead of
+   BipolarGaussian. My opinion is that BipolarGaussian isn't directly useful
+   and the equivalent functionality can be achieved if necessary by combining
+   Gaussian with Linear.
+
+ * Refactoring of mutation type selection logic/code.
+
+
+Fixes
+-----
+
+ * Fix to crossover logic whereby connection genes where not copied and thus
+   shared between parent and child genomes.
+
+ * RelaxingCyclicNetwork and FastRelaxingCyclicNetwork: IsStateValid property
+   return value was defined the wrong way around for relaxed networks. It 
+   returned false when the networks were relaxed (which is the valid state).
+   Note - none of the current experiments shipped with SharpNEAT use relaxing
+   networks.
+ 
+ * XML I/O was not culture neutral. RBF-NEAT uses comma separated numbers
+   within genome XML which conflicted with use of commas as the numeric decimal
+   separator in come cultures.
+ 
+ * Fix to genome loading. Now uses genome factory from the current experiment;
+   previously it was hard coded to NeatGenomeFactory which was incorrect when
+   using sub-classes such as CppnGenomeFactory.
+
+ * Genetic crossover of CPPN genomes randomly regenerated the node activation
+   functions on each node of a child genome instead of taking the activation
+   functions from the parent genome.
+
