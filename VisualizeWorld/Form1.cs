@@ -20,7 +20,7 @@ namespace VisualizeWorld
         Color[] agentColors;
         Random random = new Random();
         static NeatEvolutionAlgorithm<NeatGenome> _ea;
-        const string CHAMPION_FILE = @"simple_evolution_champion.xml";
+        const string CHAMPION_FILE = @"..\..\..\experiments\simple_evolution_champion.xml";
         static SimpleExperiment _experiment;
 
         public Form1()
@@ -171,7 +171,7 @@ namespace VisualizeWorld
             
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load("simple.config.xml");
+            xmlConfig.Load(@"..\..\..\experiments\simple.config.xml");
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
 
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
