@@ -7,21 +7,27 @@ namespace social_learning
 {
     public abstract class Agent : IAgent
     {
-        public float StepSize { get { return 5f; } }
         public float X { get; set; }
         public float Y { get; set; }
         public float Orientation { get; set; }
+        public float Velocity { get; set; }
         public double Fitness { get; set; }
+        public float MaxVelocity { get { return 5f; } }
 
-        protected abstract float getRotation(double[] sensors);
+        protected abstract float[] getRotationAndVelocity(double[] sensors);
 
         public void Step(double[] sensors)
         {
-            Orientation += getRotation(sensors);
+            var output = getRotationAndVelocity(sensors);
+
+            Orientation += output[0];
             Orientation %= 360;
 
-            X += StepSize * (float)(Math.Cos(Orientation * Math.PI / 180.0));
-            Y += StepSize * (float)(Math.Sin(Orientation * Math.PI / 180.0));
+            Velocity += output[0];
+            Velocity = Math.Min(5, Math.Max(0, Velocity));
+
+            X += Velocity * (float)(Math.Cos(Orientation * Math.PI / 180.0));
+            Y += Velocity * (float)(Math.Sin(Orientation * Math.PI / 180.0));
         }
 
         public abstract void Reset();

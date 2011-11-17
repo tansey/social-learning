@@ -15,8 +15,10 @@ namespace social_learning
             Brain = brain;
         }
 
-        protected override float getRotation(double[] sensors)
+        protected override float[] getRotationAndVelocity(double[] sensors)
         {
+            Brain.ResetState();
+
             // Convert the sensors into an input array for the network
             for (int i = 0; i < sensors.Length; i++)
                 Brain.InputSignalArray[i] = sensors[i];
@@ -24,15 +26,16 @@ namespace social_learning
             // Activate the network
             Brain.Activate();
 
-            // TODO: Something based on what the output of the neural network tells us
             var output = Brain.OutputSignalArray[0];
 
             // [0,1] -> [-180,180]
-            var result = (float)(output-0.5) * 360;
+            var orientation = (float)(output-0.5) * 120;
+
+            var velocityDelta = (float)(output - 0.5) * 2;
 
             //MessageBox.Show(result.ToString());
 
-            return result;
+            return new float[] { orientation, velocityDelta };
         }
 
         public override void Reset()

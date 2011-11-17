@@ -110,10 +110,17 @@ namespace VisualizeWorld
                 SolidBrush brush = null;
 
                 foreach(var agent in agents)
-                    if (plant.EatenByRecently(world.CurrentStep, 10, agent))
+                    try
                     {
-                        brush = new SolidBrush(Color.Red);
-                        break;
+                        if (plant.EatenByRecently(world.CurrentStep, 10, agent))
+                        {
+                            brush = new SolidBrush(Color.Red);
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 if(brush == null)
                     brush = new SolidBrush(plantColors[plant.Species.SpeciesId]);

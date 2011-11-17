@@ -10,7 +10,9 @@ namespace social_learning
         float X { get; set; }
         float Y { get; set; }
         float Orientation { get; set; }
+        float Velocity { get; set; }
         double Fitness { get; set; }
+        float MaxVelocity { get; }
 
         void Step(double[] sensors);
         void Reset();

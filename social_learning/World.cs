@@ -114,7 +114,9 @@ namespace social_learning
         #region Helper methods for calculating mathy things
         private double[] calculateSensors(IAgent agent)
         {
-            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE];
+            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE + 1];
+
+            sensors[0] = agent.Velocity / agent.MaxVelocity;
 
             // For every plant
             foreach (var plant in Plants)
@@ -140,9 +142,7 @@ namespace social_learning
                 sensors[sIdx] += 1.0 / dist;
             }
 
-            foreach (var sensor in sensors)
-                if (sensor > 1)
-                    throw new Exception("Invalid sensor value: " + sensor);
+
 
             return sensors;
         }
@@ -156,10 +156,9 @@ namespace social_learning
 
             for (int i = 0; i < SENSORS_PER_PLANT_TYPE; i++)
                 if ((startSensor + i * sensorWidth) % 360 < pos && (startSensor + (i + 1) * sensorWidth) % 360 >= pos)
-                    return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + i;
+                    return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + i + 1;
 
             return -1;
-            //throw new Exception("Something went wrong! (Eli screwed up the formula)");
         }
 
         private static double calculateDistance(IAgent agent, Plant plant)

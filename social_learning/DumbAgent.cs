@@ -9,9 +9,9 @@ namespace social_learning
     {
         Random random = new Random();
 
-        protected override float getRotation(double[] sensors)
+        protected override float[] getRotationAndVelocity(double[] sensors)
         {
-            return (float)random.Next(45) - 20f;
+            return new float[] { (float)random.Next(45) - 20f, (float)random.Next(2) };
         }
 
         public override void Reset()

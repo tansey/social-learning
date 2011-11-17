@@ -190,6 +190,26 @@ namespace SharpNeat.Phenomes.NeuralNets
             }
         }
 
+        public virtual void Train(double[] inputs, double[] outputs)
+        {
+            // Save the state of the network
+            // TODO
+
+            // Reset the state of the network
+
+            // Set the inputs
+            
+
+            // Activate the network
+
+            // Get the outputs
+
+            // Calculate deltas
+
+            // Backprop deltas
+            // ... whatever the fuck that means
+        }
+
         /// <summary>
         /// Reset the network's internal state.
         /// </summary>
