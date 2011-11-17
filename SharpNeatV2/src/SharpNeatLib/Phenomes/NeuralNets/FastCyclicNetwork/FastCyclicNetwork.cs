@@ -17,6 +17,9 @@
  * along with SharpNEAT.  If not, see <http://www.gnu.org/licenses/>.
  */
 using SharpNeat.Network;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 // Disable missing comment warnings for non-private variables.
 #pragma warning disable 1591
@@ -190,24 +193,126 @@ namespace SharpNeat.Phenomes.NeuralNets
             }
         }
 
+        /// <summary>
+        /// Activate the network for a fixed number of iterations defined by the 'maxIterations' parameter
+        /// at construction time. Activation reads input signals from InputSignalArray and writes output signals
+        /// to OutputSignalArray.
+        /// </summary>
+        private double[][] _backpropPreActivations;
+        private double[][] _backpropPostActivations;
+        private void ActivateWithMemory()
+        {
+            _backpropPreActivations = new double[_timestepsPerActivation][];
+            _backpropPostActivations = new double[_timestepsPerActivation][];
+            // Activate the network for a fixed number of timesteps.
+            for (int i = 0; i < _timestepsPerActivation; i++)
+            {
+                _backpropPreActivations[i] = new double[_connectionArray.Length];
+                _backpropPostActivations[i] = new double[_connectionArray.Length];
+                // Loop connections. Get each connection's input signal, apply the weight and add the result to 
+                // the preactivation signal of the target neuron.
+                for (int j = 0; j < _connectionArray.Length; j++)
+                {
+                    _preActivationArray[_connectionArray[j]._tgtNeuronIdx] += _postActivationArray[_connectionArray[j]._srcNeuronIdx] * _connectionArray[j]._weight;
+                }
+
+                // Loop the neurons. Pass each neuron's pre-activation signals through its activation function
+                // and store the resulting post-activation signal.
+                // Skip over bias and input neurons as these have no incoming connections and therefore have fixed
+                // post-activation values and are never activated. 
+                for (int j = _inputAndBiasNeuronCount; j < _preActivationArray.Length; j++)
+                {
+                    _postActivationArray[j] = _neuronActivationFnArray[j].Calculate(_preActivationArray[j], _neuronAuxArgsArray[j]);
+
+                    // Save it for use in backprop
+                    _backpropPreActivations[i][j] = _preActivationArray[j];
+                    _backpropPostActivations[i][j] = _postActivationArray[j];
+
+                    // Take the opportunity to reset the pre-activation signal array in preperation for the next 
+                    // activation loop.
+                    _preActivationArray[j] = 0.0F;
+                }
+            }
+        }
+
+        private IEnumerable<FastConnection> getIncomingConnections(int node)
+        {
+            return _connectionArray.Where(c => c._tgtNeuronIdx == node);
+        }
+
+        private IEnumerable<FastConnection> getOutgoingConnections(int node)
+        {
+            return _connectionArray.Where(c => c._srcNeuronIdx == node);
+        }
+        public double BackpropLearningRate { get; set; }
+
         public virtual void Train(double[] inputs, double[] outputs)
         {
+            // TODO: Implement momentum
+
             // Save the state of the network
-            // TODO
+            // TODO - If we want to have recurrent networks with incremental _backpropPreActivations
+            //        Currently we assume the network is going to be reset before each activation anyway.
 
             // Reset the state of the network
+            ResetState();
 
             // Set the inputs
-            
+            InputSignalArray.CopyFrom(inputs, 0);
 
             // Activate the network
+            Activate();
 
             // Get the outputs
+            var observed = new double[OutputSignalArray.Length];
+            OutputSignalArray.CopyTo(observed, 0);
 
             // Calculate deltas
+            var activeNodes = Enumerable.Range(_inputAndBiasNeuronCount, _outputNeuronCount);
+            var deltas = new double[_timestepsPerActivation][];
+            deltas[deltas.Length - 1] = new double[_preActivationArray.Length];
+            foreach(var i in activeNodes)
+                deltas[deltas.Length-1][i] = sigmoidDerivative(solveForX(observed[i-_inputAndBiasNeuronCount])) 
+                                            * (outputs[i-_inputAndBiasNeuronCount] - observed[i-_inputAndBiasNeuronCount]);
+            // set activenodes to current level
+            IEnumerable<int> incoming = new List<int>();
+            foreach(var node in activeNodes)
+                incoming = incoming.Union(getIncomingConnections(node).Select(t => t._srcNeuronIdx));
+            activeNodes = incoming;
+
+            for (int i = _timestepsPerActivation - 1; i >= 0; i--)
+            {
+                deltas[i] = new double[_preActivationArray.Length];
+                foreach (var node in activeNodes)
+                {
+                    double sum = 0;
+                    foreach(var connection in getOutgoingConnections(node))
+                        sum += connection._weight * deltas[i+1][connection._tgtNeuronIdx];
+                    foreach (var connection in getIncomingConnections(node))
+                        deltas[i][connection._srcNeuronIdx] = sigmoidDerivative(_backpropPreActivations[i][node]) * sum;
+                }
+
+                // Update activenodes
+                incoming = new List<int>();
+                foreach (var node in activeNodes)
+                    incoming = incoming.Union(getIncomingConnections(node).Select(t => t._srcNeuronIdx));
+                activeNodes = incoming;
+            }
 
             // Backprop deltas
-            // ... whatever the fuck that means
+            for (int i = 0; i < _timestepsPerActivation; i++)
+                for (int j = 0; j < _connectionArray.Length; j++)
+                    _connectionArray[j]._weight += BackpropLearningRate * _backpropPostActivations[i][j] * deltas[i][j];
+        }
+
+        private double solveForX(double y)
+        {
+            return -Math.Log(1.0 / y - 1.0);
+        }
+
+        private double sigmoidDerivative(double x)
+        {
+            return Math.Exp(x) / ((1 + Math.Exp(x)) * (1 + Math.Exp(x)));
         }
 
         /// <summary>

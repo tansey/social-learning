@@ -257,7 +257,7 @@ namespace SharpNeat.Domains.BoxesVisualDiscrimination
             // Create IBlackBox evaluator.
             BoxesVisualDiscriminationEvaluator evaluator = new BoxesVisualDiscriminationEvaluator(_visualFieldResolution);
 
-            // Create genome decoder. Decodes to a neural network packaged with an activation scheme that defines a fixed number of activations per evaluation.
+            // Create genome decoder. Decodes to a neural network packaged with an activation scheme that defines a fixed number of _backpropPreActivations per evaluation.
             IGenomeDecoder<NeatGenome,IBlackBox> genomeDecoder = CreateGenomeDecoder(_visualFieldResolution, _lengthCppnInput);
 
             // Create a genome list evaluator. This packages up the genome decoder with the genome evaluator.
@@ -357,7 +357,7 @@ namespace SharpNeat.Domains.BoxesVisualDiscrimination
             // Construct substrate.
             Substrate substrate = new Substrate(nodeSetList, DefaultActivationFunctionLibrary.CreateLibraryNeat(SteepenedSigmoid.__DefaultInstance), 0, 0.2, 5, nodeSetMappingList);
 
-            // Create genome decoder. Decodes to a neural network packaged with an activation scheme that defines a fixed number of activations per evaluation.
+            // Create genome decoder. Decodes to a neural network packaged with an activation scheme that defines a fixed number of _backpropPreActivations per evaluation.
             IGenomeDecoder<NeatGenome,IBlackBox> genomeDecoder = new HyperNeatDecoder(substrate, _activationSchemeCppn, _activationScheme, lengthCppnInput);
             return genomeDecoder;
         }
