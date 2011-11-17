@@ -38,7 +38,7 @@ namespace SharpNeatConsole
         {
             // Initialise log4net (log to console).
             XmlConfigurator.Configure(new FileInfo("log4net.properties"));
-
+            
             // Experiment classes encapsulate much of the nuts and bolts of setting up a NEAT search.
             XorExperiment experiment = new XorExperiment();
 
@@ -59,8 +59,6 @@ namespace SharpNeatConsole
                 // Parse command.
                 string[] cmdArgs = cmdstring.Split(' ');
 
-                try
-                {
                     // Process command.
                     switch(cmdArgs[0])
                     {
@@ -274,11 +272,6 @@ namespace SharpNeatConsole
                             break;
                         }
                     }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(string.Format("Exception [{0}]", ex.Message));
-                }
             }
 
             quit:

@@ -37,7 +37,7 @@ namespace VisualizeWorld
         const int PLANT_TYPES = 5;
 
         public int InputCount { get { return SENSORS_PER_PLANT_TYPE * _world.PlantTypes.Count(); } }
-        public int OutputCount { get { return 1; } }
+        public int OutputCount { get { return 2; } }
 
         public string Description
         {

@@ -19,6 +19,8 @@
 using System.Diagnostics;
 using SharpNeat.Core;
 using SharpNeat.Phenomes;
+using SharpNeat.Phenomes.NeuralNets;
+using System;
 
 namespace SharpNeat.Domains
 {
@@ -88,7 +90,153 @@ namespace SharpNeat.Domains
             ISignalArray inputArr = box.InputSignalArray;
             ISignalArray outputArr = box.OutputSignalArray;
 
-            _evalCount++;            
+            _evalCount++;
+
+            // Train the network
+            FastCyclicNetwork net = (FastCyclicNetwork)box;
+
+            //----- Test 0,0
+            box.ResetState();
+
+            // Set the input values
+            inputArr[0] = 0.0;
+            inputArr[1] = 0.0;
+
+            // Activate the black box.
+            box.Activate();
+            if (!box.IsStateValid)
+            {   // Any black box that gets itself into an invalid state is unlikely to be
+                // any good, so lets just bail out here.
+                return FitnessInfo.Zero;
+            }
+
+            // Read output signal.
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            var output0 = output;
+            Debug.Assert(output >= 0.0, "Unexpected negative output.");
+
+            // Calculate this test case's contribution to the overall fitness score.
+            //fitness += 1.0 - output; // Use this line to punish absolute error instead of squared error.
+            fitness += 1.0 - (output * output);
+            if (output > 0.5)
+            {
+                pass = 0.0;
+            }
+
+            //----- Test 1,1
+            // Reset any black box state from the previous test case.
+            box.ResetState();
+
+            // Set the input values
+            inputArr[0] = 1.0;
+            inputArr[1] = 1.0;
+
+            // Activate the black box.
+            box.Activate();
+            if (!box.IsStateValid)
+            {   // Any black box that gets itself into an invalid state is unlikely to be
+                // any good, so lets just bail out here.
+                return FitnessInfo.Zero;
+            }
+
+            // Read output signal.
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            var output1 = output;
+            Debug.Assert(output >= 0.0, "Unexpected negative output.");
+
+            // Calculate this test case's contribution to the overall fitness score.
+            //fitness += 1.0 - output; // Use this line to punish absolute error instead of squared error.
+            fitness += 1.0 - (output * output);
+            if (output > 0.5)
+            {
+                pass = 0.0;
+            }
+
+            //----- Test 0,1
+            // Reset any black box state from the previous test case.
+            box.ResetState();
+
+            // Set the input values
+            inputArr[0] = 0.0;
+            inputArr[1] = 1.0;
+
+            // Activate the black box.
+            box.Activate();
+            if (!box.IsStateValid)
+            {   // Any black box that gets itself into an invalid state is unlikely to be
+                // any good, so lets just bail out here.
+                return FitnessInfo.Zero;
+            }
+
+            // Read output signal.
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            var output2 = output;
+            Debug.Assert(output >= 0.0, "Unexpected negative output.");
+
+            // Calculate this test case's contribution to the overall fitness score.
+            // fitness += output; // Use this line to punish absolute error instead of squared error.
+            fitness += 1.0 - ((1.0 - output) * (1.0 - output));
+            if (output <= 0.5)
+            {
+                pass = 0.0;
+            }
+
+            //----- Test 1,0
+            // Reset any black box state from the previous test case.
+            box.ResetState();
+
+            // Set the input values
+            inputArr[0] = 1.0;
+            inputArr[1] = 0.0;
+
+            // Activate the black box.
+            box.Activate();
+            if (!box.IsStateValid)
+            {   // Any black box that gets itself into an invalid state is unlikely to be
+                // any good, so lets just bail out here.
+                return FitnessInfo.Zero;
+            }
+
+            // Read output signal.
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            var output3 = output;
+            Debug.Assert(output >= 0.0, "Unexpected negative output.");
+
+            // Calculate this test case's contribution to the overall fitness score.
+            // fitness += output; // Use this line to punish absolute error instead of squared error.
+            fitness += 1.0 - ((1.0 - output) * (1.0 - output));
+            if (output <= 0.5)
+            {
+                pass = 0.0;
+            }
+
+            // If all four outputs were correct, that is, all four were on the correct side of the
+            // threshold level - then we add 10 to the fitness.
+            fitness += pass * 10.0;
+
+            if (fitness > 3.6)
+                Console.WriteLine("Before Nodes={5} Connections={6} [0,0]={0:N3} [1,1]={1:N3} [0,1]={2:N3} [1,0]={3:N3} fitness={4:N3}", output0, output1, output2, output3, fitness, net.HiddenCount, net.ConnectionCount);
+            fitness = 0;
+
+            net.BackpropLearningRate = 0.1;
+            net.Momentum = 0.9;
+            double[][] exampleInputs = new double[][] { 
+                new double[] { 0, 0 },
+                new double[] { 0, 1 },
+                new double[] { 1, 0 },
+                new double[] { 1, 1 }
+            };
+            double[][] exampleOutputs = new double[][] { 
+                new double[] { 0 },
+                new double[] { 1 },
+                new double[] { 1 },
+                new double[] { 0 }
+                };
+            net.RandomizeWeights();
+            for (int i = 0; i < 4000; i++)
+            {
+                net.Train(exampleInputs[i % 4], exampleOutputs[i % 4]);
+            }
 
         //----- Test 0,0
             box.ResetState();
@@ -106,7 +254,8 @@ namespace SharpNeat.Domains
             }
 
             // Read output signal.
-            output = outputArr[0];
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+             output0 = output;
             Debug.Assert(output >= 0.0, "Unexpected negative output.");
 
             // Calculate this test case's contribution to the overall fitness score.
@@ -133,7 +282,8 @@ namespace SharpNeat.Domains
             }
 
             // Read output signal.
-            output = outputArr[0];
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            output1 = output;
             Debug.Assert(output >= 0.0, "Unexpected negative output.");
 
             // Calculate this test case's contribution to the overall fitness score.
@@ -160,7 +310,8 @@ namespace SharpNeat.Domains
             }
 
             // Read output signal.
-            output = outputArr[0];
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            output2 = output;
             Debug.Assert(output >= 0.0, "Unexpected negative output.");
 
             // Calculate this test case's contribution to the overall fitness score.
@@ -187,7 +338,8 @@ namespace SharpNeat.Domains
             }
 
             // Read output signal.
-            output = outputArr[0];
+            output = Math.Min(1, Math.Max(0, outputArr[0]));
+            output3 = output;
             Debug.Assert(output >= 0.0, "Unexpected negative output.");
 
             // Calculate this test case's contribution to the overall fitness score.
@@ -201,12 +353,44 @@ namespace SharpNeat.Domains
             // threshold level - then we add 10 to the fitness.
             fitness += pass * 10.0;
 
+
             if(fitness >= StopFitness) {
                 _stopConditionSatisfied = true;
             }
 
+
+            if (fitness > 3.6)
+                Console.WriteLine("After Nodes={5} Connections={6} [0,0]={0:N3} [1,1]={1:N3} [0,1]={2:N3} [1,0]={3:N3} fitness={4:N3}", output0, output1, output2, output3, fitness, net.HiddenCount, net.ConnectionCount);
+
             return new FitnessInfo(fitness, fitness);
         }
+        Random random = new Random();
+        private double gaussianMutation(double mean, double stddev)
+        {
+            double x1 = random.NextDouble();
+            double x2 = random.NextDouble();
+
+            // The method requires sampling from a uniform random of (0,1]
+            // but Random.NextDouble() returns a sample of [0,1).
+            // Thanks to Colin Green for catching this.
+            if (x1 == 0)
+                x1 = 1;
+            if (x2 == 0)
+                x2 = 1;
+
+            double y1 = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+            return y1 * stddev + mean;
+        }
+
+        private double clamp(double val, double min, double max)
+        {
+            if (val >= max)
+                return max;
+            if (val <= min)
+                return min;
+            return val;
+        }
+
 
         /// <summary>
         /// Reset the internal state of the evaluation scheme if any exists.

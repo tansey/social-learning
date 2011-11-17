@@ -139,6 +139,8 @@ namespace SharpNeat.Domains.Xor
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
             _neatGenomeParams = new NeatGenomeParameters();
+            _neatGenomeParams.AddConnectionMutationProbability = .25;
+            _neatGenomeParams.AddNodeMutationProbability = .25;
             _neatGenomeParams.FeedforwardOnly = _activationScheme.AcyclicNetwork;
         }
 

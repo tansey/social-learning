@@ -20,6 +20,7 @@ using SharpNeat.Network;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 // Disable missing comment warnings for non-private variables.
 #pragma warning disable 1591
@@ -207,8 +208,8 @@ namespace SharpNeat.Phenomes.NeuralNets
             // Activate the network for a fixed number of timesteps.
             for (int i = 0; i < _timestepsPerActivation; i++)
             {
-                _backpropPreActivations[i] = new double[_connectionArray.Length];
-                _backpropPostActivations[i] = new double[_connectionArray.Length];
+                _backpropPreActivations[i] = new double[_preActivationArray.Length];
+                _backpropPostActivations[i] = new double[_postActivationArray.Length];
                 // Loop connections. Get each connection's input signal, apply the weight and add the result to 
                 // the preactivation signal of the target neuron.
                 for (int j = 0; j < _connectionArray.Length; j++)
@@ -245,14 +246,31 @@ namespace SharpNeat.Phenomes.NeuralNets
             return _connectionArray.Where(c => c._srcNeuronIdx == node);
         }
         public double BackpropLearningRate { get; set; }
+        public double Momentum { get; set; }
+        private double[][] _previousChange;
+
+        public void RandomizeWeights()
+        {
+            Random random = new Random();
+            for (int i = 0; i < _connectionArray.Length; i++)
+                _connectionArray[i]._weight = random.NextDouble() * _connectionArray[i]._weight;
+        }
 
         public virtual void Train(double[] inputs, double[] outputs)
         {
             // TODO: Implement momentum
-
             // Save the state of the network
             // TODO - If we want to have recurrent networks with incremental _backpropPreActivations
             //        Currently we assume the network is going to be reset before each activation anyway.
+
+            if (_previousChange == null)
+            {
+                _previousChange = new double[_timestepsPerActivation][];
+                for (int i = 0; i < _previousChange.Length; i++)
+                    _previousChange[i] = new double[_connectionArray.Length];
+            }
+            if (HiddenCount == 0 || ConnectionCount < 4)
+                return;
 
             // Reset the state of the network
             ResetState();
@@ -261,7 +279,7 @@ namespace SharpNeat.Phenomes.NeuralNets
             InputSignalArray.CopyFrom(inputs, 0);
 
             // Activate the network
-            Activate();
+            ActivateWithMemory();
 
             // Get the outputs
             var observed = new double[OutputSignalArray.Length];
@@ -272,7 +290,7 @@ namespace SharpNeat.Phenomes.NeuralNets
             var deltas = new double[_timestepsPerActivation][];
             deltas[deltas.Length - 1] = new double[_preActivationArray.Length];
             foreach(var i in activeNodes)
-                deltas[deltas.Length-1][i] = sigmoidDerivative(solveForX(observed[i-_inputAndBiasNeuronCount])) 
+                deltas[deltas.Length-1][i] = sigmoidDerivative(_backpropPreActivations.Last()[i]) 
                                             * (outputs[i-_inputAndBiasNeuronCount] - observed[i-_inputAndBiasNeuronCount]);
             // set activenodes to current level
             IEnumerable<int> incoming = new List<int>();
@@ -280,7 +298,7 @@ namespace SharpNeat.Phenomes.NeuralNets
                 incoming = incoming.Union(getIncomingConnections(node).Select(t => t._srcNeuronIdx));
             activeNodes = incoming;
 
-            for (int i = _timestepsPerActivation - 1; i >= 0; i--)
+            for (int i = _timestepsPerActivation - 2; i >= 0; i--)
             {
                 deltas[i] = new double[_preActivationArray.Length];
                 foreach (var node in activeNodes)
@@ -288,8 +306,7 @@ namespace SharpNeat.Phenomes.NeuralNets
                     double sum = 0;
                     foreach(var connection in getOutgoingConnections(node))
                         sum += connection._weight * deltas[i+1][connection._tgtNeuronIdx];
-                    foreach (var connection in getIncomingConnections(node))
-                        deltas[i][connection._srcNeuronIdx] = sigmoidDerivative(_backpropPreActivations[i][node]) * sum;
+                    deltas[i][node] = sigmoidDerivative(_backpropPreActivations[i][node]) * sum;
                 }
 
                 // Update activenodes
@@ -298,20 +315,25 @@ namespace SharpNeat.Phenomes.NeuralNets
                     incoming = incoming.Union(getIncomingConnections(node).Select(t => t._srcNeuronIdx));
                 activeNodes = incoming;
             }
-
             // Backprop deltas
             for (int i = 0; i < _timestepsPerActivation; i++)
                 for (int j = 0; j < _connectionArray.Length; j++)
-                    _connectionArray[j]._weight += BackpropLearningRate * _backpropPostActivations[i][j] * deltas[i][j];
+                {
+                    var change = BackpropLearningRate * _backpropPostActivations[i][_connectionArray[j]._srcNeuronIdx] * deltas[i][_connectionArray[j]._tgtNeuronIdx] + Momentum * _previousChange[i][j];
+                    _connectionArray[j]._weight += change;
+                    if(_connectionArray[j]._weight > 10)
+                        _connectionArray[j]._weight = 10;
+                    else if (_connectionArray[j]._weight < -10)
+                        _connectionArray[j]._weight = -10;
+                    _previousChange[i][j] = change;
+                }
+            
         }
 
-        private double solveForX(double y)
-        {
-            return -Math.Log(1.0 / y - 1.0);
-        }
 
         private double sigmoidDerivative(double x)
         {
+            Debug.Assert(x != double.NaN);
             return Math.Exp(x) / ((1 + Math.Exp(x)) * (1 + Math.Exp(x)));
         }
 
@@ -329,6 +351,9 @@ namespace SharpNeat.Phenomes.NeuralNets
                 _postActivationArray[i] = 0.0;
             }
         }
+
+        public int HiddenCount { get { return _preActivationArray.Length - _inputAndBiasNeuronCount - _outputNeuronCount; } }
+        public int ConnectionCount { get { return _connectionArray.Length; } }
 
         #endregion
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpNeat.Phenomes;
+using SharpNeat.Phenomes.NeuralNets;
 
 namespace social_learning
 {
@@ -17,21 +18,28 @@ namespace social_learning
 
         protected override float[] getRotationAndVelocity(double[] sensors)
         {
+
+
             Brain.ResetState();
 
             // Convert the sensors into an input array for the network
             for (int i = 0; i < sensors.Length; i++)
                 Brain.InputSignalArray[i] = sensors[i];
 
+
+
             // Activate the network
             Brain.Activate();
 
-            var output = Brain.OutputSignalArray[0];
+            var outputs = Brain.OutputSignalArray;
+
+            double[] exampleOutputs = new double[2];
+            ((FastCyclicNetwork)Brain).Train(sensors, exampleOutputs);
 
             // [0,1] -> [-180,180]
-            var orientation = (float)(output-0.5) * 120;
+            var orientation = (float)(outputs[0]-0.5) * 120;
 
-            var velocityDelta = (float)(output - 0.5) * 2;
+            var velocityDelta = (float)(outputs[1] - 0.5) * 2;
 
             //MessageBox.Show(result.ToString());
 
