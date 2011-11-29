@@ -5,6 +5,8 @@ using System.Text;
 using SharpNeat.Core;
 using social_learning;
 using SharpNeat.Phenomes;
+using SharpNeat.Phenomes.NeuralNets;
+using System.Windows.Forms;
 
 namespace VisualizeWorld
 {
@@ -14,6 +16,7 @@ namespace VisualizeWorld
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
         private ulong _evaluationCount;
         private World _world;
+        private IAgent[] _agents;
 
         /// <summary>
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
@@ -23,7 +26,10 @@ namespace VisualizeWorld
         {
             _genomeDecoder = genomeDecoder;
             _world = environment;
+            _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
         }
+
+        
 
         /// <summary>
         /// Gets the total number of individual genome evaluations that have been performed by this evaluator.
@@ -73,20 +79,20 @@ namespace VisualizeWorld
         /// </summary>
         public void Evaluate(IList<TGenome> genomeList)
         {
-            IAgent[] agents = new IAgent[genomeList.Count];
-            for(int i = 0; i < agents.Length; i++)
+            _agents = new IAgent[genomeList.Count];
+            for(int i = 0; i < _agents.Length; i++)
             {
                 // Decode the genome.
                 IBlackBox phenome = _genomeDecoder.Decode(genomeList[i]);
 
                 // Check that the genome is valid.
                 if (phenome == null)
-                    agents[i] = new SpinningAgent();
+                    _agents[i] = new SpinningAgent();
                 else
-                    agents[i] = new NeuralAgent(phenome);
+                    _agents[i] = new SocialAgent(phenome);
             }
 
-            _world.Agents = agents;
+            _world.Agents = _agents;
             _world.Reset();
 
             for (CurrentTimeStep = 0; CurrentTimeStep < MaxTimeSteps; CurrentTimeStep++)
@@ -95,14 +101,35 @@ namespace VisualizeWorld
                 _world.Step();
             }
 
-            for(int i = 0; i < agents.Length; i++)
+            for(int i = 0; i < _agents.Length; i++)
             {
-                genomeList[i].EvaluationInfo.SetFitness(agents[i].Fitness);
-                genomeList[i].EvaluationInfo.AlternativeFitness = agents[i].Fitness;
+                genomeList[i].EvaluationInfo.SetFitness(_agents[i].Fitness);
+                genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
 
-            _evaluationCount += (ulong)agents.Length;
+            _evaluationCount += (ulong)_agents.Length;
             _world.Reset();
+        }
+
+        void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
+        {
+            // if we're not dealing with a social agent, then skip this notification.
+            if (!(eater is SocialAgent))
+                return;
+            if (eaten.Species.Reward > 0)
+            {
+                var memory = ((SocialAgent)eater).Memory;
+
+                foreach (var agent in _agents)
+                {
+                    if (agent == eater)
+                        continue;
+
+                    var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+                    foreach (var example in memory)
+                        network.Train(example.Inputs, example.Outputs);
+                }
+            }
         }
     }
 }

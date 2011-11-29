@@ -9,6 +9,8 @@ namespace social_learning
 {
     public class NeuralAgent : Agent
     {
+        const float MAX_TURNING_RADIUS = 60f;
+        const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
         
         public NeuralAgent(IBlackBox brain)
@@ -18,15 +20,24 @@ namespace social_learning
 
         protected override float[] getRotationAndVelocity(double[] sensors)
         {
+            var outputs = activateNetwork(sensors);
 
+            // [0,1] -> [-60,60]
+            var orientation = (float)(outputs[0] - 0.5) * 2f * MAX_TURNING_RADIUS;
 
+            // [0,1] -> [-1,1]
+            var velocityDelta = (float)(outputs[1] - 0.5) * 2f * MAX_SPEED_CHANGE;
+
+            return new float[] { orientation, velocityDelta };
+        }
+
+        protected virtual ISignalArray activateNetwork(double[] sensors)
+        {
             Brain.ResetState();
 
             // Convert the sensors into an input array for the network
             for (int i = 0; i < sensors.Length; i++)
                 Brain.InputSignalArray[i] = sensors[i];
-
-
 
             // Activate the network
             Brain.Activate();
@@ -34,21 +45,14 @@ namespace social_learning
             var outputs = Brain.OutputSignalArray;
 
             double[] exampleOutputs = new double[2];
-            ((FastCyclicNetwork)Brain).Train(sensors, exampleOutputs);
 
-            // [0,1] -> [-180,180]
-            var orientation = (float)(outputs[0]-0.5) * 120;
-
-            var velocityDelta = (float)(outputs[1] - 0.5) * 2;
-
-            //MessageBox.Show(result.ToString());
-
-            return new float[] { orientation, velocityDelta };
+            return outputs;
         }
 
         public override void Reset()
         {
             Brain.ResetState();
         }
+
     }
 }

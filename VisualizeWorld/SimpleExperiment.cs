@@ -33,10 +33,9 @@ namespace VisualizeWorld
         World _world;
         ulong _maxTimeSteps;
 
-        const int SENSORS_PER_PLANT_TYPE = 8;
         const int PLANT_TYPES = 5;
 
-        public int InputCount { get { return SENSORS_PER_PLANT_TYPE * _world.PlantTypes.Count(); } }
+        public int InputCount { get { return _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1 + World.SENSORS_PER_PLANT_TYPE; } }
         public int OutputCount { get { return 2; } }
 
         public string Description

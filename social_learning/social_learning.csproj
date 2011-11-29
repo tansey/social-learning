@@ -55,9 +55,13 @@
     <Compile Include="Agent.cs" />
     <Compile Include="DumbAgent.cs" />
     <Compile Include="IAgent.cs" />
+    <Compile Include="InputOutputPair.cs" />
     <Compile Include="NeuralAgent.cs" />
     <Compile Include="Plant.cs" />
+    <Compile Include="PlantLayoutStrategies.cs" />
     <Compile Include="PlantSpecies.cs" />
+    <Compile Include="QLearningAgent.cs" />
+    <Compile Include="SocialAgent.cs" />
     <Compile Include="SpinningAgent.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

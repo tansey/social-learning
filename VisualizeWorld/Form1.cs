@@ -45,15 +45,15 @@ namespace VisualizeWorld
                 species.Add(new PlantSpecies() { Name = "Species_" + i, Radius = 10, Reward = i });
             plantColors = new Color[] { Color.Red, Color.Green, Color.Blue, Color.Orange, Color.HotPink };
 
-            var agents = new List<IAgent>();
+            var _agents = new List<IAgent>();
             const int NUM_AGENTS = 10;
             agentColors = new Color[NUM_AGENTS];
             for (int i = 0; i < NUM_AGENTS; i++)
             {
-                agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
+                _agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
                 agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
             }
-            world = new World(agents, species, 500, 500, 10);
+            world = new World(_agents, species, 500, 500, 10);
 
             world.Changed += new World.ChangedEventHandler(world_Changed);
              */
@@ -132,7 +132,7 @@ namespace VisualizeWorld
                 brush.Dispose();
             }
 
-            // Draw the agents
+            // Draw the _agents
             int i = -1;
             foreach (var agent in agents)
             {
@@ -153,10 +153,10 @@ namespace VisualizeWorld
                                     (int)(6 * scaleY)));
             }
 
-            g.FillRectangle(Brushes.White, 0, 0, 150, 15);
+            g.FillRectangle(Brushes.White, 0, 30, 150, 15);
 
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
-                                            DefaultFont, Brushes.Black, 0, 0);
+                                            DefaultFont, Brushes.Black, 0, 30);
         
         }
 
@@ -228,5 +228,37 @@ namespace VisualizeWorld
             btnStep.Enabled = true;
             _ea.Stop();
         }
+
+        #region Change the plant layout strategy
+        private void clusterToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (clusterToolStripMenuItem.Checked)
+            {
+                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Clustered;
+                uniformdefaultToolStripMenuItem.Checked = false;
+                spiralToolStripMenuItem.Checked = false;
+            }
+        }
+
+        private void uniformdefaultToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (uniformdefaultToolStripMenuItem.Checked)
+            {
+                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Uniform;
+                clusterToolStripMenuItem.Checked = false;
+                spiralToolStripMenuItem.Checked = false;
+            }
+        }
+
+        private void spiralToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (spiralToolStripMenuItem.Checked)
+            {
+                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Spiral;
+                uniformdefaultToolStripMenuItem.Checked = false;
+                clusterToolStripMenuItem.Checked = false;
+            }
+        }
+        #endregion
     }
 }

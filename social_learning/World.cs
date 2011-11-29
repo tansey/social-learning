@@ -8,7 +8,7 @@ namespace social_learning
     public class World
     {
         private Random random = new Random();
-        const int SENSORS_PER_PLANT_TYPE = 8;
+        public const int SENSORS_PER_PLANT_TYPE = 8;
         private int _step;
 
         public IEnumerable<IAgent> Agents { get; set; }
@@ -24,16 +24,25 @@ namespace social_learning
         public int Height { get; set; }
         public int Width { get; set; }
         public int CurrentStep { get { return _step; } }
+        public PlantLayoutStrategies PlantLayoutStrategy { get; set; }
+        public int PlantsPerSpecies { get; set; }
 
+        // Event called when the state of the world is changed
         public delegate void ChangedEventHandler(object sender, EventArgs e);
         public event ChangedEventHandler Changed;
 
-        public World(IEnumerable<IAgent> agents, IEnumerable<PlantSpecies> species, int height, int width, int numPlantsPerSpecies)
+        // Event called when an agent eats a piece of food.
+        public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
+        public event PlantEatenHandler PlantEaten;
+
+        public World(IEnumerable<IAgent> agents, IEnumerable<PlantSpecies> species, int height, int width, int numPlantsPerSpecies,
+            PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
         {
             Agents = agents;
             PlantTypes = species;
             Height = height;
             Width = width;
+            PlantsPerSpecies = numPlantsPerSpecies;
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
@@ -61,9 +70,13 @@ namespace social_learning
                 if (agent.Y < 0)
                     agent.Y = 0;
 
-                if (agent.X == 0 || agent.Y == 0 || agent.X == Width || agent.Y == Height)
-                    agent.Orientation = (agent.Orientation - 180) % 360;
+                //if (agent.X == 0 || agent.Y == 0 || agent.X == Width || agent.Y == Height)
+                //    agent.Orientation = (agent.Orientation - 180) % 360;
+            }
 
+            // Make a separate pass over all the agents, now that they're in new locations
+            // and determine who is on top of a plant.
+            foreach (var agent in Agents)
                 foreach (var plant in Plants)
                     if (calculateDistance(agent, plant) < plant.Species.Radius && plant.AvailableForEating(agent))
                     {
@@ -71,9 +84,10 @@ namespace social_learning
                         plant.EatenBy(agent, _step);
                         agent.Fitness += plant.Species.Reward;
 
-                        // TODO: Update the population if the reward was good/bad
+                        // Update the population if the reward was good/bad
+                        onPlantEaten(agent, plant);
                     }
-            }
+
             onChanged(EventArgs.Empty);
             _step++;
         }
@@ -83,6 +97,12 @@ namespace social_learning
         {
             if (Changed != null)
                 Changed(this, e);
+        }
+
+        private void onPlantEaten(IAgent eater, Plant plant)
+        {
+            if (PlantEaten != null)
+                PlantEaten(this, eater, plant);
         }
 
         /// <summary>
@@ -98,12 +118,7 @@ namespace social_learning
                 agent.Fitness = 0;
             }
 
-            foreach (var plant in Plants)
-            {
-                plant.Reset();
-                plant.X = random.Next(Width);
-                plant.Y = random.Next(Height);
-            }
+            layoutPlants();
 
             _step = 0;
 
@@ -111,10 +126,96 @@ namespace social_learning
             onChanged(EventArgs.Empty);
         }
 
+        #region Plant Layouts
+        private void layoutPlants()
+        {
+            switch (PlantLayoutStrategy)
+            {
+                case PlantLayoutStrategies.Uniform:
+                    uniformLayout();
+                    break;
+                case PlantLayoutStrategies.Spiral:
+                    spiralLayout();
+                    break;
+                case PlantLayoutStrategies.Clustered:
+                    clusteredLayout();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void uniformLayout()
+        {
+            int curX = Width / 2, curY = Height / 2;
+            int lowerY = random.Next(30), upperY = random.Next(30);
+            foreach (var plant in Plants)
+            {
+                plant.Reset();
+                // Uniform random
+                plant.X = random.Next(Width);
+                plant.Y = random.Next(Height);
+            }
+        }
+
+        private void spiralLayout()
+        {
+            int speciesIdx = 0;
+            foreach (var species in PlantTypes)
+            {
+                double theta = random.NextDouble() * 2 * Math.PI;
+                double dtheta = (random.NextDouble() - .5) / 3;
+                int x;
+                int y;
+                double r = 0;
+
+                for (int i = 0; i < PlantsPerSpecies; i++)
+                {
+                    r += Height / (double)(2 * PlantsPerSpecies);
+                    theta += dtheta;
+                    x = (int)(Width / 2 + r * Math.Cos(theta));
+                    y = (int)(Width / 2 + r * Math.Sin(theta));
+                    var plant = Plants[speciesIdx * PlantsPerSpecies + i];
+                    plant.Reset();
+                    plant.X = x;
+                    plant.Y = y;
+                }
+                speciesIdx++;
+            }
+        }
+
+        private void clusteredLayout()
+        {
+            int speciesIdx = 0;
+            foreach (var species in PlantTypes)
+            {
+                int clusterRadius = random.Next(20) + 20;
+                int k = random.Next(5) + 5;
+                int plantIdx = 0;
+                for (int i = 0; i < k; i++)
+                {
+                    int curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
+                    int cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
+                    for (int j = 0; j < (PlantsPerSpecies / k + ((PlantsPerSpecies % k < j) ? 0 : 1)); j++)
+                    {
+                        int x = curx + random.Next(clusterRadius) - clusterRadius / 2;
+                        int y = cury + random.Next(clusterRadius) - clusterRadius / 2;
+                        var plant = Plants[speciesIdx * PlantsPerSpecies + plantIdx];
+                        plant.Reset();
+                        plant.X = x;
+                        plant.Y = y;
+                        plantIdx++;
+                    }
+                }
+                speciesIdx++;
+            }
+        }
+        #endregion
+
         #region Helper methods for calculating mathy things
         private double[] calculateSensors(IAgent agent)
         {
-            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE + 1];
+            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + SENSORS_PER_PLANT_TYPE];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
@@ -142,9 +243,34 @@ namespace social_learning
                 sensors[sIdx] += 1.0 / dist;
             }
 
-
+            // Calculate wall sensors
+            for (int i = 0; i < SENSORS_PER_PLANT_TYPE; i++)
+            {
+                var dist = canSeeWallAlongLine(agent, i);
+                sensors[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE + 1 + i] = dist;
+            }
 
             return sensors;
+        }
+
+        private double canSeeWallAlongLine(IAgent agent, int dir)
+        {
+            var x_orig = agent.X;
+            var y_orig = agent.Y;
+            var dirOfSensor = agent.Orientation - 90 + dir * 180.0 / (double)SENSORS_PER_PLANT_TYPE;
+            var endX = x_orig + Math.Cos(dirOfSensor);
+            var endY = y_orig + Math.Sin(dirOfSensor) * AgentHorizon;
+
+            if (endX > 0 && endY > 0 && endX < Width && endY < Height)
+                return 0;
+            for (int j = 1; j <= AgentHorizon; j++)
+            {
+                var new_x = x_orig + Math.Cos(dirOfSensor) * AgentHorizon;
+                var new_y = y_orig + Math.Sin(dirOfSensor) * AgentHorizon;
+                if (new_x < 0 || new_y < 0 || new_x > Width || new_y > Height)
+                    return 1 / (double)j;
+            }
+            return 0;
         }
 
         private int getSensorIndex(IAgent agent, Plant plant)
