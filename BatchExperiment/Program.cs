@@ -26,7 +26,7 @@ namespace BatchExperiment
 
         static void Main(string[] args)
         {
-            numRuns = args.Length > 0 ? int.Parse(args[0]) : 5;
+            numRuns = args.Length > 0 ? int.Parse(args[0]) : 20;
             Program[] r = new Program[numRuns * 3];
             List<double> neuralAvg = new List<double>(), neuralBest = new List<double>(),
                          socialDarwinAvg = new List<double>(), socialDarwinBest = new List<double>(),
@@ -103,11 +103,14 @@ namespace BatchExperiment
 
         void _ea_UpdateEvent(object sender, EventArgs e)
         {
+            if (finished)
+                return;
             using (TextWriter writer = new StreamWriter(_filename, true))
             {
                 double averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);
                 double topFitness = _ea.CurrentChampGenome.EvaluationInfo.Fitness;
                 int generation = (int)_ea.CurrentGeneration;
+                
                 lock (_bestFitness)
                 {
                     if (_bestFitness.Count <= generation)
