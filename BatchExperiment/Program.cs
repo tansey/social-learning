@@ -26,7 +26,7 @@ namespace BatchExperiment
 
         static void Main(string[] args)
         {
-            numRuns = args.Length > 0 ? int.Parse(args[0]) : 20;
+            numRuns = args.Length > 0 ? int.Parse(args[0]) : 5;
             Program[] r = new Program[numRuns * 3];
             List<double> neuralAvg = new List<double>(), neuralBest = new List<double>(),
                          socialDarwinAvg = new List<double>(), socialDarwinBest = new List<double>(),
@@ -85,7 +85,7 @@ namespace BatchExperiment
              XmlDocument xmlConfig = new XmlDocument();
              xmlConfig.Load(XMLFile);
              _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
-             _experiment.World.PlantLayoutStrategy = social_learning.PlantLayoutStrategies.Spiral;
+             _experiment.World.PlantLayoutStrategy = social_learning.PlantLayoutStrategies.Clustered;
 
              startEvolution();
 

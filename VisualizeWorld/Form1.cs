@@ -161,7 +161,7 @@ namespace VisualizeWorld
             
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load(@"..\..\..\experiments\social.config.xml");
+            xmlConfig.Load(@"..\..\..\experiments\social_darwin.config.xml");
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
             _experiment.PlantLayout = _plantLayout;
 

@@ -194,21 +194,23 @@ namespace social_learning
             {
                 int clusterRadius = random.Next(20) + 20;
                 int k = random.Next(5) + 5;
-                int plantIdx = 0;
-                for (int i = 0; i < k; i++)
+                int curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
+                int cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
+                for (int i = 0; i < PlantsPerSpecies; i++)
                 {
-                    int curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
-                    int cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
-                    for (int j = 0; j < (PlantsPerSpecies / k + ((PlantsPerSpecies % k < j) ? 0 : 1)); j++)
+                    if (i % k == 0)
                     {
-                        int x = curx + random.Next(clusterRadius) - clusterRadius / 2;
-                        int y = cury + random.Next(clusterRadius) - clusterRadius / 2;
-                        var plant = Plants[speciesIdx * PlantsPerSpecies + plantIdx];
-                        plant.Reset();
-                        plant.X = x;
-                        plant.Y = y;
-                        plantIdx++;
+                        curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
+                        cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
                     }
+
+                    int x = curx + random.Next(clusterRadius) - clusterRadius / 2;
+                    int y = cury + random.Next(clusterRadius) - clusterRadius / 2;
+                    var plant = Plants[speciesIdx * PlantsPerSpecies + i];
+                    plant.Reset();
+                    plant.X = x;
+                    plant.Y = y;
+
                 }
                 speciesIdx++;
             }
