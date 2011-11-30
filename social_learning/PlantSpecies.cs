@@ -14,9 +14,9 @@ namespace social_learning
         public string Name { get; set; }
         public readonly int SpeciesId;
 
-        public PlantSpecies()
+        public PlantSpecies(int id)
         {
-            SpeciesId = SpeciesIdCounter++;
+            SpeciesId = id;
         }
     }
 }

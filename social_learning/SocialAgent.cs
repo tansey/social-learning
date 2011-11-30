@@ -20,7 +20,7 @@ namespace social_learning
         /// </summary>
         public LinkedList<InputOutputPair> Memory { get; set; }
 
-        public SocialAgent(IBlackBox brain) : base(brain)
+        public SocialAgent(int id, IBlackBox brain) : base(id, brain)
         {
             MemorySize = DEFAULT_MEMORY_SIZE;
             Memory = new LinkedList<InputOutputPair>();

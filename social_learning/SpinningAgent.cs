@@ -8,6 +8,8 @@ namespace social_learning
     // A spinning agent does nothing but sit there and spin.
     public class SpinningAgent : Agent
     {
+        public SpinningAgent(int id) : base(id) { }
+
         protected override float[] getRotationAndVelocity(double[] sensors)
         {
             return new float[] { 15, -5 };

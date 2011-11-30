@@ -7,6 +7,7 @@ using social_learning;
 using SharpNeat.Phenomes;
 using SharpNeat.Phenomes.NeuralNets;
 using System.Windows.Forms;
+using System.IO;
 
 namespace VisualizeWorld
 {
@@ -17,13 +18,15 @@ namespace VisualizeWorld
         private ulong _evaluationCount;
         private World _world;
         private IAgent[] _agents;
+        public AgentTypes AgentType { get; set; }
 
         /// <summary>
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
         /// The number of parallel threads defaults to Environment.ProcessorCount.
         /// </summary>
-        public SimpleEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment)
+        public SimpleEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment, AgentTypes agent_type = AgentTypes.Spinning)
         {
+            AgentType = agent_type;
             _genomeDecoder = genomeDecoder;
             _world = environment;
             _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
@@ -87,9 +90,25 @@ namespace VisualizeWorld
 
                 // Check that the genome is valid.
                 if (phenome == null)
-                    _agents[i] = new SpinningAgent();
+                    _agents[i] = new SpinningAgent(i);
                 else
-                    _agents[i] = new SocialAgent(phenome);
+                    switch (AgentType)
+                    {
+                        case AgentTypes.Neural:
+                            _agents[i] = new NeuralAgent(i, phenome);
+                            break;
+                        case AgentTypes.Social:
+                            _agents[i] = new SocialAgent(i, phenome);
+                            break;
+                        case AgentTypes.QLearning:
+                            _agents[i] = new QLearningAgent(i, phenome, 4, 4);
+                            break;
+                        case AgentTypes.Spinning:
+                            _agents[i] = new SpinningAgent(i);
+                            break;
+                        default:
+                            break;
+                    }
             }
 
             _world.Agents = _agents;
@@ -126,8 +145,9 @@ namespace VisualizeWorld
                         continue;
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
-                    foreach (var example in memory)
-                        network.Train(example.Inputs, example.Outputs);
+                    for(int iteration = 0; iteration < 100; iteration++)
+                        foreach (var example in memory)
+                            network.Train(example.Inputs, example.Outputs);
                 }
             }
         }

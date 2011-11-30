@@ -14,8 +14,8 @@ namespace social_learning
         public double DiscountFactor { get; set; }
         public double Epsilon { get; set; }
 
-        public QLearningAgent(IBlackBox brain, int numVelocityActions, int numOrientationActions)
-            : base(brain)
+        public QLearningAgent(int id, IBlackBox brain, int numVelocityActions, int numOrientationActions)
+            : base(id, brain)
         {
             _numVelocityActions = numVelocityActions;
             _numOrientationActions = numOrientationActions;

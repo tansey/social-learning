@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace social_learning
 {
@@ -60,6 +61,7 @@ namespace social_learning
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
+                
                 agent.Step(sensors);
                 if (agent.X >= Height)
                     agent.X = Width;   
@@ -240,7 +242,7 @@ namespace social_learning
                     continue;
 
                 // Add 1/distance to the sensor
-                sensors[sIdx] += 1.0 / dist;
+                sensors[sIdx] += 1.0 / dist * 5.0;
             }
 
             // Calculate wall sensors
@@ -275,7 +277,7 @@ namespace social_learning
 
         private int getSensorIndex(IAgent agent, Plant plant)
         {
-            double pos = Math.Atan((plant.Y - agent.Y) / (plant.X - agent.X));
+            double pos = Math.Atan((plant.Y - agent.Y) / (plant.X - agent.X)) * 180.0 / Math.PI;
 
             double startSensor = (agent.Orientation - 90) % 360;
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;

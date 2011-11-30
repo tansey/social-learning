@@ -13,7 +13,7 @@ namespace social_learning
         const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
         
-        public NeuralAgent(IBlackBox brain)
+        public NeuralAgent(int id, IBlackBox brain) : base(id)
         {
             Brain = brain;
         }
@@ -27,6 +27,9 @@ namespace social_learning
 
             // [0,1] -> [-1,1]
             var velocityDelta = (float)(outputs[1] - 0.5) * 2f * MAX_SPEED_CHANGE;
+
+            if (velocityDelta > 1 || velocityDelta < -1)
+                throw new Exception("WHY? " + velocityDelta);
 
             return new float[] { orientation, velocityDelta };
         }

@@ -32,6 +32,7 @@ namespace VisualizeWorld
         string _description;
         World _world;
         ulong _maxTimeSteps;
+        AgentTypes _agentType;
 
         const int PLANT_TYPES = 5;
 
@@ -98,10 +99,11 @@ namespace VisualizeWorld
             _complexityThreshold = XmlUtils.TryGetValueAsInt(xmlConfig, "ComplexityThreshold");
             _description = XmlUtils.TryGetValueAsString(xmlConfig, "Description");
             _maxTimeSteps = (ulong)XmlUtils.TryGetValueAsInt(xmlConfig, "MaxTimeSteps");
+            _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"), true);
 
             var species = new List<PlantSpecies>();
             for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
-                species.Add(new PlantSpecies() { Name = "Species_" + i, 
+                species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
                                                  Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
                                                  Reward = 100 });
 
@@ -110,7 +112,7 @@ namespace VisualizeWorld
             const int NUM_AGENTS = 10;
             for (int i = 0; i < NUM_AGENTS; i++)
             {
-                agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
+                agents.Add(new SpinningAgent(i) { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
             }
 
             _world = new World(agents, species, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), 
@@ -209,7 +211,8 @@ namespace VisualizeWorld
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
             IGenomeListEvaluator<NeatGenome> genomeListEvaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
             {
-                MaxTimeSteps = _maxTimeSteps
+                MaxTimeSteps = _maxTimeSteps,
+                AgentType = _agentType
             };
             
             // Initialize the evolution algorithm.

@@ -11,6 +11,7 @@ using System.Threading;
 using System.Xml;
 using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
+using System.IO;
 
 namespace VisualizeWorld
 {
@@ -178,7 +179,7 @@ namespace VisualizeWorld
             
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load(@"..\..\..\experiments\simple.config.xml");
+            xmlConfig.Load(@"..\..\..\experiments\social.config.xml");
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
 
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
