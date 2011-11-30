@@ -81,6 +81,7 @@ namespace SharpNeat.Phenomes.NeuralNets
         protected readonly int _timestepsPerActivation;
 
         #region Constructor
+        public FastConnection[] ConnectionArray { get { return _connectionArray; } }
 
         /// <summary>
         /// Constructs a FastCyclicNetwork with the provided pre-built FastConnection array and 
@@ -258,7 +259,6 @@ namespace SharpNeat.Phenomes.NeuralNets
 
         public virtual void Train(double[] inputs, double[] outputs)
         {
-            // TODO: Implement momentum
             // Save the state of the network
             // TODO - If we want to have recurrent networks with incremental _backpropPreActivations
             //        Currently we assume the network is going to be reset before each activation anyway.

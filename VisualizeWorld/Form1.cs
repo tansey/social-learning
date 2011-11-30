@@ -40,25 +40,6 @@ namespace VisualizeWorld
                 plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
             }
             
-            /*
-            var species = new List<PlantSpecies>();
-            for (int i = 0; i < 5; i++)
-                species.Add(new PlantSpecies() { Name = "Species_" + i, Radius = 10, Reward = i });
-            plantColors = new Color[] { Color.Red, Color.Green, Color.Blue, Color.Orange, Color.HotPink };
-
-            var _agents = new List<IAgent>();
-            const int NUM_AGENTS = 10;
-            agentColors = new Color[NUM_AGENTS];
-            for (int i = 0; i < NUM_AGENTS; i++)
-            {
-                _agents.Add(new SpinningAgent() { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
-                agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-            }
-            world = new World(_agents, species, 500, 500, 10);
-
-            world.Changed += new World.ChangedEventHandler(world_Changed);
-             */
-
         }
 
         int gens = 0;
@@ -93,9 +74,9 @@ namespace VisualizeWorld
 
             if (gens < STARTER_GENS)
             {
-                g.FillRectangle(Brushes.White, 0, 0, 150, 15);
+                g.FillRectangle(Brushes.White, 0, 0, 200, 15);
 
-                g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
+                g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                                 DefaultFont, Brushes.Black, 0, 0);
                 return;
             }
@@ -156,7 +137,7 @@ namespace VisualizeWorld
 
             g.FillRectangle(Brushes.White, 0, 30, 150, 15);
 
-            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness),
+            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                             DefaultFont, Brushes.Black, 0, 30);
         
         }

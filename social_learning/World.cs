@@ -166,14 +166,15 @@ namespace social_learning
             foreach (var species in PlantTypes)
             {
                 double theta = random.NextDouble() * 2 * Math.PI;
-                double dtheta = (random.NextDouble() - .5) / 3;
+                double dtheta = (random.NextDouble()) / 15 + .1;
+                dtheta *= random.Next(2) == 1? -1: 1;
                 int x;
                 int y;
-                double r = 0;
+                double r = 6;
 
                 for (int i = 0; i < PlantsPerSpecies; i++)
                 {
-                    r += Height / (double)(2 * PlantsPerSpecies);
+                    r += (Height - 6) / (double)(2 * PlantsPerSpecies);
                     theta += dtheta;
                     x = (int)(Width / 2 + r * Math.Cos(theta));
                     y = (int)(Width / 2 + r * Math.Sin(theta));

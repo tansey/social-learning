@@ -17,21 +17,21 @@ namespace BatchExperiment
 
          SimpleExperiment _experiment;
          NeatEvolutionAlgorithm<NeatGenome> _ea;
-         int MaxGenerations = 100;
+         int MaxGenerations = 20;
          string _filename;
          bool finished = false;
 
 
-         static void Main(string[] args)
+        static void Main(string[] args)
         {
             int numRuns = args.Length > 0 ? int.Parse(args[0]) : 5;
             Program[] r = new Program[numRuns * 2];
             for (int i = 0; i < numRuns; i++)
             {
                 Program p = new Program();
-                p.RunExperiment(@"..\..\..\experiments\neural.config.xml", 100, @"..\..\..\experiments\neural_results" + i + ".txt");
+                p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".txt");
                 Program q = new Program();
-                q.RunExperiment(@"..\..\..\experiments\social.config.xml", 100, @"..\..\..\experiments\social_results" + i + ".txt");
+                q.RunExperiment(@"..\..\..\experiments\social.config.xml", @"..\..\..\experiments\social_results" + i + ".txt");
                 r[2 * i] = p;
                 r[2 * i + 1] = q;
             }
@@ -46,11 +46,11 @@ namespace BatchExperiment
              return true;
          }
 
-         void RunExperiment(string XMLFile, int num_generations, string filename)
-        {
-            _filename = filename;
+         void RunExperiment(string XMLFile, string filename)
+         {
+             _filename = filename;
              _experiment = new SimpleExperiment();
-            // Load config XML.
+             // Load config XML.
 
              using (TextWriter writer = new StreamWriter(_filename))
              {
@@ -58,12 +58,14 @@ namespace BatchExperiment
                  writer.WriteLine("generation,averageFitness,topFitness");
              }
 
-                 XmlDocument xmlConfig = new XmlDocument();
-                 xmlConfig.Load(XMLFile);
-                 _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
-                 startEvolution();
-          
-        }
+             XmlDocument xmlConfig = new XmlDocument();
+             xmlConfig.Load(XMLFile);
+             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
+             _experiment.World.PlantLayoutStrategy = social_learning.PlantLayoutStrategies.Spiral;
+
+             startEvolution();
+
+         }
 
         void startEvolution()
         {
@@ -79,7 +81,6 @@ namespace BatchExperiment
         {
             using (TextWriter writer = new StreamWriter(_filename, true))
             {
-
                 var averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);
                 var topFitness = _ea.CurrentChampGenome.EvaluationInfo.Fitness;
                 var generation = _ea.CurrentGeneration;

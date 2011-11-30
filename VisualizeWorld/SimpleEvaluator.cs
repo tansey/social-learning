@@ -8,16 +8,19 @@ using SharpNeat.Phenomes;
 using SharpNeat.Phenomes.NeuralNets;
 using System.Windows.Forms;
 using System.IO;
+using SharpNeat.Genomes.Neat;
+using System.Diagnostics;
 
 namespace VisualizeWorld
 {
     public class SimpleEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
-        where TGenome : class, global::SharpNeat.Core.IGenome<TGenome>
+        where TGenome : SharpNeat.Genomes.Neat.NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
         private ulong _evaluationCount;
         private World _world;
         private IAgent[] _agents;
+        private IList<TGenome> _genomeList;
         public AgentTypes AgentType { get; set; }
 
         /// <summary>
@@ -82,6 +85,7 @@ namespace VisualizeWorld
         /// </summary>
         public void Evaluate(IList<TGenome> genomeList)
         {
+            _genomeList = genomeList;
             _agents = new IAgent[genomeList.Count];
             for(int i = 0; i < _agents.Length; i++)
             {
@@ -128,6 +132,25 @@ namespace VisualizeWorld
 
             _evaluationCount += (ulong)_agents.Length;
             _world.Reset();
+
+            // Lamarkian Evolution
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                var agent = _agents[i];
+                
+                // Get the network for this agent
+                var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+
+                // Get the genome for this agent
+                var genome = (NeatGenome)genomeList[i];
+
+                // Update the genome to match the phenome weights
+                foreach (var conn in network.ConnectionArray)
+                {
+                    var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
+                    genomeConn.Weight = conn._weight;
+                }
+            }
         }
 
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
@@ -139,12 +162,17 @@ namespace VisualizeWorld
             {
                 var memory = ((SocialAgent)eater).Memory;
 
-                foreach (var agent in _agents)
+                for(int i = 0; i < _agents.Length; i++)
                 {
+                    var agent = _agents[i];
                     if (agent == eater)
                         continue;
 
+                    if (_genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
+                        continue;
+
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+                    
                     for(int iteration = 0; iteration < 100; iteration++)
                         foreach (var example in memory)
                             network.Train(example.Inputs, example.Outputs);
