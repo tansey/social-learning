@@ -24,9 +24,9 @@ namespace BatchExperiment
 
          static void Main(string[] args)
         {
-
-            Program[] r = new Program[20];
-            for (int i = 0; i < 10; i++)
+            int numRuns = args.Length > 0 ? int.Parse(args[0]) : 5;
+            Program[] r = new Program[numRuns * 2];
+            for (int i = 0; i < numRuns; i++)
             {
                 Program p = new Program();
                 p.RunExperiment(@"..\..\..\experiments\neural.config.xml", 100, @"..\..\..\experiments\neural_results" + i + ".txt");
