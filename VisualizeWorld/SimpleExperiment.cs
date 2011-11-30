@@ -33,6 +33,8 @@ namespace VisualizeWorld
         World _world;
         ulong _maxTimeSteps;
         AgentTypes _agentType;
+        PlantLayoutStrategies _plantLayout;
+        EvolutionParadigm _paradigm;
 
         const int PLANT_TYPES = 5;
 
@@ -81,6 +83,8 @@ namespace VisualizeWorld
             get { return _neatGenomeParams; }
         }
 
+        public PlantLayoutStrategies PlantLayout { get { return _plantLayout; } set { _plantLayout = value; if (_world != null) _world.PlantLayoutStrategy = value; } }
+        public EvolutionParadigm EvoParadigm { get { return _paradigm; } set { _paradigm = value; } }
         public SimpleExperiment()
         {
             
@@ -99,8 +103,9 @@ namespace VisualizeWorld
             _complexityThreshold = XmlUtils.TryGetValueAsInt(xmlConfig, "ComplexityThreshold");
             _description = XmlUtils.TryGetValueAsString(xmlConfig, "Description");
             _maxTimeSteps = (ulong)XmlUtils.TryGetValueAsInt(xmlConfig, "MaxTimeSteps");
-            _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"), true);
-
+            _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"));
+            _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
+            _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
             var species = new List<PlantSpecies>();
             for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
                 species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
@@ -119,7 +124,8 @@ namespace VisualizeWorld
                                                 XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"),
                                                 XmlUtils.GetValueAsInt(xmlConfig, "PlantsPerSpecies"))
             {
-                AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon")
+                AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
+                PlantLayoutStrategy = _plantLayout
             };
             
             _eaParams = new NeatEvolutionAlgorithmParameters();
@@ -212,7 +218,8 @@ namespace VisualizeWorld
             IGenomeListEvaluator<NeatGenome> genomeListEvaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
             {
                 MaxTimeSteps = _maxTimeSteps,
-                AgentType = _agentType
+                AgentType = _agentType,
+                EvoParadigm = _paradigm
             };
             
             // Initialize the evolution algorithm.

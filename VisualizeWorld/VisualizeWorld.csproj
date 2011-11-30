@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentTypes.cs" />
+    <Compile Include="EvolutionParadigm.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

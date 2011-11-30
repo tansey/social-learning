@@ -78,6 +78,8 @@ namespace VisualizeWorld
         /// </summary>
         public World Environment { get { return _world; } }
 
+        public EvolutionParadigm EvoParadigm { get; set; }
+
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
         /// Individuals are competed pairwise against every other individual in the population.
@@ -134,23 +136,24 @@ namespace VisualizeWorld
             _world.Reset();
 
             // Lamarkian Evolution
-            for (int i = 0; i < _agents.Length; i++)
-            {
-                var agent = _agents[i];
-                
-                // Get the network for this agent
-                var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
-
-                // Get the genome for this agent
-                var genome = (NeatGenome)genomeList[i];
-
-                // Update the genome to match the phenome weights
-                foreach (var conn in network.ConnectionArray)
+            if (EvoParadigm == EvolutionParadigm.Larmarkian)
+                for (int i = 0; i < _agents.Length; i++)
                 {
-                    var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
-                    genomeConn.Weight = conn._weight;
+                    var agent = _agents[i];
+
+                    // Get the network for this agent
+                    var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+
+                    // Get the genome for this agent
+                    var genome = (NeatGenome)genomeList[i];
+
+                    // Update the genome to match the phenome weights
+                    foreach (var conn in network.ConnectionArray)
+                    {
+                        var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
+                        genomeConn.Weight = conn._weight;
+                    }
                 }
-            }
         }
 
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
@@ -168,8 +171,8 @@ namespace VisualizeWorld
                     if (agent == eater)
                         continue;
 
-                    if (_genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
-                        continue;
+                    //if (_genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
+                    //    continue;
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
                     

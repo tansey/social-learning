@@ -23,6 +23,7 @@ namespace VisualizeWorld
         static NeatEvolutionAlgorithm<NeatGenome> _ea;
         const string CHAMPION_FILE = @"..\..\..\experiments\simple_evolution_champion.xml";
         static SimpleExperiment _experiment;
+        static PlantLayoutStrategies _plantLayout;
 
         public Form1()
         {
@@ -162,6 +163,7 @@ namespace VisualizeWorld
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load(@"..\..\..\experiments\social.config.xml");
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
+            _experiment.PlantLayout = _plantLayout;
 
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
             
@@ -216,7 +218,9 @@ namespace VisualizeWorld
         {
             if (clusterToolStripMenuItem.Checked)
             {
-                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Clustered;
+                _plantLayout = PlantLayoutStrategies.Clustered;
+                if(_experiment != null)
+                    _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Clustered;
                 uniformdefaultToolStripMenuItem.Checked = false;
                 spiralToolStripMenuItem.Checked = false;
             }
@@ -226,7 +230,9 @@ namespace VisualizeWorld
         {
             if (uniformdefaultToolStripMenuItem.Checked)
             {
-                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Uniform;
+                _plantLayout = PlantLayoutStrategies.Uniform;
+                if(_experiment != null)
+                    _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Uniform;
                 clusterToolStripMenuItem.Checked = false;
                 spiralToolStripMenuItem.Checked = false;
             }
@@ -236,7 +242,9 @@ namespace VisualizeWorld
         {
             if (spiralToolStripMenuItem.Checked)
             {
-                _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Spiral;
+                _plantLayout = PlantLayoutStrategies.Spiral;
+                if(_experiment != null)
+                    _experiment.World.PlantLayoutStrategy = PlantLayoutStrategies.Spiral;
                 uniformdefaultToolStripMenuItem.Checked = false;
                 clusterToolStripMenuItem.Checked = false;
             }

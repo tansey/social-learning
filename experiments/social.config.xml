@@ -9,6 +9,8 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
+  <PlantLayout>Spiral</PlantLayout>
+  <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution
  
