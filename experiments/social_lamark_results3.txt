@@ -1,0 +1,5 @@
+generation,averageFitness,topFitness
+0,47.5,700
+1,94.5,1000
+2,215,700
+2,215,700

@@ -8,6 +8,6 @@ namespace VisualizeWorld
     public enum EvolutionParadigm
     {
         Darwinian,
-        Larmarkian
+        Lamarkian
     }
 }

@@ -128,7 +128,7 @@ namespace VisualizeWorld
 
             for(int i = 0; i < _agents.Length; i++)
             {
-                genomeList[i].EvaluationInfo.SetFitness(_agents[i].Fitness);
+                genomeList[i].EvaluationInfo.SetFitness(Math.Max(0, _agents[i].Fitness));
                 genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
 
@@ -136,7 +136,7 @@ namespace VisualizeWorld
             _world.Reset();
 
             // Lamarkian Evolution
-            if (EvoParadigm == EvolutionParadigm.Larmarkian)
+            if (EvoParadigm == EvolutionParadigm.Lamarkian)
                 for (int i = 0; i < _agents.Length; i++)
                 {
                     var agent = _agents[i];
@@ -176,7 +176,7 @@ namespace VisualizeWorld
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
                     
-                    for(int iteration = 0; iteration < 100; iteration++)
+                    for(int iteration = 0; iteration < 20; iteration++)
                         foreach (var example in memory)
                             network.Train(example.Inputs, example.Outputs);
                 }

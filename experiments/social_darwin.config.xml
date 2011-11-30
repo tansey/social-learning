@@ -9,7 +9,7 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
-  <PlantLayout>Spiral</PlantLayout>
+  <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution
@@ -17,10 +17,10 @@
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
   <MaxTimeSteps>1000</MaxTimeSteps>
-  <PlantSpecies>1</PlantSpecies>
+  <PlantSpecies>5</PlantSpecies>
   <PlantRadius>5</PlantRadius>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
-  <PlantsPerSpecies>100</PlantsPerSpecies>
+  <PlantsPerSpecies>20</PlantsPerSpecies>
   <AgentHorizon>50</AgentHorizon>
 </Config>

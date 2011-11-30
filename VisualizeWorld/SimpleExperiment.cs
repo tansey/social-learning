@@ -110,7 +110,7 @@ namespace VisualizeWorld
             for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
                 species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
                                                  Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
-                                                 Reward = 100 });
+                                                 Reward = -100 + i*50 });
 
             Random random = new Random();
             var agents = new List<IAgent>();
