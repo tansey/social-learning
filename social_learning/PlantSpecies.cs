@@ -9,6 +9,7 @@ namespace social_learning
     {
         private static int SpeciesIdCounter = 0;
 
+        public int Count { get; set; }
         public int Reward { get; set; }
         public int Radius { get; set; }
         public string Name { get; set; }

@@ -107,10 +107,22 @@ namespace VisualizeWorld
             _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
             var species = new List<PlantSpecies>();
-            for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
-                species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
-                                                 Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
-                                                 Reward = -100 + i*50 });
+            //for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
+            //    species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
+            //                                     Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
+            //                                     Reward = -100 + i*50 });
+            var plants = xmlConfig.GetElementsByTagName("Plant");
+            for (int i = 0; i < plants.Count; i++)
+            {
+                var plant = plants[i] as XmlElement;
+                species.Add(new PlantSpecies(i)
+                {
+                    Name = XmlUtils.GetValueAsString(plant, "Name"),
+                    Radius = XmlUtils.GetValueAsInt(plant, "Radius"),
+                    Reward = XmlUtils.GetValueAsInt(plant, "Reward"),
+                    Count = XmlUtils.GetValueAsInt(plant, "Count")
+                });
+            }
 
             Random random = new Random();
             var agents = new List<IAgent>();
@@ -120,9 +132,7 @@ namespace VisualizeWorld
                 agents.Add(new SpinningAgent(i) { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
             }
 
-            _world = new World(agents, species, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), 
-                                                XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"),
-                                                XmlUtils.GetValueAsInt(xmlConfig, "PlantsPerSpecies"))
+            _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species)
             {
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
                 PlantLayoutStrategy = _plantLayout

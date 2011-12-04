@@ -26,29 +26,30 @@ namespace social_learning
         public int Width { get; set; }
         public int CurrentStep { get { return _step; } }
         public PlantLayoutStrategies PlantLayoutStrategy { get; set; }
-        public int PlantsPerSpecies { get; set; }
 
         // Event called when the state of the world is changed
         public delegate void ChangedEventHandler(object sender, EventArgs e);
         public event ChangedEventHandler Changed;
 
+        // Event called when the state of the world is advanced one step
+        public delegate void StepEventHandler(object sender, EventArgs e);
+        public event StepEventHandler Stepped;
+
         // Event called when an agent eats a piece of food.
         public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
         public event PlantEatenHandler PlantEaten;
 
-        public World(IEnumerable<IAgent> agents, IEnumerable<PlantSpecies> species, int height, int width, int numPlantsPerSpecies,
-            PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
+        public World(IEnumerable<IAgent> agents, int height, int width, IEnumerable<PlantSpecies> species, PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
         {
             Agents = agents;
             PlantTypes = species;
             Height = height;
             Width = width;
-            PlantsPerSpecies = numPlantsPerSpecies;
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
             foreach (var s in species)
-                for (int i = 0; i < numPlantsPerSpecies; i++)
+                for (int i = 0; i < s.Count; i++)
                     Plants.Add(new Plant(s) { X = random.Next() % width, Y = random.Next() % height });
         }
 
@@ -90,6 +91,7 @@ namespace social_learning
                         onPlantEaten(agent, plant);
                     }
 
+            onStepped(EventArgs.Empty);
             onChanged(EventArgs.Empty);
             _step++;
         }
@@ -99,6 +101,13 @@ namespace social_learning
         {
             if (Changed != null)
                 Changed(this, e);
+        }
+
+        // Notify any listeners that the world state has stepped forward
+        private void onStepped(EventArgs e)
+        {
+            if (Stepped != null)
+                Stepped(this, e);
         }
 
         private void onPlantEaten(IAgent eater, Plant plant)
@@ -172,13 +181,13 @@ namespace social_learning
                 int y;
                 double r = 6;
 
-                for (int i = 0; i < PlantsPerSpecies; i++)
+                for (int i = 0; i < species.Count; i++)
                 {
-                    r += (Height - 6) / (double)(2 * PlantsPerSpecies);
+                    r += (Height - 6) / (double)(2 * species.Count);
                     theta += dtheta;
                     x = (int)(Width / 2 + r * Math.Cos(theta));
                     y = (int)(Width / 2 + r * Math.Sin(theta));
-                    var plant = Plants[speciesIdx * PlantsPerSpecies + i];
+                    var plant = Plants[speciesIdx * species.Count + i];
                     plant.Reset();
                     plant.X = x;
                     plant.Y = y;
@@ -196,7 +205,7 @@ namespace social_learning
                 int k = random.Next(5) + 5;
                 int curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
                 int cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
-                for (int i = 0; i < PlantsPerSpecies; i++)
+                for (int i = 0; i < species.Count; i++)
                 {
                     if (i % k == 0)
                     {
@@ -206,7 +215,7 @@ namespace social_learning
 
                     int x = curx + random.Next(clusterRadius) - clusterRadius / 2;
                     int y = cury + random.Next(clusterRadius) - clusterRadius / 2;
-                    var plant = Plants[speciesIdx * PlantsPerSpecies + i];
+                    var plant = Plants[speciesIdx * species.Count + i];
                     plant.Reset();
                     plant.X = x;
                     plant.Y = y;

@@ -21,6 +21,9 @@ namespace VisualizeWorld
         private World _world;
         private IAgent[] _agents;
         private IList<TGenome> _genomeList;
+        private bool _stop;
+
+
         public AgentTypes AgentType { get; set; }
 
         /// <summary>
@@ -33,9 +36,10 @@ namespace VisualizeWorld
             _genomeDecoder = genomeDecoder;
             _world = environment;
             _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
+            BackpropEpochsPerExample = 1;
         }
 
-        
+        public int BackpropEpochsPerExample { get; set; }
 
         /// <summary>
         /// Gets the total number of individual genome evaluations that have been performed by this evaluator.
@@ -176,7 +180,7 @@ namespace VisualizeWorld
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
                     
-                    for(int iteration = 0; iteration < 20; iteration++)
+                    for(int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                         foreach (var example in memory)
                             network.Train(example.Inputs, example.Outputs);
                 }

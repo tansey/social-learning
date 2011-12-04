@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <PopulationSize>100</PopulationSize>
+  <SpecieCount>10</SpecieCount>
+  <Activation>
+    <Scheme>CyclicFixedIters</Scheme>
+    <Iters>4</Iters>
+  </Activation>
+  <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
+  <ComplexityThreshold>50</ComplexityThreshold>
+  <AgentType>Social</AgentType>
+  <PlantLayout>Spiral</PlantLayout>
+  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <Description>
+    Foraging Evolution
+ 
+    Fitness is the sum of the scores of the plants an individual ate.
+  </Description>
+  <MaxTimeSteps>1000</MaxTimeSteps>
+  <PlantSpecies>
+    <Plant>
+      <Name>Species_1</Name>
+      <Radius>5</Radius>
+      <Count>100</Count>
+      <Reward>100</Reward>
+    </Plant>
+  </PlantSpecies>
+  <WorldWidth>1000</WorldWidth>
+  <WorldHeight>1000</WorldHeight>
+  <AgentHorizon>50</AgentHorizon>
+</Config>

@@ -8,7 +8,7 @@ namespace social_learning
 {
     public class SocialAgent : NeuralAgent
     {
-        const int DEFAULT_MEMORY_SIZE = 5;
+        public static int DEFAULT_MEMORY_SIZE = 1;
 
         /// <summary>
         /// The maximum number of timesteps to remember.
@@ -38,6 +38,12 @@ namespace social_learning
             Memory.AddLast(new InputOutputPair(sensors, outputs));
 
             return results;
+        }
+
+        public override void Reset()
+        {
+            base.Reset();
+            Memory.Clear();
         }
     }
 }

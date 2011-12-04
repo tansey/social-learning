@@ -17,7 +17,7 @@ namespace BatchExperiment
         static int numRuns;
         SimpleExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
-        int MaxGenerations = 20;
+        int MaxGenerations = 100;
         string _filename;
         bool finished = false;
         List<double> _averageFitness;
@@ -26,7 +26,7 @@ namespace BatchExperiment
 
         static void Main(string[] args)
         {
-            numRuns = args.Length > 0 ? int.Parse(args[0]) : 5;
+            numRuns = args.Length > 0 ? int.Parse(args[0]) : 10;
             Program[] r = new Program[numRuns * 3];
             List<double> neuralAvg = new List<double>(), neuralBest = new List<double>(),
                          socialDarwinAvg = new List<double>(), socialDarwinBest = new List<double>(),
@@ -73,7 +73,7 @@ namespace BatchExperiment
          void RunExperiment(string XMLFile, string filename)
          {
              _filename = filename;
-             _experiment = new SimpleExperiment();
+            _experiment = new SimpleExperiment();
              // Load config XML.
 
              using (TextWriter writer = new StreamWriter(_filename))
