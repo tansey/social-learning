@@ -9,6 +9,8 @@ namespace social_learning
     public class SocialAgent : NeuralAgent
     {
         public static int DEFAULT_MEMORY_SIZE = 1;
+        private const double DEFAULT_LEARNING_RATE = 0.1;
+        private const double DEFAULT_MOMENTUM_RATE = 0.9;
 
         /// <summary>
         /// The maximum number of timesteps to remember.
@@ -20,10 +22,22 @@ namespace social_learning
         /// </summary>
         public LinkedList<InputOutputPair> Memory { get; set; }
 
+        /// <summary>
+        /// The learning rate for backpropping on this agent.
+        /// </summary>
+        public double LearningRate { get; set; }
+
+        /// <summary>
+        /// The momentum rate for backpropping on this agent.
+        /// </summary>
+        public double Momentum { get; set; }
+
         public SocialAgent(int id, IBlackBox brain) : base(id, brain)
         {
             MemorySize = DEFAULT_MEMORY_SIZE;
             Memory = new LinkedList<InputOutputPair>();
+            LearningRate = DEFAULT_LEARNING_RATE;
+            Momentum = DEFAULT_MOMENTUM_RATE;
         }
 
         protected override ISignalArray activateNetwork(double[] sensors)

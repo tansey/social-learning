@@ -109,6 +109,9 @@ namespace VisualizeWorld
                             break;
                         case AgentTypes.Social:
                             _agents[i] = new SocialAgent(i, phenome);
+                            var network = (FastCyclicNetwork)phenome;
+                            network.Momentum = ((SocialAgent)_agents[i]).Momentum;
+                            network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
                             break;
                         case AgentTypes.QLearning:
                             _agents[i] = new QLearningAgent(i, phenome, 4, 4);
@@ -179,10 +182,19 @@ namespace VisualizeWorld
                     //    continue;
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
-                    
+
+                    //var before = network.ConnectionArray.Select(f => f._weight);
+                    //if (i == 0)
+                    //    Console.WriteLine("Before: {0}", network.ConnectionArray.Reverse().Take(8).Concatenate(c => c._weight.ToString(), "\r\n"));
                     for(int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                         foreach (var example in memory)
                             network.Train(example.Inputs, example.Outputs);
+
+                    //if (i == 0)
+                    //    Console.WriteLine("After: {0}", network.ConnectionArray.Reverse().Take(8).Concatenate(c => c._weight.ToString(), "\r\n"));
+                    //for (int w = 0; w < network.ConnectionArray.Length; w++)
+                    //    if (before.ElementAt(w) - network.ConnectionArray[w]._weight != 0)
+                    //        Console.WriteLine("Changed: {0}", before.ElementAt(w) - network.ConnectionArray[w]._weight);
                 }
             }
         }

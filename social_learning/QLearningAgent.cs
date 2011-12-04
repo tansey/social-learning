@@ -6,6 +6,7 @@ using SharpNeat.Phenomes;
 
 namespace social_learning
 {
+    //TODO: Finish implementing this agent.
     public class QLearningAgent : NeuralAgent
     {
         private readonly int _numVelocityActions, _numOrientationActions;
@@ -35,20 +36,34 @@ namespace social_learning
         {
             double[] results;
             if (_random.Next() < Epsilon)
-                results = new double[] { values[_random.Next(0, _numOrientationActions)], 
-                                      values[_random.Next(_numOrientationActions, values.Length)] };
+                results = selectRandom(values);
             else
                 results = selectGreedy(values);
             return new SignalArray(results, 0, 2);
         }
 
+        private double[] selectRandom(ISignalArray values)
+        {
+            return new double[] { values[_random.Next(0, _numOrientationActions)], 
+                                      values[_random.Next(_numOrientationActions, values.Length)] };
+        }
+
         private double[] selectGreedy(ISignalArray values)
         {
             double[] results = new double[2];
-            for (int i = 0; i < _numOrientationActions; i++)
-            {
 
-            }
+            int maxOrientation = 0;
+            for (int i = 1; i < _numOrientationActions; i++)
+                if (values[i] > values[maxOrientation])
+                    maxOrientation = i;
+            results[0] = values[maxOrientation];
+
+            int maxVelocity = _numOrientationActions;
+            for (int i = _numOrientationActions + 1; i < values.Length; i++)
+                if (values[i] > values[maxVelocity])
+                    maxVelocity = i;
+            results[1] = values[maxVelocity];
+
             return results;
         }
     }

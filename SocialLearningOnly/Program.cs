@@ -87,7 +87,7 @@ namespace SocialLearningOnly
                                 SocialAgent.DEFAULT_MEMORY_SIZE
                                 );
 
-            if (_experiment.World.CurrentStep > 0 && _experiment.World.CurrentStep % 10000 == 0)
+            if (_experiment.World.CurrentStep > 0 && _experiment.World.CurrentStep % 3000 == 0)
             {
                 using (TextWriter writer = new StreamWriter(RESULTS_FILE, true))
                     writer.WriteLine("{0},{1},{2}", _evaluator.CurrentTimeStep, 
@@ -96,7 +96,7 @@ namespace SocialLearningOnly
                 _experiment.World.Reset();
             }
 
-            if (_evaluator.CurrentTimeStep % 100000 == 0)
+            if (_evaluator.CurrentTimeStep % 30000 == 0)
             {
                 if (stepReady)
                     SocialAgent.DEFAULT_MEMORY_SIZE++;

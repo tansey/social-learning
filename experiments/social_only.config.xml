@@ -4,12 +4,12 @@
   <SpecieCount>10</SpecieCount>
   <Activation>
     <Scheme>CyclicFixedIters</Scheme>
-    <Iters>4</Iters>
+    <Iters>3</Iters>
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
-  <PlantLayout>Spiral</PlantLayout>
+  <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution
@@ -25,7 +25,7 @@
       <Reward>100</Reward>
     </Plant>
   </PlantSpecies>
-  <WorldWidth>1000</WorldWidth>
-  <WorldHeight>1000</WorldHeight>
+  <WorldWidth>500</WorldWidth>
+  <WorldHeight>500</WorldHeight>
   <AgentHorizon>50</AgentHorizon>
 </Config>

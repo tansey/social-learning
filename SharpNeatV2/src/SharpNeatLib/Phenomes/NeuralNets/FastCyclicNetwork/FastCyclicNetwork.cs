@@ -320,6 +320,7 @@ namespace SharpNeat.Phenomes.NeuralNets
                 for (int j = 0; j < _connectionArray.Length; j++)
                 {
                     var change = BackpropLearningRate * _backpropPostActivations[i][_connectionArray[j]._srcNeuronIdx] * deltas[i][_connectionArray[j]._tgtNeuronIdx] + Momentum * _previousChange[i][j];
+                    
                     _connectionArray[j]._weight += change;
                     if(_connectionArray[j]._weight > 10)
                         _connectionArray[j]._weight = 10;
