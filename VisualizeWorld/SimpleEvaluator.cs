@@ -122,7 +122,7 @@ namespace VisualizeWorld
                             network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
                             break;
                         case AgentTypes.QLearning:
-                            _agents[i] = new QLearningAgent(i, phenome, 4, 4);
+                            _agents[i] = new QLearningAgent(i, phenome, 8, 4, _world);
                             break;
                         case AgentTypes.Spinning:
                             _agents[i] = new SpinningAgent(i);

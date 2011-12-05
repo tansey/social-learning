@@ -45,11 +45,7 @@ namespace social_learning
             // Activate the network
             Brain.Activate();
 
-            var outputs = Brain.OutputSignalArray;
-
-            double[] exampleOutputs = new double[2];
-
-            return outputs;
+            return Brain.OutputSignalArray;
         }
 
         public override void Reset()

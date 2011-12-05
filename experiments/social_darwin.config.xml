@@ -20,7 +20,6 @@
   </Description>
   <MaxTimeSteps>1000</MaxTimeSteps>
   <PlantSpecies>
-    5
     <Plant>
       <Name>Poison_1</Name>
       <Radius>5</Radius>
