@@ -35,6 +35,9 @@ namespace VisualizeWorld
         AgentTypes _agentType;
         PlantLayoutStrategies _plantLayout;
         EvolutionParadigm _paradigm;
+        MemoryParadigm _memory;
+        int _memGens;
+        SimpleEvaluator<NeatGenome> _evaluator;
 
         const int PLANT_TYPES = 5;
 
@@ -85,6 +88,9 @@ namespace VisualizeWorld
 
         public PlantLayoutStrategies PlantLayout { get { return _plantLayout; } set { _plantLayout = value; if (_world != null) _world.PlantLayoutStrategy = value; } }
         public EvolutionParadigm EvoParadigm { get { return _paradigm; } set { _paradigm = value; } }
+        public MemoryParadigm MemParadigm { get { return _memory; }  set { _memory = value; } }
+        public int MemoryGenerations { get { return _memGens; } set { _memGens = value; } }
+        public SimpleEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public SimpleExperiment()
         {
             
@@ -106,11 +112,14 @@ namespace VisualizeWorld
             _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"));
             _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
+            if (_agentType == AgentTypes.Social)
+            {
+                _memory = (MemoryParadigm)Enum.Parse(typeof(MemoryParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "MemoryParadigm"));
+                if (_memory == MemoryParadigm.IncrementalGrowth)
+                    _memGens = XmlUtils.GetValueAsInt(xmlConfig, "MemoryGrowthGenerations");
+            }
             var species = new List<PlantSpecies>();
-            //for (int i = 0; i < XmlUtils.TryGetValueAsInt(xmlConfig, "PlantSpecies"); i++)
-            //    species.Add(new PlantSpecies(i) { Name = "Species_" + i, 
-            //                                     Radius = XmlUtils.GetValueAsInt(xmlConfig, "PlantRadius"), 
-            //                                     Reward = -100 + i*50 });
+
             var plants = xmlConfig.GetElementsByTagName("Plant");
             for (int i = 0; i < plants.Count; i++)
             {
@@ -123,7 +132,7 @@ namespace VisualizeWorld
                     Count = XmlUtils.GetValueAsInt(plant, "Count")
                 });
             }
-
+           
             Random random = new Random();
             var agents = new List<IAgent>();
             const int NUM_AGENTS = 10;
@@ -225,15 +234,17 @@ namespace VisualizeWorld
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
 
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
-            IGenomeListEvaluator<NeatGenome> genomeListEvaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
+            _evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
             {
                 MaxTimeSteps = _maxTimeSteps,
                 AgentType = _agentType,
-                EvoParadigm = _paradigm
+                EvoParadigm = _paradigm,
+                MemParadigm = _memory,
+                GenerationsPerMemorySize = _memGens
             };
             
             // Initialize the evolution algorithm.
-            ea.Initialize(genomeListEvaluator, genomeFactory, genomeList);
+            ea.Initialize(_evaluator, genomeFactory, genomeList);
 
             // Finished. Return the evolution algorithm
             return ea;

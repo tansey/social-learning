@@ -9,6 +9,8 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
+  <MemoryParadigm>IncrementalGrowth</MemoryParadigm>
+  <MemoryGrowthGenerations>20</MemoryGrowthGenerations>
   <PlantLayout>Spiral</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>

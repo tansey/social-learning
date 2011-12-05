@@ -22,7 +22,7 @@ namespace VisualizeWorld
         private IAgent[] _agents;
         private IList<TGenome> _genomeList;
         private bool _stop;
-
+        private int _generations;
 
         public AgentTypes AgentType { get; set; }
 
@@ -37,6 +37,9 @@ namespace VisualizeWorld
             _world = environment;
             _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
             BackpropEpochsPerExample = 1;
+            MemParadigm = MemoryParadigm.Fixed;
+            CurrentMemorySize = 1;
+            GenerationsPerMemorySize = 20;
         }
 
         public int BackpropEpochsPerExample { get; set; }
@@ -83,6 +86,9 @@ namespace VisualizeWorld
         public World Environment { get { return _world; } }
 
         public EvolutionParadigm EvoParadigm { get; set; }
+        public MemoryParadigm MemParadigm { get; set; }
+        public int GenerationsPerMemorySize { get; set; }
+        public int CurrentMemorySize { get; set; }
 
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
@@ -108,7 +114,9 @@ namespace VisualizeWorld
                             _agents[i] = new NeuralAgent(i, phenome);
                             break;
                         case AgentTypes.Social:
-                            _agents[i] = new SocialAgent(i, phenome);
+                            _agents[i] = new SocialAgent(i, phenome){
+                                MemorySize = CurrentMemorySize
+                            };
                             var network = (FastCyclicNetwork)phenome;
                             network.Momentum = ((SocialAgent)_agents[i]).Momentum;
                             network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
@@ -140,6 +148,7 @@ namespace VisualizeWorld
             }
 
             _evaluationCount += (ulong)_agents.Length;
+            _generations++;
             _world.Reset();
 
             // Lamarkian Evolution
@@ -161,6 +170,9 @@ namespace VisualizeWorld
                         genomeConn.Weight = conn._weight;
                     }
                 }
+
+            if (MemParadigm == MemoryParadigm.IncrementalGrowth && _generations % GenerationsPerMemorySize == 0)
+                CurrentMemorySize++;
         }
 
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
@@ -178,23 +190,15 @@ namespace VisualizeWorld
                     if (agent == eater)
                         continue;
 
+                    // Only update individuals in your species
                     //if (_genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
                     //    continue;
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
 
-                    //var before = network.ConnectionArray.Select(f => f._weight);
-                    //if (i == 0)
-                    //    Console.WriteLine("Before: {0}", network.ConnectionArray.Reverse().Take(8).Concatenate(c => c._weight.ToString(), "\r\n"));
                     for(int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                         foreach (var example in memory)
                             network.Train(example.Inputs, example.Outputs);
-
-                    //if (i == 0)
-                    //    Console.WriteLine("After: {0}", network.ConnectionArray.Reverse().Take(8).Concatenate(c => c._weight.ToString(), "\r\n"));
-                    //for (int w = 0; w < network.ConnectionArray.Length; w++)
-                    //    if (before.ElementAt(w) - network.ConnectionArray[w]._weight != 0)
-                    //        Console.WriteLine("Changed: {0}", before.ElementAt(w) - network.ConnectionArray[w]._weight);
                 }
             }
         }

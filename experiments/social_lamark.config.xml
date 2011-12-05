@@ -9,6 +9,8 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
+  <MemoryParadigm>IncrementalGrowth</MemoryParadigm>
+  <MemoryGrowthGenerations>20</MemoryGrowthGenerations>
   <PlantLayout>Spiral</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
@@ -53,4 +55,5 @@
   <WorldHeight>500</WorldHeight>
   <PlantsPerSpecies>20</PlantsPerSpecies>
   <AgentHorizon>50</AgentHorizon>
+
 </Config>
