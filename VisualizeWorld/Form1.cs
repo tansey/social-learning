@@ -92,6 +92,10 @@ namespace VisualizeWorld
             // Draw the plants
             foreach (var plant in world.Plants)
             {
+                // Skip drawing a plant if it's been eaten. This is to help us debug the sensor values.
+                if (plant.EaterCount > 0)
+                    continue;
+
                 SolidBrush brush = null;
 
                 foreach(var agent in agents)

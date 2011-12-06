@@ -10,6 +10,7 @@ namespace social_learning
         public int X { get; set; }
         public int Y { get; set; }
         public PlantSpecies Species { get; set; }
+        public int EaterCount { get { return whosEatenMe.Values.Count; } }
         private int _lastEaten = 0;
         private Dictionary<IAgent, int> whosEatenMe = new Dictionary<IAgent, int>();
 
