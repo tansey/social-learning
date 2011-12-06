@@ -250,7 +250,7 @@ namespace TestWorld
              *           P
              */
             degrees = 180 - 5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 - xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);

@@ -236,7 +236,7 @@ namespace social_learning
             // For every plant
             foreach (var plant in Plants)
             {
-                Console.WriteLine("Plant: {0}", plant.Species.Name);
+                //Console.WriteLine("Plant: {0}", plant.Species.Name);
                 // if the plant isn't available for eating then we do not activate the sensors
                 if (!plant.AvailableForEating(agent))
                     continue;
@@ -244,7 +244,7 @@ namespace social_learning
                 // Calculate the distance to the object from the agent
                 var dist = calculateDistance(agent, plant);
 
-                Console.WriteLine("Dist: {0}", dist);
+                //Console.WriteLine("Dist: {0}", dist);
 
                 // If it's too far away for the agent to see
                 if (dist > AgentHorizon)
@@ -253,7 +253,7 @@ namespace social_learning
                 // Identify the appropriate sensor
                 int sIdx = getSensorIndex(agent, plant);
 
-                Console.WriteLine("Sensor: {0}", sIdx);
+                //Console.WriteLine("Sensor: {0}", sIdx);
 
                 if (sIdx == -1)
                     continue;
