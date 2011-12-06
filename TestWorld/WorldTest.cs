@@ -264,6 +264,14 @@ namespace TestWorld
             Assert.AreEqual(0.6, sensors[8], 0.03);
         }
 
+        /// <summary>
+        ///A test for the sensor calculation
+        ///</summary>
+        [TestMethod()]
+        public void ToroidalSensorTest()
+        {
+        }
+
         private static int xOffset(double degrees, double distance)
         {
             return (int)Math.Round(Math.Sin(degrees.ToRadians()) * distance);
