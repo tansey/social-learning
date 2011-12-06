@@ -16,7 +16,7 @@
  
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
-  <MaxTimeSteps>1000</MaxTimeSteps>
+  <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
   <PlantSpecies>
     5
     <Plant>

@@ -9,7 +9,7 @@ namespace social_learning
 {
     public class NeuralAgent : Agent
     {
-        const float MAX_TURNING_RADIUS = 60f;
+        const float MAX_TURNING_RADIUS = 30f;
         const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
         
@@ -22,14 +22,19 @@ namespace social_learning
         {
             var outputs = activateNetwork(sensors);
 
-            // [0,1] -> [-60,60]
+            // TEMPORARY DEBUGGING CHANGE
+            //outputs[0] = Math.Min(0.75, outputs[0]);
+            //outputs[1] = Math.Min(0.75, outputs[1]);
+
+            // [0,1] -> [-90,90]
             var orientation = (float)(outputs[0] - 0.5) * 2f * MAX_TURNING_RADIUS;
 
             // [0,1] -> [-1,1]
             var velocityDelta = (float)(outputs[1] - 0.5) * 2f * MAX_SPEED_CHANGE;
 
             if (velocityDelta > 1 || velocityDelta < -1)
-                throw new Exception("WHY? " + velocityDelta);
+                throw new Exception("Velocity outside of bounds! Must be in range [-1,1] but was " 
+                                        + velocityDelta);
 
             return new float[] { orientation, velocityDelta };
         }

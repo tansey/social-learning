@@ -35,7 +35,7 @@ namespace VisualizeWorld
         int? _complexityThreshold;
         string _description;
         World _world;
-        ulong _maxTimeSteps;
+        ulong _timeStepsPerGeneration;
         AgentTypes _agentType;
         PlantLayoutStrategies _plantLayout;
         EvolutionParadigm _paradigm;
@@ -97,6 +97,8 @@ namespace VisualizeWorld
         public MemoryParadigm MemParadigm { get { return _memory; }  set { _memory = value; } }
         public int MemoryGenerations { get { return _memGens; } set { _memGens = value; } }
         public SimpleEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
+        public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
+        
         public SimpleExperiment()
         {
             
@@ -116,7 +118,7 @@ namespace VisualizeWorld
             _complexityRegulationStr = XmlUtils.TryGetValueAsString(xmlConfig, "ComplexityRegulationStrategy");
             _complexityThreshold = XmlUtils.TryGetValueAsInt(xmlConfig, "ComplexityThreshold");
             _description = XmlUtils.TryGetValueAsString(xmlConfig, "Description");
-            _maxTimeSteps = (ulong)XmlUtils.TryGetValueAsInt(xmlConfig, "MaxTimeSteps");
+            _timeStepsPerGeneration = (ulong)XmlUtils.GetValueAsInt(xmlConfig, "TimeStepsPerGeneration");
             _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"));
             _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
@@ -244,7 +246,7 @@ namespace VisualizeWorld
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
             _evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
             {
-                MaxTimeSteps = _maxTimeSteps,
+                MaxTimeSteps = _timeStepsPerGeneration,
                 AgentType = _agentType,
                 EvoParadigm = _paradigm,
                 MemParadigm = _memory,

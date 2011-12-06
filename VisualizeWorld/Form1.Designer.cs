@@ -35,6 +35,7 @@
             this.loadPopulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAgentTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.basicNEATdefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.qLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nEATQDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +103,7 @@
             // 
             this.setAgentTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.basicNEATdefaultToolStripMenuItem,
+            this.qLearningToolStripMenuItem,
             this.socialLearningDarwinianToolStripMenuItem,
             this.socialLearningLamarkianToolStripMenuItem,
             this.nEATQDarwinianToolStripMenuItem,
@@ -115,43 +117,61 @@
             // basicNEATdefaultToolStripMenuItem
             // 
             this.basicNEATdefaultToolStripMenuItem.Checked = true;
+            this.basicNEATdefaultToolStripMenuItem.CheckOnClick = true;
             this.basicNEATdefaultToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.basicNEATdefaultToolStripMenuItem.Name = "basicNEATdefaultToolStripMenuItem";
             this.basicNEATdefaultToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.basicNEATdefaultToolStripMenuItem.Text = "Basic NEAT (default)";
+            this.basicNEATdefaultToolStripMenuItem.Click += new System.EventHandler(this.basicNEATdefaultToolStripMenuItem_Click);
+            // 
+            // qLearningToolStripMenuItem
+            // 
+            this.qLearningToolStripMenuItem.CheckOnClick = true;
+            this.qLearningToolStripMenuItem.Name = "qLearningToolStripMenuItem";
+            this.qLearningToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.qLearningToolStripMenuItem.Text = "Q-Learning (no evolution)";
+            this.qLearningToolStripMenuItem.Click += new System.EventHandler(this.qLearningToolStripMenuItem_Click);
             // 
             // socialLearningDarwinianToolStripMenuItem
             // 
+            this.socialLearningDarwinianToolStripMenuItem.CheckOnClick = true;
             this.socialLearningDarwinianToolStripMenuItem.Name = "socialLearningDarwinianToolStripMenuItem";
             this.socialLearningDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.socialLearningDarwinianToolStripMenuItem.Text = "Social Learning (Darwinian)";
+            this.socialLearningDarwinianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningDarwinianToolStripMenuItem_Click);
             // 
             // socialLearningLamarkianToolStripMenuItem
             // 
+            this.socialLearningLamarkianToolStripMenuItem.CheckOnClick = true;
             this.socialLearningLamarkianToolStripMenuItem.Name = "socialLearningLamarkianToolStripMenuItem";
             this.socialLearningLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.socialLearningLamarkianToolStripMenuItem.Text = "Social Learning (Lamarkian)";
+            this.socialLearningLamarkianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningLamarkianToolStripMenuItem_Click);
             // 
             // nEATQDarwinianToolStripMenuItem
             // 
+            this.nEATQDarwinianToolStripMenuItem.CheckOnClick = true;
             this.nEATQDarwinianToolStripMenuItem.Name = "nEATQDarwinianToolStripMenuItem";
             this.nEATQDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.nEATQDarwinianToolStripMenuItem.Text = "NEAT+Q (Darwinian)";
             // 
             // nEATQLamarkianToolStripMenuItem
             // 
+            this.nEATQLamarkianToolStripMenuItem.CheckOnClick = true;
             this.nEATQLamarkianToolStripMenuItem.Name = "nEATQLamarkianToolStripMenuItem";
             this.nEATQLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.nEATQLamarkianToolStripMenuItem.Text = "NEAT+Q (Lamarkian)";
             // 
             // socialNEATQDarwinianToolStripMenuItem
             // 
+            this.socialNEATQDarwinianToolStripMenuItem.CheckOnClick = true;
             this.socialNEATQDarwinianToolStripMenuItem.Name = "socialNEATQDarwinianToolStripMenuItem";
             this.socialNEATQDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.socialNEATQDarwinianToolStripMenuItem.Text = "Social NEAT+Q (Darwinian)";
             // 
             // socialNEATQLamarkianToolStripMenuItem
             // 
+            this.socialNEATQLamarkianToolStripMenuItem.CheckOnClick = true;
             this.socialNEATQLamarkianToolStripMenuItem.Name = "socialNEATQLamarkianToolStripMenuItem";
             this.socialNEATQLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.socialNEATQLamarkianToolStripMenuItem.Text = "Social NEAT+Q (Lamarkian)";
@@ -231,6 +251,7 @@
         private System.Windows.Forms.ToolStripMenuItem uniformdefaultToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem spiralToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clusterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem qLearningToolStripMenuItem;
     }
 }
 

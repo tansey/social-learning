@@ -31,7 +31,7 @@ namespace social_learning
             Orientation %= 360;
 
             Velocity += output[1];
-            Velocity = Math.Min(5, Math.Max(0, Velocity));
+            Velocity = Math.Min(MaxVelocity, Math.Max(0, Velocity));
 
             X += Velocity * (float)(Math.Cos(Orientation * Math.PI / 180.0));
             Y += Velocity * (float)(Math.Sin(Orientation * Math.PI / 180.0));

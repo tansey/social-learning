@@ -12,6 +12,8 @@ using System.Xml;
 using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System.IO;
+using SharpNeat.Core;
+using SharpNeat.Phenomes;
 
 namespace VisualizeWorld
 {
@@ -24,6 +26,13 @@ namespace VisualizeWorld
         const string CHAMPION_FILE = @"..\..\..\experiments\simple_evolution_champion.xml";
         static SimpleExperiment _experiment;
         static PlantLayoutStrategies _plantLayout;
+        const string NEURAL_CONFIG_FILE = @"..\..\..\experiments\neural.config.xml";
+        const string QLEARNING_CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
+        const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
+        const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
+        const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
+        string _configFile = NEURAL_CONFIG_FILE;
+        Thread qLearningThread;
 
         public Form1()
         {
@@ -44,21 +53,16 @@ namespace VisualizeWorld
         }
 
         int gens = 0;
-        const int STARTER_GENS = 0;
 
         // If the world has changed either because of a new generation or because the world has stepped forward,
         // redraw the world and any other stats we are displaying.
         void world_Changed(object sender, EventArgs e)
         {
             if (this.InvokeRequired == false)
-            {
-                //if (gens > STARTER_GENS)
-                    this.Invalidate();
-            }
+                this.Invalidate();
             else
             {
-                if (gens > STARTER_GENS)
-                    Thread.Sleep(10);
+                Thread.Sleep(10);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -72,15 +76,6 @@ namespace VisualizeWorld
 
             Graphics g = e.Graphics;
             World world = _experiment.World;
-
-            if (gens < STARTER_GENS)
-            {
-                g.FillRectangle(Brushes.White, 0, 0, 200, 15);
-
-                g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
-                                                DefaultFont, Brushes.Black, 0, 0);
-                return;
-            }
 
             float scaleX = e.ClipRectangle.Width / (float)world.Width;
             float scaleY = e.ClipRectangle.Height / (float)world.Height;
@@ -161,7 +156,7 @@ namespace VisualizeWorld
             
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
-            xmlConfig.Load(@"..\..\..\experiments\social_darwin.config.xml");
+            xmlConfig.Load(_configFile);
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
             _experiment.PlantLayout = _plantLayout;
 
@@ -169,10 +164,44 @@ namespace VisualizeWorld
             
             btnEvolve.Text = "Stop!";
             btnStep.Enabled = false;
+
             // Start the evolution
-            //evoThread = new Thread(new ThreadStart(startEvolution));
-            //evoThread.Start();
-            startEvolution();
+            if (_configFile == QLEARNING_CONFIG_FILE)
+            {
+                qLearningThread = new Thread(new ThreadStart(startQLearning));
+                qLearningThread.Start();
+            }
+            else
+                startEvolution();
+        }
+
+        private void startQLearning()
+        {
+            // Read in the agent genome from file.
+            var agentGenome = _experiment.LoadPopulation(XmlReader.Create(QLEARNING_FEED_FORWARD_NETWORK_FILE));
+
+            // Create genome decoder.
+            IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = _experiment.CreateGenomeDecoder();
+
+            // Create the evaluator that will handle the simulation
+            _experiment.Evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
+            {
+                MaxTimeSteps = 50000000UL,
+                BackpropEpochsPerExample = 1
+            };
+
+            // Add the world reset
+            _experiment.World.Stepped += new World.StepEventHandler(World_Stepped);
+
+            // Start the simulation
+            _experiment.Evaluator.Evaluate(agentGenome);
+        }
+
+        
+        void World_Stepped(object sender, EventArgs e)
+        {
+            if (_experiment.World.CurrentStep > 0 && _experiment.World.CurrentStep % (int)_experiment.TimeStepsPerGeneration == 0)
+                _experiment.World.Reset();
         }
 
         private void startEvolution()
@@ -208,9 +237,13 @@ namespace VisualizeWorld
 
         private void stopEvolution()
         {
+            if (_configFile == QLEARNING_CONFIG_FILE)
+                qLearningThread.Abort();
+            else if (_ea != null)
+                _ea.Stop();
+
             btnEvolve.Text = "Evolve!";
             btnStep.Enabled = true;
-            _ea.Stop();
         }
 
         #region Change the plant layout strategy
@@ -248,6 +281,51 @@ namespace VisualizeWorld
                 uniformdefaultToolStripMenuItem.Checked = false;
                 clusterToolStripMenuItem.Checked = false;
             }
+        }
+        #endregion
+
+        #region Change the experiment setup
+        private void qLearningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = QLEARNING_CONFIG_FILE;
+            qLearningToolStripMenuItem.Checked = true;
+        }
+
+        private void basicNEATdefaultToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = NEURAL_CONFIG_FILE;
+            basicNEATdefaultToolStripMenuItem.Checked = true;
+        }
+
+        private void socialLearningDarwinianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = SOCIAL_DARWIN_CONFIG_FILE;
+            socialLearningDarwinianToolStripMenuItem.Checked = true;
+        }
+
+        private void socialLearningLamarkianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = SOCIAL_LAMARK_CONFIG_FILE;
+            socialLearningLamarkianToolStripMenuItem.Checked = true;
+        }
+
+        private void uncheckAllExperimentMenusAndStopEvolution()
+        {
+            if (_ea != null)
+                stopEvolution();
+
+            basicNEATdefaultToolStripMenuItem.Checked = false;
+            qLearningToolStripMenuItem.Checked = false;
+            socialLearningDarwinianToolStripMenuItem.Checked = false;
+            socialLearningLamarkianToolStripMenuItem.Checked = false;
+            nEATQDarwinianToolStripMenuItem.Checked = false;
+            nEATQLamarkianToolStripMenuItem.Checked = false;
+            socialNEATQDarwinianToolStripMenuItem.Checked = false;
+            socialNEATQLamarkianToolStripMenuItem.Checked = false;
         }
         #endregion
     }
