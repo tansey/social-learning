@@ -7,8 +7,6 @@ namespace social_learning
 {
     public class PlantSpecies
     {
-        private static int SpeciesIdCounter = 0;
-
         public int Count { get; set; }
         public int Reward { get; set; }
         public int Radius { get; set; }

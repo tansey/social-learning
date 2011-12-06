@@ -11,7 +11,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialLearningOnly", "Socia
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QLearningExperiment", "QLearningExperiment\QLearningExperiment.csproj", "{521BCA0C-F237-4288-8616-47DE1C56D9EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWorld", "TestWorld\TestWorld.csproj", "{1BD82202-0603-4A0E-92D1-0C373EB4367F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEF6FCAF-9226-4099-9D47-AB926DD84E6B}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		social_learning.vsmdi = social_learning.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = social_learning.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -71,6 +83,16 @@ Global
 		{521BCA0C-F237-4288-8616-47DE1C56D9EA}.Release|Mixed Platforms.Build.0 = Release|x86
 		{521BCA0C-F237-4288-8616-47DE1C56D9EA}.Release|x86.ActiveCfg = Release|x86
 		{521BCA0C-F237-4288-8616-47DE1C56D9EA}.Release|x86.Build.0 = Release|x86
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

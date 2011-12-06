@@ -62,16 +62,16 @@ namespace social_learning
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
-                
+
                 agent.Step(sensors);
-                if (agent.X >= Height)
-                    agent.X = Width;   
+                if (agent.X >= Width)
+                    agent.X -= Width;
                 if (agent.Y > Height)
-                    agent.Y = Height;
+                    agent.Y -= Height;
                 if (agent.X < 0)
-                    agent.X = 0;
+                    agent.X += Width;
                 if (agent.Y < 0)
-                    agent.Y = 0;
+                    agent.Y += Height;
 
                 //if (agent.X == 0 || agent.Y == 0 || agent.X == Width || agent.Y == Height)
                 //    agent.Orientation = (agent.Orientation - 180) % 360;
@@ -176,7 +176,7 @@ namespace social_learning
             {
                 double theta = random.NextDouble() * 2 * Math.PI;
                 double dtheta = (random.NextDouble()) / 15 + .1;
-                dtheta *= random.Next(2) == 1? -1: 1;
+                dtheta *= random.Next(2) == 1 ? -1 : 1;
                 int x;
                 int y;
                 double r = 6;
@@ -227,7 +227,7 @@ namespace social_learning
         #endregion
 
         #region Helper methods for calculating mathy things
-        private double[] calculateSensors(IAgent agent)
+        public double[] calculateSensors(IAgent agent)
         {
             double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + SENSORS_PER_PLANT_TYPE];
 
@@ -289,28 +289,82 @@ namespace social_learning
 
         private int getSensorIndex(IAgent agent, Plant plant)
         {
-            double pos = Math.Atan((plant.Y - agent.Y) / (plant.X - agent.X)) * 180.0 / Math.PI + 270 + 360;
-            double startSensor = agent.Orientation ;
+            double[] newCoords = getClosestCoordinates(agent, plant);
+            double agentX = newCoords[0];
+            double agentY = newCoords[1];
+            double plantX = newCoords[2];
+            double plantY = newCoords[3];
+            double pos = Math.Atan((plantY - agentY) / (plantX - agentX)) * 180.0 / Math.PI + 360;
+            if (plantX < agentX)
+                pos += 180;
             pos %= 360;
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
-
-            for (int i = 0; i < SENSORS_PER_PLANT_TYPE; i++)
-                if ((startSensor + i * sensorWidth) % 360 < pos && (startSensor + (i + 1) * sensorWidth) % 360 >= pos)
-                {
-                    Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
-                    plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, i
-                    );
-                    return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + i + 1;
-                }
+            double dtheta = pos - agent.Orientation;
+            if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
+                dtheta = pos - (agent.Orientation + 360);
+            int where = (int)(dtheta / sensorWidth);
+            where += 4;
+            if (0 <= where && where < SENSORS_PER_PLANT_TYPE)
+            {
+                Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
+                    plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, where);
+                return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + where + 1;
+            }
             Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
-            plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, -1
-            );
+            plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, -1);
             return -1;
         }
 
-        private static double calculateDistance(IAgent agent, Plant plant)
+        private double calculateDistance(IAgent agent, Plant plant)
         {
-            return Math.Sqrt((agent.X - plant.X) * (agent.X - plant.X) + (agent.Y - plant.Y) * (agent.Y - plant.Y));
+            double[] coords = getClosestCoordinates(agent, plant);
+            return calculateDistance(coords);
+        }
+
+        private double calculateDistance(double[] coords)
+        {
+            return Math.Sqrt((coords[0] - coords[2]) * (coords[0] - coords[2]) + (coords[1] - coords[3]) * (coords[1] - coords[3]));
+        }
+
+        private double[] getClosestCoordinates(IAgent agent, Plant plant)
+        {
+            double[] coords;
+            int newPlantX = plant.X + Width;
+            int newPlantY = plant.Y + Height;
+            var newAgentX = agent.X + Width;
+            var newAgentY = agent.Y + Height;
+            double[] regularArgs = { agent.X, agent.Y, plant.X, plant.Y };
+            double[] belowArgs = { agent.X, agent.Y, plant.X, newPlantY };
+            double[] rightArgs = { agent.X, agent.Y, newPlantX, plant.Y };
+            double[] leftArgs = { newAgentX, newAgentY, plant.X, plant.Y };
+            double[] aboveArgs = { agent.X, newAgentY, plant.X, plant.Y };
+            var regular = calculateDistance(regularArgs);
+            var min = regular;
+            coords = regularArgs;
+            var below = calculateDistance(belowArgs);
+            if (below < min)
+            {
+                min = below;
+                coords = belowArgs;
+            }
+            var right = calculateDistance(rightArgs);
+            if (right < min)
+            {
+                min = right;
+                coords = rightArgs;
+            }
+            var above = calculateDistance(aboveArgs);
+            if (above < min)
+            {
+                min = above;
+                coords = aboveArgs;
+            }
+            var left = calculateDistance(leftArgs);
+            if (left < min)
+            {
+                coords = leftArgs;
+            }
+            return coords;
         }
         #endregion
     }

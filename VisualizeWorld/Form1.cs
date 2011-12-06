@@ -80,12 +80,12 @@ namespace VisualizeWorld
         {
             if (_experiment == null || _experiment.World == null)
                 return;
-
+            
             Graphics g = e.Graphics;
             World world = _experiment.World;
 
-            float scaleX = e.ClipRectangle.Width / (float)world.Width;
-            float scaleY = e.ClipRectangle.Height / (float)world.Height;
+            float scaleX = this.ClientRectangle.Width / (float)world.Width;
+            float scaleY = this.ClientRectangle.Height / (float)world.Height;
 
             var agents = world.Agents.Take(15);
 
@@ -155,7 +155,7 @@ namespace VisualizeWorld
                 for (int x = 0; x < agent._prevState.Length; x++)
                     g.DrawString(string.Format("[{0}] = {1:N4}", x, agent._prevState[x]), DefaultFont,
                         Brushes.Black, 0, 50 + x * 15);
-
+                g.DrawString(string.Format("Orientation: {0}", agent.Orientation), DefaultFont, Brushes.Black, 0, 50 + 15 * agent._prevState.Length);
             }
         }
 

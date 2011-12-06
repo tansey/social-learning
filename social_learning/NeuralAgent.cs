@@ -9,7 +9,7 @@ namespace social_learning
 {
     public class NeuralAgent : Agent
     {
-        const float MAX_TURNING_RADIUS = 30f;
+        const float MAX_TURNING_RADIUS = 90f;
         const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
         
@@ -21,10 +21,6 @@ namespace social_learning
         protected override float[] getRotationAndVelocity(double[] sensors)
         {
             var outputs = activateNetwork(sensors);
-
-            // TEMPORARY DEBUGGING CHANGE
-            //outputs[0] = Math.Min(0.75, outputs[0]);
-            //outputs[1] = Math.Min(0.75, outputs[1]);
 
             // [0,1] -> [-90,90]
             var orientation = (float)(outputs[0] - 0.5) * 2f * MAX_TURNING_RADIUS;

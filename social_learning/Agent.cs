@@ -28,7 +28,6 @@ namespace social_learning
             var output = getRotationAndVelocity(sensors);
 
             Orientation += output[0];
-            Orientation += 360;
             Orientation %= 360;
 
             Velocity += output[1];
