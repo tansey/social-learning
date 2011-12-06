@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using SharpNeat.Genomes.Neat;
 using System.Diagnostics;
+using System.Threading;
 
 namespace VisualizeWorld
 {
@@ -139,6 +140,8 @@ namespace VisualizeWorld
             {
                 // Move the world forward one step
                 _world.Step();
+
+                Thread.Sleep(500);
             }
 
             for(int i = 0; i < _agents.Length; i++)

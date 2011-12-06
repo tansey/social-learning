@@ -49,7 +49,14 @@ namespace VisualizeWorld
                 agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                 plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
             }
-            
+
+            this.Disposed += new EventHandler(Form1_Disposed);
+        }
+
+        void Form1_Disposed(object sender, EventArgs e)
+        {
+            if (qLearningThread != null)
+                qLearningThread.Abort();
         }
 
         int gens = 0;
@@ -131,11 +138,21 @@ namespace VisualizeWorld
                                     (int)(6 * scaleY)));
             }
 
+            // Draw the fitness scores
             g.FillRectangle(Brushes.White, 0, 30, 150, 15);
-
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                             DefaultFont, Brushes.Black, 0, 30);
-        
+
+            // Draw the network inputs and outputs for the Q-Learning agent
+            if (_experiment.World.Agents.First() is QLearningAgent)
+            {
+                g.FillRectangle(Brushes.White, 0, 50, 100, 300);
+                var agent = (QLearningAgent)_experiment.World.Agents.First();
+                for (int x = 0; x < agent._prevState.Length; x++)
+                    g.DrawString(string.Format("[{0}] = {1:N4}", x, agent._prevState[x]), DefaultFont,
+                        Brushes.Black, 0, 50 + x * 15);
+
+            }
         }
 
         private void stepButton_Click(object sender, EventArgs e)

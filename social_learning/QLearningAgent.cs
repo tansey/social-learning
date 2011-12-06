@@ -22,9 +22,9 @@ namespace social_learning
         readonly Random _random;
         readonly double[] _actions;
 
-        int[] _prevActions;
-        double[] _prevState;
-        double[] _prevValues;
+        public int[] _prevActions;
+        public double[] _prevState;
+        public double[] _prevValues;
         double reward;
 
         /// <summary>
