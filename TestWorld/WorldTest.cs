@@ -63,7 +63,7 @@ namespace TestWorld
             int width = 500;
             List<PlantSpecies> species = new List<PlantSpecies>() { new PlantSpecies(0) { Radius = 5, Reward = 100, Count = 1 } };
 
-            _agent = new ActionListAgent(0, new List<float[]>());
+            _agent = new ActionListAgent(0, new List<float[]>()) { X = 250, Y = 250 };
             List<IAgent> agents = new List<IAgent>() { _agent };
 
             _world = new World(agents, height, width, species, PlantLayoutStrategies.Uniform);
@@ -94,12 +94,14 @@ namespace TestWorld
              *                 
              */
             double degrees = 5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
+            Assert.IsTrue(_agent.X >= 250);
+            Assert.IsTrue(_agent.Y >= 230);
             double[] sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
             // on the far left
-            Assert.AreEqual(0.4, sensors[1], 0.03);
+            Assert.AreEqual(0.6, sensors[1], 0.03);
             Assert.AreEqual(0, sensors[2]);
             Assert.AreEqual(0, sensors[3]);
             Assert.AreEqual(0, sensors[4]);
@@ -116,12 +118,12 @@ namespace TestWorld
              *                 
              */
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
             Assert.AreEqual(0, sensors[1]);
-            Assert.AreEqual(0.4, sensors[2], 0.03);
+            Assert.AreEqual(0.6, sensors[2], 0.03);
             Assert.AreEqual(0, sensors[3]);
             Assert.AreEqual(0, sensors[4]);
             Assert.AreEqual(0, sensors[5]);
@@ -137,13 +139,13 @@ namespace TestWorld
              *                 
              */
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
             Assert.AreEqual(0, sensors[1]);
             Assert.AreEqual(0, sensors[2]);
-            Assert.AreEqual(0.4, sensors[3], 0.03);
+            Assert.AreEqual(0.6, sensors[3], 0.03);
             Assert.AreEqual(0, sensors[4]);
             Assert.AreEqual(0, sensors[5]);
             Assert.AreEqual(0, sensors[6]);
@@ -158,14 +160,14 @@ namespace TestWorld
              *                 
              */
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
             Assert.AreEqual(0, sensors[1]);
             Assert.AreEqual(0, sensors[2]);
             Assert.AreEqual(0, sensors[3]);
-            Assert.AreEqual(0, sensors[4], 0.03);
+            Assert.AreEqual(0.6, sensors[4], 0.03);
             Assert.AreEqual(0, sensors[5]);
             Assert.AreEqual(0, sensors[6]);
             Assert.AreEqual(0, sensors[7]);
@@ -179,7 +181,7 @@ namespace TestWorld
              *                   P
              */
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
@@ -187,7 +189,7 @@ namespace TestWorld
             Assert.AreEqual(0, sensors[2]);
             Assert.AreEqual(0, sensors[3]);
             Assert.AreEqual(0, sensors[4]);
-            Assert.AreEqual(0.4, sensors[5], 0.03);
+            Assert.AreEqual(0.6, sensors[5], 0.03);
             Assert.AreEqual(0, sensors[6]);
             Assert.AreEqual(0, sensors[7]);
             Assert.AreEqual(0, sensors[8]);
@@ -202,7 +204,7 @@ namespace TestWorld
              *                  P
              */                
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
@@ -211,7 +213,7 @@ namespace TestWorld
             Assert.AreEqual(0, sensors[3]);
             Assert.AreEqual(0, sensors[4]);
             Assert.AreEqual(0, sensors[5]);
-            Assert.AreEqual(0.4, sensors[6], 0.03);
+            Assert.AreEqual(0.6, sensors[6], 0.03);
             Assert.AreEqual(0, sensors[7]);
             Assert.AreEqual(0, sensors[8]);
 
@@ -225,7 +227,7 @@ namespace TestWorld
              *               P  
              */
             degrees += 22.5;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
@@ -235,7 +237,7 @@ namespace TestWorld
             Assert.AreEqual(0, sensors[4]);
             Assert.AreEqual(0, sensors[5]);
             Assert.AreEqual(0, sensors[6]);
-            Assert.AreEqual(0.4, sensors[7], 0.03);
+            Assert.AreEqual(0.6, sensors[7], 0.03);
             Assert.AreEqual(0, sensors[8]);
 
             /*
@@ -247,8 +249,8 @@ namespace TestWorld
              * 
              *           P
              */
-            degrees = 175;
-            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 + xOffset(degrees, 20), Y = 250 + yOffset(degrees, 20) };
+            degrees = 180 - 5;
+            _world.Plants[0] = new Plant(_world.PlantTypes.First()) { X = 250 - xOffset(degrees, 20), Y = 250 - yOffset(degrees, 20) };
             sensors = _world.calculateSensors(_agent);
             // not moving
             Assert.AreEqual(0, sensors[0]);
@@ -259,7 +261,7 @@ namespace TestWorld
             Assert.AreEqual(0, sensors[5]);
             Assert.AreEqual(0, sensors[6]);
             Assert.AreEqual(0, sensors[7]);
-            Assert.AreEqual(0.4, sensors[8], 0.03);
+            Assert.AreEqual(0.6, sensors[8], 0.03);
         }
 
         private static int xOffset(double degrees, double distance)

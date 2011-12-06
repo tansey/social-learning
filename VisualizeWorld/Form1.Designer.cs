@@ -53,9 +53,9 @@
             // 
             this.btnStep.BackColor = System.Drawing.Color.Red;
             this.btnStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStep.Location = new System.Drawing.Point(663, 12);
+            this.btnStep.Location = new System.Drawing.Point(354, 27);
             this.btnStep.Name = "btnStep";
-            this.btnStep.Size = new System.Drawing.Size(95, 48);
+            this.btnStep.Size = new System.Drawing.Size(0, 0);
             this.btnStep.TabIndex = 0;
             this.btnStep.Text = "Step";
             this.btnStep.UseVisualStyleBackColor = false;
@@ -65,7 +65,7 @@
             // 
             this.btnEvolve.BackColor = System.Drawing.Color.SkyBlue;
             this.btnEvolve.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEvolve.Location = new System.Drawing.Point(663, 66);
+            this.btnEvolve.Location = new System.Drawing.Point(377, 27);
             this.btnEvolve.Name = "btnEvolve";
             this.btnEvolve.Size = new System.Drawing.Size(95, 48);
             this.btnEvolve.TabIndex = 1;
@@ -79,7 +79,7 @@
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(484, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -217,7 +217,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(784, 462);
+            this.ClientSize = new System.Drawing.Size(484, 462);
             this.Controls.Add(this.btnEvolve);
             this.Controls.Add(this.btnStep);
             this.Controls.Add(this.menuStrip1);

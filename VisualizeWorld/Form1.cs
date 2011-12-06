@@ -198,6 +198,8 @@ namespace VisualizeWorld
 
         private void startQLearning()
         {
+            //SimpleExperiment.CreateNetwork(QLEARNING_FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
+
             // Read in the agent genome from file.
             var agentGenome = _experiment.LoadPopulation(XmlReader.Create(QLEARNING_FEED_FORWARD_NETWORK_FILE));
 

@@ -141,7 +141,7 @@ namespace VisualizeWorld
                 // Move the world forward one step
                 _world.Step();
 
-                Thread.Sleep(300);
+                Thread.Sleep(500);
             }
 
             for(int i = 0; i < _agents.Length; i++)

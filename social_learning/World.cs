@@ -10,6 +10,7 @@ namespace social_learning
     {
         private Random random = new Random();
         public const int SENSORS_PER_PLANT_TYPE = 8;
+        const int DEFAULT_AGENT_HORIZON = 50;
         private int _step;
 
         public IEnumerable<IAgent> Agents { get; set; }
@@ -45,6 +46,7 @@ namespace social_learning
             PlantTypes = species;
             Height = height;
             Width = width;
+            AgentHorizon = DEFAULT_AGENT_HORIZON;
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
@@ -73,8 +75,6 @@ namespace social_learning
                 if (agent.Y < 0)
                     agent.Y += Height;
 
-                //if (agent.X == 0 || agent.Y == 0 || agent.X == Width || agent.Y == Height)
-                //    agent.Orientation = (agent.Orientation - 180) % 360;
             }
 
             // Make a separate pass over all the agents, now that they're in new locations
@@ -229,13 +229,14 @@ namespace social_learning
         #region Helper methods for calculating mathy things
         public double[] calculateSensors(IAgent agent)
         {
-            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + SENSORS_PER_PLANT_TYPE];
+            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
             // For every plant
             foreach (var plant in Plants)
             {
+                Console.WriteLine("Plant: {0}", plant.Species.Name);
                 // if the plant isn't available for eating then we do not activate the sensors
                 if (!plant.AvailableForEating(agent))
                     continue;
@@ -243,48 +244,25 @@ namespace social_learning
                 // Calculate the distance to the object from the agent
                 var dist = calculateDistance(agent, plant);
 
+                Console.WriteLine("Dist: {0}", dist);
+
                 // If it's too far away for the agent to see
                 if (dist > AgentHorizon)
                     continue;
 
                 // Identify the appropriate sensor
-                var sIdx = getSensorIndex(agent, plant);
+                int sIdx = getSensorIndex(agent, plant);
+
+                Console.WriteLine("Sensor: {0}", sIdx);
 
                 if (sIdx == -1)
                     continue;
 
                 // Add 1/distance to the sensor
-                sensors[sIdx] += 1.0 / dist * 5.0;
-            }
-
-            // Calculate wall sensors
-            for (int i = 0; i < SENSORS_PER_PLANT_TYPE; i++)
-            {
-                var dist = canSeeWallAlongLine(agent, i);
-                sensors[PlantTypes.Count() * SENSORS_PER_PLANT_TYPE + 1 + i] = dist;
+                sensors[sIdx] += 1.0 - dist / AgentHorizon;
             }
 
             return sensors;
-        }
-
-        private double canSeeWallAlongLine(IAgent agent, int dir)
-        {
-            var x_orig = agent.X;
-            var y_orig = agent.Y;
-            var dirOfSensor = agent.Orientation - 90 + dir * 180.0 / (double)SENSORS_PER_PLANT_TYPE;
-            var endX = x_orig + Math.Cos(dirOfSensor);
-            var endY = y_orig + Math.Sin(dirOfSensor) * AgentHorizon;
-
-            if (endX > 0 && endY > 0 && endX < Width && endY < Height)
-                return 0;
-            for (int j = 1; j <= AgentHorizon; j++)
-            {
-                var new_x = x_orig + Math.Cos(dirOfSensor) * AgentHorizon;
-                var new_y = y_orig + Math.Sin(dirOfSensor) * AgentHorizon;
-                if (new_x < 0 || new_y < 0 || new_x > Width || new_y > Height)
-                    return 1 / (double)j;
-            }
-            return 0;
         }
 
         private int getSensorIndex(IAgent agent, Plant plant)
@@ -302,16 +280,18 @@ namespace social_learning
             double dtheta = pos - agent.Orientation;
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
-            int where = (int)(dtheta / sensorWidth);
-            where += 4;
-            if (0 <= where && where < SENSORS_PER_PLANT_TYPE)
-            {
-                Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
-                    plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, where);
-                return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + where + 1;
-            }
-            Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
-            plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, -1);
+
+            Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
+                    plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
+            
+            // If the plant's behind us
+            if(dtheta < -90 || dtheta > 90)
+                return -1;
+
+            int idx = 1;
+            for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
+                if (degrees > dtheta)
+                    return idx;
             return -1;
         }
 
