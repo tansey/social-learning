@@ -289,15 +289,22 @@ namespace social_learning
 
         private int getSensorIndex(IAgent agent, Plant plant)
         {
-            double pos = Math.Atan((plant.Y - agent.Y) / (plant.X - agent.X)) * 180.0 / Math.PI;
-
-            double startSensor = (agent.Orientation - 90) % 360;
+            double pos = Math.Atan((plant.Y - agent.Y) / (plant.X - agent.X)) * 180.0 / Math.PI + 270 + 360;
+            double startSensor = agent.Orientation ;
+            pos %= 360;
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
 
             for (int i = 0; i < SENSORS_PER_PLANT_TYPE; i++)
                 if ((startSensor + i * sensorWidth) % 360 < pos && (startSensor + (i + 1) * sensorWidth) % 360 >= pos)
+                {
+                    Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
+                    plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, i
+                    );
                     return plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE + i + 1;
-
+                }
+            Console.WriteLine("plant x, y {0} {1} Dude x, y {2} {3}, pos, {4}, orientation {5} sensor: {6} ",
+            plant.X, plant.Y, agent.X, agent.Y, pos, agent.Orientation, -1
+            );
             return -1;
         }
 
