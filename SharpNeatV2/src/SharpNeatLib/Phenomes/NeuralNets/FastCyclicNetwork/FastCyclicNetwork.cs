@@ -215,9 +215,15 @@ namespace SharpNeat.Phenomes.NeuralNets
                 // the preactivation signal of the target neuron.
                 for (int j = 0; j < _connectionArray.Length; j++)
                 {
-                    _preActivationArray[_connectionArray[j]._tgtNeuronIdx] += _postActivationArray[_connectionArray[j]._srcNeuronIdx] * _connectionArray[j]._weight;
+                    _preActivationArray[_connectionArray[j]._tgtNeuronIdx] += 
+                        _postActivationArray[_connectionArray[j]._srcNeuronIdx] * _connectionArray[j]._weight;
                 }
 
+                // We need to track the input signals for backprop to know how to adjust
+                // the first layer in the network.
+                for (int j = 0; j < _inputAndBiasNeuronCount; j++)
+                    _backpropPostActivations[i][j] = _postActivationArray[j];
+                
                 // Loop the neurons. Pass each neuron's pre-activation signals through its activation function
                 // and store the resulting post-activation signal.
                 // Skip over bias and input neurons as these have no incoming connections and therefore have fixed
@@ -269,8 +275,8 @@ namespace SharpNeat.Phenomes.NeuralNets
                 for (int i = 0; i < _previousChange.Length; i++)
                     _previousChange[i] = new double[_connectionArray.Length];
             }
-            if (HiddenCount == 0 || ConnectionCount < 4)
-                return;
+            //if (HiddenCount == 0 || ConnectionCount < 4)
+            //    return;
 
             // Reset the state of the network
             ResetState();
@@ -319,7 +325,10 @@ namespace SharpNeat.Phenomes.NeuralNets
             for (int i = 0; i < _timestepsPerActivation; i++)
                 for (int j = 0; j < _connectionArray.Length; j++)
                 {
-                    var change = BackpropLearningRate * _backpropPostActivations[i][_connectionArray[j]._srcNeuronIdx] * deltas[i][_connectionArray[j]._tgtNeuronIdx] + Momentum * _previousChange[i][j];
+                    var change = BackpropLearningRate 
+                                    * _backpropPostActivations[i][_connectionArray[j]._srcNeuronIdx] 
+                                    * deltas[i][_connectionArray[j]._tgtNeuronIdx] 
+                                    + Momentum * _previousChange[i][j];
                     
                     _connectionArray[j]._weight += change;
                     if(_connectionArray[j]._weight > 10)

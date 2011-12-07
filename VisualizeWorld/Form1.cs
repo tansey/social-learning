@@ -49,6 +49,11 @@ namespace VisualizeWorld
                 agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
                 plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
             }
+            plantColors[0] = Color.Pink;
+            plantColors[1] = Color.Lavender;
+            plantColors[2] = Color.Gray;
+            plantColors[3] = Color.ForestGreen;
+            plantColors[4] = Color.LimeGreen;
 
             this.Disposed += new EventHandler(Form1_Disposed);
         }
@@ -93,7 +98,7 @@ namespace VisualizeWorld
             foreach (var plant in world.Plants)
             {
                 // Skip drawing a plant if it's been eaten. This is to help us debug the sensor values.
-                if (plant.EaterCount > 0)
+                if (_configFile == QLEARNING_CONFIG_FILE && plant.EaterCount > 0)
                     continue;
 
                 SolidBrush brush = null;

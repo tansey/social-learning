@@ -291,7 +291,7 @@ namespace social_learning
             int idx = 1;
             for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
                 if (degrees > dtheta)
-                    return idx;
+                    return idx + plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE;
             return -1;
         }
 
@@ -313,37 +313,24 @@ namespace social_learning
             int newPlantY = plant.Y + Height;
             var newAgentX = agent.X + Width;
             var newAgentY = agent.Y + Height;
-            double[] regularArgs = { agent.X, agent.Y, plant.X, plant.Y };
-            double[] belowArgs = { agent.X, agent.Y, plant.X, newPlantY };
-            double[] rightArgs = { agent.X, agent.Y, newPlantX, plant.Y };
-            double[] leftArgs = { newAgentX, newAgentY, plant.X, plant.Y };
-            double[] aboveArgs = { agent.X, newAgentY, plant.X, plant.Y };
-            var regular = calculateDistance(regularArgs);
-            var min = regular;
-            coords = regularArgs;
-            var below = calculateDistance(belowArgs);
-            if (below < min)
-            {
-                min = below;
-                coords = belowArgs;
-            }
-            var right = calculateDistance(rightArgs);
-            if (right < min)
-            {
-                min = right;
-                coords = rightArgs;
-            }
-            var above = calculateDistance(aboveArgs);
-            if (above < min)
-            {
-                min = above;
-                coords = aboveArgs;
-            }
-            var left = calculateDistance(leftArgs);
-            if (left < min)
-            {
-                coords = leftArgs;
-            }
+            double[][] args = new double[][]{new double[]{ agent.X, agent.Y, plant.X, plant.Y },
+            new double[]{ agent.X, agent.Y, plant.X, newPlantY },
+            new double[]{ agent.X, agent.Y, newPlantX, plant.Y },
+            new double[]{ agent.X, newAgentY, plant.X, plant.Y },
+            new double[]{ agent.X, newAgentY, plant.X, plant.Y },
+            new double[]{ newAgentX, agent.Y, plant.X, newPlantY },
+            new double[]{ agent.X, agent.Y, newPlantX, newPlantY },
+            new double[]{ newAgentX, newAgentY, plant.X, plant.Y },
+            new double[]{ agent.X, newAgentY, newPlantX, plant.Y },
+            };
+            var min = calculateDistance(args[0]);
+            coords = args[0];
+            for (int i = 1; i < args.Length; i++)
+                if (calculateDistance(args[i]) < min)
+                {
+                    min = calculateDistance(args[i]);
+                    coords = args[i];
+                }
             return coords;
         }
         #endregion

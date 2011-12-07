@@ -72,14 +72,7 @@ namespace TestWorld
         [DeploymentItem("social_learning.dll")]
         public void getRotationAndVelocityTest()
         {
-            PrivateObject param0 = null; // TODO: Initialize to an appropriate value
-            NeuralAgent_Accessor target = new NeuralAgent_Accessor(param0); // TODO: Initialize to an appropriate value
-            double[] sensors = null; // TODO: Initialize to an appropriate value
-            float[] expected = null; // TODO: Initialize to an appropriate value
-            float[] actual;
-            actual = target.getRotationAndVelocity(sensors);
-            Assert.AreEqual(expected, actual);
-            Assert.Inconclusive("Verify the correctness of this test method.");
+           
         }
     }
 }

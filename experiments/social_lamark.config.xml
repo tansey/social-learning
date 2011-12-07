@@ -53,7 +53,6 @@
   </PlantSpecies>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
-  <PlantsPerSpecies>20</PlantsPerSpecies>
-  <AgentHorizon>50</AgentHorizon>
+  <AgentHorizon>100</AgentHorizon>
 
 </Config>

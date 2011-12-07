@@ -9,7 +9,7 @@ namespace social_learning
 {
     public class NeuralAgent : Agent
     {
-        const float MAX_TURNING_RADIUS = 90f;
+        const float MAX_TURNING_RADIUS = 30f;
         const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
         
