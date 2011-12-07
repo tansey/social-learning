@@ -18,7 +18,7 @@ namespace SocialLearningOnly
     class Program
     {
         const string CONFIG_FILE = @"..\..\..\experiments\social_only.config.xml";
-        const string FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\feedforward_network.xml";
+        const string FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\social_only_feedforward_network.xml";
         const string RESULTS_FILE = @"..\..\..\experiments\social_only_results.csv";
         static SimpleExperiment _experiment;
         static SimpleEvaluator<NeatGenome> _evaluator;
@@ -35,7 +35,7 @@ namespace SocialLearningOnly
             _experiment.NeatGenomeParameters.AddConnectionMutationProbability = 0;
             _experiment.NeatGenomeParameters.AddNodeMutationProbability = 0;
             _experiment.NeatGenomeParameters.DeleteConnectionMutationProbability = 0;
-            Console.WriteLine("hi");
+            
             SimpleExperiment.CreateNetwork(FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
 
             // Record the changes at each step

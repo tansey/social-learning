@@ -41,6 +41,7 @@ namespace VisualizeWorld
         EvolutionParadigm _paradigm;
         MemoryParadigm _memory;
         int _memGens;
+        int _maxMemorySize;
         SimpleEvaluator<NeatGenome> _evaluator;
         static FastRandom _random = new FastRandom();
         int _outputs;
@@ -96,6 +97,7 @@ namespace VisualizeWorld
         public EvolutionParadigm EvoParadigm { get { return _paradigm; } set { _paradigm = value; } }
         public MemoryParadigm MemParadigm { get { return _memory; }  set { _memory = value; } }
         public int MemoryGenerations { get { return _memGens; } set { _memGens = value; } }
+        public int MaxMemorySize { get { return _maxMemorySize; } set { _maxMemorySize = value; } }
         public SimpleEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
         
@@ -124,9 +126,14 @@ namespace VisualizeWorld
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
             if (_agentType == AgentTypes.Social)
             {
-                _memory = (MemoryParadigm)Enum.Parse(typeof(MemoryParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "MemoryParadigm"));
+                var memSection = xmlConfig.GetElementsByTagName("Memory")[0] as XmlElement;
+                _memory = (MemoryParadigm)Enum.Parse(typeof(MemoryParadigm), XmlUtils.TryGetValueAsString(memSection, "Paradigm"));
+                SocialAgent.DEFAULT_MEMORY_SIZE = XmlUtils.GetValueAsInt(memSection, "Size");
                 if (_memory == MemoryParadigm.IncrementalGrowth)
-                    _memGens = XmlUtils.GetValueAsInt(xmlConfig, "MemoryGrowthGenerations");
+                {
+                    _memGens = XmlUtils.GetValueAsInt(memSection, "GrowthGenerations");
+                    _maxMemorySize = XmlUtils.GetValueAsInt(memSection, "MaxSize");
+                }
             }
             var species = new List<PlantSpecies>();
 
@@ -250,7 +257,8 @@ namespace VisualizeWorld
                 AgentType = _agentType,
                 EvoParadigm = _paradigm,
                 MemParadigm = _memory,
-                GenerationsPerMemorySize = _memGens
+                GenerationsPerMemorySize = _memGens,
+                MaxMemorySize = _maxMemorySize
             };
             
             // Initialize the evolution algorithm.

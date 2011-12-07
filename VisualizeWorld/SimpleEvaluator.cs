@@ -90,6 +90,7 @@ namespace VisualizeWorld
         public MemoryParadigm MemParadigm { get; set; }
         public int GenerationsPerMemorySize { get; set; }
         public int CurrentMemorySize { get; set; }
+        public int MaxMemorySize { get; set; }
 
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
@@ -174,7 +175,9 @@ namespace VisualizeWorld
                     }
                 }
 
-            if (MemParadigm == MemoryParadigm.IncrementalGrowth && _generations % GenerationsPerMemorySize == 0)
+            if (MemParadigm == MemoryParadigm.IncrementalGrowth 
+                && _generations % GenerationsPerMemorySize == 0
+                && CurrentMemorySize < MaxMemorySize)
                 CurrentMemorySize++;
         }
 
@@ -205,5 +208,6 @@ namespace VisualizeWorld
                 }
             }
         }
+
     }
 }

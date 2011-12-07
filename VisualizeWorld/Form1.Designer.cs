@@ -45,6 +45,7 @@
             this.uniformdefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spiralToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clusterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugOutputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +76,8 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadPopulationToolStripMenuItem,
             this.setAgentTypeToolStripMenuItem,
-            this.setPlantLayoutToolStripMenuItem});
+            this.setPlantLayoutToolStripMenuItem,
+            this.debugOutputsToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
@@ -199,6 +201,14 @@
             this.clusterToolStripMenuItem.Text = "Cluster";
             this.clusterToolStripMenuItem.CheckedChanged += new System.EventHandler(this.clusterToolStripMenuItem_CheckedChanged);
             // 
+            // debugOutputsToolStripMenuItem
+            // 
+            this.debugOutputsToolStripMenuItem.CheckOnClick = true;
+            this.debugOutputsToolStripMenuItem.Name = "debugOutputsToolStripMenuItem";
+            this.debugOutputsToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.debugOutputsToolStripMenuItem.Text = "Debug Outputs";
+            this.debugOutputsToolStripMenuItem.Click += new System.EventHandler(this.debugOutputsToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -237,6 +247,7 @@
         private System.Windows.Forms.ToolStripMenuItem spiralToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clusterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem qLearningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugOutputsToolStripMenuItem;
     }
 }
 

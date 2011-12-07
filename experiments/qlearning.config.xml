@@ -17,13 +17,37 @@
  
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
-  <TimeStepsPerGeneration>500</TimeStepsPerGeneration>
+  <TimeStepsPerGeneration>5000</TimeStepsPerGeneration>
   <PlantSpecies>
+    <Plant>
+      <Name>Poison_1</Name>
+      <Radius>5</Radius>
+      <Reward>-100</Reward>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Poison_2</Name>
+      <Radius>5</Radius>
+      <Reward>-50</Reward>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Neutral_1</Name>
+      <Radius>5</Radius>
+      <Reward>0</Reward>
+      <Count>20</Count>
+    </Plant>
     <Plant>
       <Name>Nutritious_1</Name>
       <Radius>5</Radius>
       <Reward>100</Reward>
-      <Count>100</Count>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Nutritious_2</Name>
+      <Radius>5</Radius>
+      <Reward>50</Reward>
+      <Count>20</Count>
     </Plant>
   </PlantSpecies>
   <WorldWidth>500</WorldWidth>

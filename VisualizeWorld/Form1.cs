@@ -34,6 +34,7 @@ namespace VisualizeWorld
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
         bool running = false;
+        bool _debugOutputs = false;
 
         public Form1()
         {
@@ -154,7 +155,7 @@ namespace VisualizeWorld
                                             DefaultFont, Brushes.Black, 0, 30);
 
             // Draw the network inputs and outputs for the Q-Learning agent
-            if (_experiment.World.Agents.First() is QLearningAgent)
+            if (_debugOutputs)
             {
                 g.FillRectangle(Brushes.White, 0, 50, 100, 150);
                 var agent = (QLearningAgent)_experiment.World.Agents.First();
@@ -355,5 +356,10 @@ namespace VisualizeWorld
             socialNEATQLamarkianToolStripMenuItem.Checked = false;
         }
         #endregion
+
+        private void debugOutputsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _debugOutputs = debugOutputsToolStripMenuItem.Checked;
+        }
     }
 }

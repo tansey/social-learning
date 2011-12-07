@@ -9,8 +9,12 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
-  <MemoryParadigm>IncrementalGrowth</MemoryParadigm>
-  <MemoryGrowthGenerations>20</MemoryGrowthGenerations>
+  <Memory>
+    <Paradigm>IncrementalGrowth</Paradigm>
+    <GrowthGenerations>20</GrowthGenerations>
+    <Size>1</Size>
+    <MaxSize>10</MaxSize>
+  </Memory>
   <PlantLayout>Spiral</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
@@ -19,7 +23,7 @@
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
   <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
-  <PlantSpecies>5
+  <PlantSpecies>
     <Plant>
       <Name>Poison_1</Name>
       <Radius>5</Radius>
@@ -54,5 +58,4 @@
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>
-
 </Config>
