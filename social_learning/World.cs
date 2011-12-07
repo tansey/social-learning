@@ -281,8 +281,8 @@ namespace social_learning
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
 
-            Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
-                    plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
+            //Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
+            //        plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
             
             // If the plant's behind us
             if(dtheta < -90 || dtheta > 90)

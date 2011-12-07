@@ -196,6 +196,17 @@ namespace SharpNeat.EvolutionAlgorithms
         }
 
         /// <summary>
+        /// Force the algorithm to stop immediately by killing its worker thread.
+        /// </summary>
+        public void ForceStop()
+        {
+            if(_runState == RunState.Running)
+            {
+                _algorithmThread.Abort();
+            }
+        }
+
+        /// <summary>
         /// Alias for RequestPause().
         /// </summary>
         public void Stop()

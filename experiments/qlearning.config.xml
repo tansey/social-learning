@@ -5,19 +5,19 @@
   <Outputs>12</Outputs>
   <Activation>
     <Scheme>CyclicFixedIters</Scheme>
-    <Iters>3</Iters>
+    <Iters>4</Iters>
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>QLearning</AgentType>
-  <PlantLayout>Uniform</PlantLayout>
+  <PlantLayout>Spiral</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution
  
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
-  <TimeStepsPerGeneration>5000</TimeStepsPerGeneration>
+  <TimeStepsPerGeneration>500</TimeStepsPerGeneration>
   <PlantSpecies>
     <Plant>
       <Name>Nutritious_1</Name>

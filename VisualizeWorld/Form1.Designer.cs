@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnStep = new System.Windows.Forms.Button();
             this.btnEvolve = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,18 +47,6 @@
             this.clusterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // btnStep
-            // 
-            this.btnStep.BackColor = System.Drawing.Color.Red;
-            this.btnStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStep.Location = new System.Drawing.Point(354, 27);
-            this.btnStep.Name = "btnStep";
-            this.btnStep.Size = new System.Drawing.Size(0, 0);
-            this.btnStep.TabIndex = 0;
-            this.btnStep.Text = "Step";
-            this.btnStep.UseVisualStyleBackColor = false;
-            this.btnStep.Click += new System.EventHandler(this.stepButton_Click);
             // 
             // btnEvolve
             // 
@@ -219,7 +206,6 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(484, 462);
             this.Controls.Add(this.btnEvolve);
-            this.Controls.Add(this.btnStep);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -234,7 +220,6 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnStep;
         private System.Windows.Forms.Button btnEvolve;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

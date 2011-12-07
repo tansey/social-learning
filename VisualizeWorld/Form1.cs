@@ -33,6 +33,7 @@ namespace VisualizeWorld
         const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
+        bool running = false;
 
         public Form1()
         {
@@ -83,7 +84,7 @@ namespace VisualizeWorld
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            if (_experiment == null || _experiment.World == null)
+            if (_experiment == null || _experiment.World == null || !running)
                 return;
             
             Graphics g = e.Graphics;
@@ -155,7 +156,7 @@ namespace VisualizeWorld
             // Draw the network inputs and outputs for the Q-Learning agent
             if (_experiment.World.Agents.First() is QLearningAgent)
             {
-                g.FillRectangle(Brushes.White, 0, 50, 100, 300);
+                g.FillRectangle(Brushes.White, 0, 50, 100, 150);
                 var agent = (QLearningAgent)_experiment.World.Agents.First();
                 for (int x = 0; x < agent._prevState.Length; x++)
                     g.DrawString(string.Format("[{0}] = {1:N4}", x, agent._prevState[x]), DefaultFont,
@@ -164,11 +165,6 @@ namespace VisualizeWorld
             }
         }
 
-        private void stepButton_Click(object sender, EventArgs e)
-        {
-            _experiment.World.Step();
-            this.Invalidate();
-        }
 
         private void evolve_Click(object sender, EventArgs e)
         {
@@ -177,7 +173,7 @@ namespace VisualizeWorld
                 stopEvolution();
                 return;
             }
-
+            running = true;
             _experiment = new SimpleExperiment();
             
             // Load config XML.
@@ -187,9 +183,8 @@ namespace VisualizeWorld
             _experiment.PlantLayout = _plantLayout;
 
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
-            
+
             btnEvolve.Text = "Stop!";
-            btnStep.Enabled = false;
 
             // Start the evolution
             if (_configFile == QLEARNING_CONFIG_FILE)
@@ -198,7 +193,10 @@ namespace VisualizeWorld
                 qLearningThread.Start();
             }
             else
-                startEvolution();
+            {
+                qLearningThread = new Thread(new ThreadStart(startEvolution));
+                qLearningThread.Start();
+            }
         }
 
         private void startQLearning()
@@ -265,13 +263,15 @@ namespace VisualizeWorld
 
         private void stopEvolution()
         {
-            if (_configFile == QLEARNING_CONFIG_FILE)
-                qLearningThread.Abort();
-            else if (_ea != null)
-                _ea.Stop();
+            if (!running)
+                return;
 
+            if (_ea != null)
+                _ea.Stop();
+            if(qLearningThread != null)
+                qLearningThread.Abort();
             btnEvolve.Text = "Evolve!";
-            btnStep.Enabled = true;
+            running = false;
         }
 
         #region Change the plant layout strategy
@@ -343,8 +343,7 @@ namespace VisualizeWorld
 
         private void uncheckAllExperimentMenusAndStopEvolution()
         {
-            if (_ea != null)
-                stopEvolution();
+            stopEvolution();
 
             basicNEATdefaultToolStripMenuItem.Checked = false;
             qLearningToolStripMenuItem.Checked = false;
