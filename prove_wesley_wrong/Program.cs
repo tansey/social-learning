@@ -97,13 +97,13 @@ namespace prove_wesley_wrong
                 new double[] { 1 } };
 
             for(int i = 0; i < epochs; i++)
-                network.Train(inputs[epochs/100%3], outputs[epochs/100%3]);
+                network.Train(inputs[epochs / 100 % inputs.Length], outputs[epochs / 100 % outputs.Length]);
 
             Console.WriteLine("Weights After:");
             PrintWeights(network);
             Console.WriteLine();
 
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < inputs.Length; i++)
             {
                 network.ResetState();
 

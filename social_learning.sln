@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prove_wesley_wrong", "prove_wesley_wrong\prove_wesley_wrong.csproj", "{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBackprop", "prove_wesley_wrong\TestBackprop.csproj", "{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
