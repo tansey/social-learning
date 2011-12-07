@@ -12,11 +12,11 @@ using SharpNeat.Genomes.Neat;
 using SharpNeat.Core;
 using SharpNeat.Phenomes;
 
-namespace prove_wesley_wrong
+namespace TestBackprop
 {
     class Program
     {
-        const string NEURAL_CONFIG_FILE = @"..\..\..\experiments\backprop_test.config.xml";
+        const string NEURAL_CONFIG_FILE = @"..\..\..\..\..\experiments\backprop_test.config.xml";
         static void Main(string[] args)
         {
             LearningRateExperiment _experiment = new LearningRateExperiment();
@@ -25,7 +25,7 @@ namespace prove_wesley_wrong
             xmlConfig.Load(NEURAL_CONFIG_FILE);
             _experiment.Initialize("blah", xmlConfig.DocumentElement);
 
-            LearningRateExperiment.CreateNetwork("temp", 2, 3, 3, 1);
+            LearningRateExperiment.CreateNetwork("temp", 2, 3, 1);
 
             var genome = _experiment.LoadPopulation(XmlReader.Create("temp"))[0];
 
@@ -33,6 +33,7 @@ namespace prove_wesley_wrong
 
             Console.WriteLine("Original Network");
             Backprop(genome, decoder, 0);
+            
 
             //Console.WriteLine("Backpropped Learning Rate = 1");
             //Backprop(genome, decoder, 1);
@@ -63,14 +64,14 @@ namespace prove_wesley_wrong
             };
             double[][] outputs = new double[][] { new double[] { 0 }, new double[] { 1 }, new double[] { 1 }, new double[] { 0 } };
 
-            network.Train(inputs[1], outputs[1]);
+            //network.Train(inputs[1], outputs[1]);
 
             PrintWeights(network);
             Console.WriteLine();
 
-            network.Train(inputs[1], outputs[1]);
-
-            PrintWeights(network);
+            Console.WriteLine("XOR Results:");
+            RunXor(network, inputs);
+            Console.WriteLine();
         }
 
         private static void BackpropEpochs(NeatGenome genome, IGenomeDecoder<NeatGenome, IBlackBox> decoder, double learningRate, int epochs)
@@ -93,18 +94,23 @@ namespace prove_wesley_wrong
             };
             double[][] outputs = new double[][] { 
                 new double[] { 0 }, 
-                new double[] { 0.5 }, 
-                new double[] { 0.5 }, 
-                new double[] { 1 } };
+                new double[] { 1 }, 
+                new double[] { 1 }, 
+                new double[] { 0 } };
 
-            for(int i = 0; i < epochs; i++)
-                network.Train(inputs[epochs / 100 % inputs.Length], outputs[epochs / 100 % outputs.Length]);
+            for (int i = 0; i < epochs; i++)
+                network.Train(inputs[i % inputs.Length], outputs[i % outputs.Length]);
 
             Console.WriteLine("Weights After:");
             PrintWeights(network);
             Console.WriteLine();
 
-            for(int i = 0; i < inputs.Length; i++)
+            RunXor(network, inputs);
+        }
+
+        private static void RunXor(FastCyclicNetwork network, double[][] inputs)
+        {
+            for (int i = 0; i < inputs.Length; i++)
             {
                 network.ResetState();
 
@@ -121,7 +127,7 @@ namespace prove_wesley_wrong
 
         static void PrintWeights(FastCyclicNetwork network)
         {
-            foreach(var conn in network.ConnectionArray)
+            foreach (var conn in network.ConnectionArray)
                 Console.WriteLine("[{0}] -> [{1}]: {2:N4}", conn._srcNeuronIdx, conn._tgtNeuronIdx, conn._weight);
         }
 

@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using SharpNeat.Utility;
 
 // Disable missing comment warnings for non-private variables.
 #pragma warning disable 1591
@@ -265,9 +266,14 @@ namespace SharpNeat.Phenomes.NeuralNets
 
         public virtual void Train(double[] inputs, double[] outputs)
         {
+            
             // Save the state of the network
             // TODO - If we want to have recurrent networks with incremental _backpropPreActivations
             //        Currently we assume the network is going to be reset before each activation anyway.
+            Debug.Assert(_neuronActivationFnArray[0].FunctionId == PlainSigmoid.__DefaultInstance.FunctionId);
+
+            if (_neuronActivationFnArray[0].FunctionId != PlainSigmoid.__DefaultInstance.FunctionId)
+                throw new Exception("Wrong activation function: " + _neuronActivationFnArray[0].FunctionId);
 
             if (_previousChange == null)
             {
