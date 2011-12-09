@@ -20,8 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBackprop", "prove_wesley_wrong\TestBackprop.csproj", "{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = social_learning.vsmdi
@@ -95,16 +93,6 @@ Global
 		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1BD82202-0603-4A0E-92D1-0C373EB4367F}.Release|x86.ActiveCfg = Release|Any CPU
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Debug|x86.ActiveCfg = Debug|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Debug|x86.Build.0 = Debug|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Release|Any CPU.ActiveCfg = Release|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Release|Mixed Platforms.Build.0 = Release|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Release|x86.ActiveCfg = Release|x86
-		{A60ACA89-40D9-416B-96F7-543FE2F2A7FE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
