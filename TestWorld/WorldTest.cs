@@ -67,8 +67,8 @@ namespace TestWorld
             List<IAgent> agents = new List<IAgent>() { _agent };
 
             _world = new World(agents, height, width, species, PlantLayoutStrategies.Uniform);
+            _world.dictionary = new SensorDictionary((int)_world.AgentHorizon, _world.Width, _world.Height);
 
-            
         }
 
         //

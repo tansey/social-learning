@@ -34,15 +34,16 @@ namespace BatchExperiment
                          socialDarwinAvg = createAllCollection(), socialDarwinBest = createAllCollection(),
                          socialLamarkAvg = createAllCollection(), socialLamarkBest = createAllCollection(); 
             SensorDictionary sensorDict = new SensorDictionary(100, 500, 500);
+            Console.WriteLine("WARNING: Skipping baseline results");
             for (int i = 0; i < numRuns; i++)
             {
-                Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
-                p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv", sensorDict);
+                //Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
+                //p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv", sensorDict);
                 Program q = new Program("Social_Darwin_" + i, socialDarwinAvg, socialDarwinBest);
                 q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv", sensorDict);
                 Program m = new Program("Social_Lamark_" + i, socialLamarkAvg, socialLamarkBest);
                 m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv", sensorDict);
-                r[3 * i] = p;
+                //r[3 * i] = p;
                 r[3 * i + 1] = q;
                 r[3 * i + 2] = m;
             }
@@ -87,7 +88,7 @@ namespace BatchExperiment
          static bool AllFinished(Program[] programs)
          {
              foreach (Program p in programs)
-                 if (!p.finished)
+                 if (p != null && !p.finished)
                      return false;
              return true;
          }
