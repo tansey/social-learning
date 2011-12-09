@@ -9,9 +9,9 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
-  <MemoryParadigm>IncrementalGrowth</MemoryParadigm>
+  <MemoryParadigm>Fixed</MemoryParadigm>
   <MemoryGrowthGenerations>20</MemoryGrowthGenerations>
-  <PlantLayout>Spiral</PlantLayout>
+  <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution

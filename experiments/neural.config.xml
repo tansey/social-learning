@@ -9,7 +9,7 @@
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Neural</AgentType>
-  <PlantLayout>Spiral</PlantLayout>
+  <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>
     Foraging Evolution

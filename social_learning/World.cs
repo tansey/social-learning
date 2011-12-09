@@ -12,6 +12,7 @@ namespace social_learning
         public const int SENSORS_PER_PLANT_TYPE = 8;
         const int DEFAULT_AGENT_HORIZON = 50;
         private int _step;
+        public SensorDictionary dictionary;
 
         public IEnumerable<IAgent> Agents { get; set; }
         public double AgentHorizon { get; set; }
@@ -40,13 +41,15 @@ namespace social_learning
         public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
         public event PlantEatenHandler PlantEaten;
 
-        public World(IEnumerable<IAgent> agents, int height, int width, IEnumerable<PlantSpecies> species, PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
+        public World(IEnumerable<IAgent> agents, int height, int width, IEnumerable<PlantSpecies> species, 
+             PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
         {
             Agents = agents;
             PlantTypes = species;
             Height = height;
             Width = width;
             AgentHorizon = DEFAULT_AGENT_HORIZON;
+            
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
@@ -61,6 +64,9 @@ namespace social_learning
         /// </summary>
         public void Step()
         {
+
+            if (dictionary == null)
+                dictionary = new SensorDictionary((int)AgentHorizon, Height, Width);
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
@@ -81,7 +87,8 @@ namespace social_learning
             // and determine who is on top of a plant.
             foreach (var agent in Agents)
                 foreach (var plant in Plants)
-                    if (calculateDistance(agent, plant) < plant.Species.Radius && plant.AvailableForEating(agent))
+                    if (dictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y)[0]
+                        < plant.Species.Radius && plant.AvailableForEating(agent))
                     {
                         // Eat the plant
                         plant.EatenBy(agent, _step);
@@ -242,8 +249,10 @@ namespace social_learning
                     continue;
 
                 // Calculate the distance to the object from the agent
-                var dist = calculateDistance(agent, plant);
-
+                //var dist = calculateDistance(agent, plant);
+                int[] distanceAndOrientation = dictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y);
+                int dist = distanceAndOrientation[0];
+                int pos = distanceAndOrientation[1];
                 //Console.WriteLine("Dist: {0}", dist);
 
                 // If it's too far away for the agent to see
@@ -251,7 +260,7 @@ namespace social_learning
                     continue;
 
                 // Identify the appropriate sensor
-                int sIdx = getSensorIndex(agent, plant);
+                int sIdx = getSensorIndex(agent, plant, pos);
 
                 //Console.WriteLine("Sensor: {0}", sIdx);
 
@@ -265,9 +274,9 @@ namespace social_learning
             return sensors;
         }
 
-        private int getSensorIndex(IAgent agent, Plant plant)
+        private int getSensorIndex(IAgent agent, Plant plant, int pos)
         {
-            double[] newCoords = getClosestCoordinates(agent, plant);
+            /*double[] newCoords = getClosestCoordinates(agent, plant);
             double agentX = newCoords[0];
             double agentY = newCoords[1];
             double plantX = newCoords[2];
@@ -276,13 +285,14 @@ namespace social_learning
             if (plantX < agentX)
                 pos += 180;
             pos %= 360;
+             * */
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
             double dtheta = pos - agent.Orientation;
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
 
-            Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
-                    plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
+            //Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
+            //        plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
             
             // If the plant's behind us
             if(dtheta < -90 || dtheta > 90)
@@ -295,6 +305,7 @@ namespace social_learning
             return -1;
         }
 
+        /*
         private double calculateDistance(IAgent agent, Plant plant)
         {
             double[] coords = getClosestCoordinates(agent, plant);
@@ -333,6 +344,7 @@ namespace social_learning
                 }
             return coords;
         }
+         * */
         #endregion
     }
 }

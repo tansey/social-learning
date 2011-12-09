@@ -8,6 +8,8 @@ using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System.IO;
 using System.Threading;
+using social_learning;
+
 
 namespace BatchExperiment
 {
@@ -30,16 +32,16 @@ namespace BatchExperiment
             Program[] r = new Program[numRuns * 3];
             List<double>[] neuralAvg = createAllCollection(), neuralBest = createAllCollection(),
                          socialDarwinAvg = createAllCollection(), socialDarwinBest = createAllCollection(),
-                         socialLamarkAvg = createAllCollection(), socialLamarkBest = createAllCollection();
-
+                         socialLamarkAvg = createAllCollection(), socialLamarkBest = createAllCollection(); 
+            SensorDictionary sensorDict = new SensorDictionary(100, 500, 500);
             for (int i = 0; i < numRuns; i++)
             {
                 Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
-                p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv");
+                p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv", sensorDict);
                 Program q = new Program("Social_Darwin_" + i, socialDarwinAvg, socialDarwinBest);
-                q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv");
+                q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv", sensorDict);
                 Program m = new Program("Social_Lamark_" + i, socialLamarkAvg, socialLamarkBest);
-                m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv");
+                m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv", sensorDict);
                 r[3 * i] = p;
                 r[3 * i + 1] = q;
                 r[3 * i + 2] = m;
@@ -90,7 +92,7 @@ namespace BatchExperiment
              return true;
          }
 
-         void RunExperiment(string XMLFile, string filename)
+         void RunExperiment(string XMLFile, string filename, SensorDictionary sensorDict)
          {
              _filename = filename;
             _experiment = new SimpleExperiment();
@@ -103,7 +105,7 @@ namespace BatchExperiment
              xmlConfig.Load(XMLFile);
              _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
              _experiment.World.PlantLayoutStrategy = social_learning.PlantLayoutStrategies.Clustered;
-
+             _experiment.World.dictionary = sensorDict;
              startEvolution();
 
          }

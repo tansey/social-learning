@@ -62,6 +62,7 @@
     <Compile Include="PlantLayoutStrategies.cs" />
     <Compile Include="PlantSpecies.cs" />
     <Compile Include="QLearningAgent.cs" />
+    <Compile Include="SensorDictionary.cs" />
     <Compile Include="SocialAgent.cs" />
     <Compile Include="SpinningAgent.cs" />
     <Compile Include="World.cs" />
