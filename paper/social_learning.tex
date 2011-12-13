@@ -77,7 +77,6 @@ Wesley Tansey\\
        \affaddr{Dept. of Computer Science, The University of Texas at Austin}\\
        \affaddr{1 University Station C0500, Austin, TX, USA}\\
        \email{tansey@cs.utexas.edu}
-}
 \alignauthor
 Eli Feasley\\
        \affaddr{Dept. of Computer Science, The University of Texas at Austin}\\
@@ -91,117 +90,183 @@ Eli Feasley\\
 
 \maketitle
 \begin{abstract}
-
+Social learning is an extension to Evolutionary Algorithms that enables individuals to learn from observations of others in the population.
+ Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one group of individuals is used to train the remaining individuals in the population.  
+ We present a non-hierarchical model of social learning in which we do not label each agent, instead allowing any individual which experiences positive reward to teach the rest of the agents on its recent behavior. 
+ We validate our approach in a foraging domain, comparing social learning in both Darwinian and Lamarkian paradigms to a standard Darwinian evolution with no learning. 
+ We show that our non-hierarchical form facilitates rapid discovery of near-optimal solutions.
 \end{abstract}
 
 % A category with the (minimum) three required fields
-\category{D.4.6}{Security and Protection}{Authorization}
+%\category{D.4.6}{Security and Protection}{Authorization}
 %A category including the fourth, optional field follows...
-\category{K.6.5}{Security and Protection}{Authorization}
-\category{E.3}{Data Encryption}{Code breaking}
+%\category{K.6.5}{Security and Protection}{Authorization}
+%\category{E.3}{Data Encryption}{Code breaking}
 
-\terms{Passwords, Markov Models, Evolutionary Algorithms, Cryptanalysis}
+\terms{Social Learning, Evolutionary Algorithms, Artificial Life}
 
 \section{Introduction}
-As tools and services continue to shift into the cloud, users are increasingly finding their data stored in remote databases with various levels of security. Access to these accounts are typically protected by a user-selected password that is then stored in the database. In the event of a database being compromised by an attacker, a user's password is only secure if the password was properly hashed and salted, and if it was sufficiently difficult for the attacker to guess. While modern web application authentication frameworks, such as AuthLogic for Ruby on Rails \cite{authlogic} and Forms Authentication for ASP.NET MVC \cite{formsauth}, typically include hashing and salting of passwords, many organizations continue to rely on older, less-secure systems that may only hash passwords or even store them in plaintext. Correspondingly, recent years have seen a rise in attacks on web application databases, resulting in a number of large databases of real-world passwords being made available online\cite{skullsecurity}.
+Biological inspiration
+    - Social and Cultural Intelligence Hypotheses
+    - Mirror Neurons
+        - Reinforcing seen behaviors
+    - Learning in primitive communities
+    
+Summary of approach
+    - foraging domain
+    - generations of all-new populations
+    
+Summary of results
 
-Even if a compromised database has been properly encrypted, since the most common practice is to allow the user to select their own password, it is likely that the passwords are still vulnerable if they are sufficiently easy to predict. Indeed, studies show that users frequently choose low-entropy passwords that contain only lowercase letters \cite{florencio-www07}. As a counter-measure to this, applications generally enforce a set of constraints that user passwords must satisfy. These constraints are designed to force a user to increase the entropy of their password, thereby making it more difficult to crack. Often such constraints are encoded in simple rules such as ``must contain at least one number'' or ``must be at least 8 characters long''.
+Novel contributions
+    Non-hierarchical
+    Filtering based only on positive rewards
+    
+Rest of the paper outline
+%\begin{itemize}
+%\item An improved Markov model capable of more accurately representing a distribution of passwords. 
+%\end{itemize}
 
-While the intention of rule sets are to force users to choose more random passwords, human users have consistently chosen to simply adapt their predictable patterns to match minimum requirements of new rule sets \cite{thorsheim-passwords11}. For instance, a user who wants to enter ``password'' as their password may be thwarted by a rule requiring a number is present. Rather than selecting a new password at random that satisfies the rule, the human user is more likely to make a small edit to their initial choice, such as using ``password1'' as their password. While this change is valid according to the rule set, it is nonetheless not substantially more secure than the original password as the user is still following a predictable pattern.
+%The rest of this paper is organized as follows. Section \ref{sec:background} presents background information and related work. Section \ref{sec:model} describes our improved Markov model. Section \ref{sec:evolution} presents our machine learning algorithm for improving a model on-line. Section \ref{sec:results} presents empirical results of our improved model on several real-world datasets and the results of our learning algorithm on a realistic example. Finally, Section \ref{sec:conclusions} presents conclusions and future work.
 
-These predictable patterns have been exploited effectively by multiple techniques. Modern dictionary attacks, such as those used by the cracking tool John the Ripper (JtR) \cite{johntheripper}, have adapted to this by including a mangling phase that perturbs the dictionary according to a set of hand-crafted rules that mimic how a human may perturb their password. Probabilistic context-free grammars can be crafted to generate better guesses based on commonly observed password syntax \cite{weir-ssp09} and can easily be reused to create implicit creation rules \cite{weir-ccs10}. Alternatively, Markov models can be used to order guesses based on the probability of each sequence of characters being typed \cite{narayanan-ccs05}. If the database is only hashed and individual records are not salted, then the hashed records are vulnerable to rainbow table attacks \cite{oechslin-crypto03} that can be enhanced with a hybrid Markov model.
+\section{Non-Hierarchical Social Learning}
+\label{sec:nhsl}
+Intro
+    - Agents acting in parallel
+    - Highly expensive simulations
+    
+Learning from Positive Rewards
+    - 1 step memory
 
-While highly effective compared to brute force methods, the Markov models described in \cite{narayanan-ccs05} and implemented in JtR rely on two key assumptions. First, all characters in a password after the initial character are assumed to be identically distributed and any additional information about the distribution of characters at each index of the password is discarded. Second, the distribution of passwords and character transition probabilities in the training set is assumed to be representative of passwords in any database.
+- Flow chart!
+Why only positive
+    Why backprop works
+    Evolution -> avoiding poison
 
-Intuitively, neither of these assumptions should hold true in practice as creation rules are constantly evolving, first placing no constraints on passwords, now enforcing explicit rules about minimum lengths and different character types, and potentially even using implicit rules based on likelihood of being guessed \cite{weir-ccs10}. Every new iteration of creation rules fundamentally alters the distribution of user-selected passwords in ways that may be unknown to the attacker, but are no doubt still driven by a predictable generative pattern optimized more for easy human recall than difficulty of cracking. Thus, improving the capability of Markov models to accurately represent known password distributions and to adapt to new, unknown distributions will enable us to better understand the objective strength of a specific password and may lead to an improved approach to testing password security.
+%\begin{figure}
+%  \centering
+%    \includegraphics[width=\textwidth]{markovchains}
+%  \caption{An example of (a) the configuration of the current state-of-the-art, first-order Markov model and (b) our $n$-layered Markov model.}
+%  \label{fig:markovchains}
+%\end{figure}
 
-To this end, we present two novel approaches to modeling password distributions that remove the assumptions described above. First, an $n$-layered Markov model is developed that extends a first-order model with index-sensitive weights. This model learns a separate set of transition probabilities for every $i^{th}$ character in a password. We validate our approach on a collection of publicly available datasets of real-world passwords. Our results indicate that the index-aware model can increase accuracy by 296\% over the model currently used in the popular cracking tool John the Ripper.
+\section{Experimental Setup}
+\label{sec:setup}
 
-If a different set of creation rules were enforced between the training and target databases, they may have significantly different distributions of passwords. To handle this scenario, we present a technique that, given an approximate model such as one trained on a database with no creation rules, learns a better distribution of passwords \textit{on-line}, while simultaneously cracking passwords. Our approach also has the appealing property that the number of guesses required to learn is \italics{inversely} proportional to the number of passwords in the database. We demonstrate with a realistic example of training a model on a database with no creation rules and then evolving it on-line against an encrypted database with creation rules requiring passwords to be at least eight characters and contain at least one number. Our results indicate that the model's performance increases by 143\% after the bootstrapping phase.
+    We use a foraging world in which agents move freely on a continuous toroidal surface which is 500 by 500 units.  
+We populate our world with five types of plants - one with a strong reward, one with a weak reward, one which is neutral,one which deals a small penalty to an agent that eats it, and one that deals a large penalty.  
+These plants are randomly distributed over the surface of the world.
+  Each plant has a radius of 5 units, and is eaten by any agent that comes within that radius and has not yet eaten the plant (each agent can only eat each plant once, and can only see plants it has not eaten.)
+  The domain is non-competitive and non-cooperative - each agent acts independently of all other agents.
+  Each individual begins each generation in the center of the world, with a uniform orientation.
+  The plants are randomly distributed around the world, and each individual has 1000 time steps in which to move and consume plants and gain fitness.
 
-This paper makes the following novel contributions:
+    - Agents have 8 sensors per plant type, plus a velocity sensor
+    - Cannot see other individuals or plants that they have already eaten
+    - Each agent has a 180-degree field of vision with a horizon of size 100
+    - Outputs - delta velocity [-1,1], delta theta [-30,30] degrees, max speed of 5
+    - Screenshot!
+\subsection*{NEAT and SharpNEAT}
+    Neuroevolution
+    Evolve recurrent networks
+    Introduce backprop to evolved networks
+        - Backpropagation through time
+\subsection*{Experiments}
+    - Evolution with and without social learning
+    - Learning within the entire population vs. only the same species
+    - Common settings
 
-\begin{itemize}
-\item An improved Markov model capable of more accurately representing a distribution of passwords.
-\item A comparative analysis of the current state-of-the-art Markov model with our improved model on several real-world datasets.
-\item A machine learning algorithm that takes a model trained on a similar distribution and can improve it on-line, while simultaneously guessing passwords, to better model the target distribution. 
-\end{itemize}
-
-The rest of this paper is organized as follows. Section \ref{sec:background} presents background information and related work. Section \ref{sec:model} describes our improved Markov model. Section \ref{sec:evolution} presents our machine learning algorithm for improving a model on-line. Section \ref{sec:results} presents empirical results of our improved model on several real-world datasets and the results of our learning algorithm on a realistic example. Finally, Section \ref{sec:conclusions} presents conclusions and future work.
-
-\section{Background}
-\label{sec:background}
-
-We next discuss relevant background work related to the state of the art in using Markov models for password cracking and the machine learning technique we use in our on-line learning algorithm.
-
-\begin{figure}
-  \centering
-    \includegraphics[width=\textwidth]{markovchains}
-  \caption{An example of (a) the configuration of the current state-of-the-art, first-order Markov model and (b) our $n$-layered Markov model.}
-  \label{fig:markovchains}
-\end{figure}
-
-\subsection{First-Order Markov Models}
-
-Currently, the most advanced model, first presented in \cite{narayanan-ccs05} and later implemented in JtR, is a first-order Markov chain as shown in Figure \ref{fig:markovchains}a. The model generates passwords probabilistically according to the weighted, directed edges between nodes. Sampling a password begins at the origin, where each edge stochastically transitions to one of the 95 nodes in the main layer, each corresponding to a different ASCII password character.\footnote{Valid password characters are assumed to be in the range of [32,126], but our approaches are trivially extensible to other character sets.} The nodes in the main layer then transition between themselves in an analogous manner. At each transition, the character for that node is appended to the guess and the model is iterated for a fixed password length. As the model contains only a single layer of nodes, it is called a first-order Markov model.
-
-To create a password cracking model, one first trains the Markov model over a known distribution. This distribution can simply be a publicly available set of passwords from a previously attacked dataset. For instance, JtR uses the \texttt{rockyou} \ref{skullsecurity} dataset for its Markov model. For efficiency purposes, the Markov model can be converted from a probabilistic graphical structure to an ordered mapping based on the probability of each path, in descending order. The enables the model to be used to structure the order of guesses and can also be applied to rainbow table attacks \cite{narayanan-ccs05}.
-
-\subsection{Evolutionary Algorithms}
-
-Evolutionary Algorithms (EAs) \cite{fogel-66} are a policy search method based on the process of Darwinian evolution. A population of individuals is evaluated based on a user-defined fitness metric. After the evaluation is complete, natural selection is performed on the population with the fittest individuals surviving and creating randomly mutated offspring. This process is repeated either for a fixed number of generations or until some other stopping condition, such as a global optima, is found. As the original application of EAs was to learn finite state machines, they seem well-suited to evolving Markov models.
-
-Specific to our implementation, we modify the NEAT algorithm \cite{stanley-ec02} to support Markov model evolution. NEAT was originally created to evolve artificial neural networks, but has features useful for evolving any graphical structure, such as support for arbitrary topology, speciation by graphical similarity, and fitness sharing to support innovation and encourage diversity in the population.
-
-In the next section, we present our new representation that generalizes the first-order Markov model.
-
-\section{An $n$-layered Markov Model}
-\label{sec:model}
-
-When creating a first-order Markov model, much information is lost about the true generative model underlying the distribution of passwords. For instance, while the model is able to differentiate the first character in a word from all later characters (via the first set of transition probabilities from the origin node), the later characters are then treated as being identically distributed. Clearly this assumption is incorrect, since we know that when users add numbers to their alphabetic passphrases they overwhelmingly choose to append them to the end \cite{weir-ccs10}. It seems intuitive that other index-dependent password rules also exist.
-
-To capture such rules, we extend the first-order Markov model into an $n^{th}$ order model, where $n$ is the length of the desired password(s) to crack. Figure \cite{fig:markovchains}b shows an example of our password model with $n = 4$. The model is composed of a set of layers that are trained with index-sensitive weights up to the $n^{th}$ layer, at which point all remaining probabilities are grouped together.
-
-It is worth noting that we have intentionally kept this model compact compared to other options. For instance, we could have created an $n^{th}$-order Markov model in which each node transitions to its own set of nodes, effectively capturing both index and character information about all previous characters in the current state. However, such an approach would cause a prohibitively large expansion in the state space and would likely cause the model to be slow and the number of samples required for training would be unrealistic. Additionally, converting the graph into a deterministic ordering for efficient guessing, as in \cite{narayanan-ccs05}, would be infeasible as the number of paths would be too large. We therefore believe this layered approach achieves a very delicate balance between granularity and combinatorial explosion.
-
-This representation enables us to capture more information about a known distribution of passwords. In the next section, we present our approach for learning a model when the distribution is \textit{unknown}.
-
-\section{Learning Models of Unknown Password Distributions}
-\label{sec:evolution}
-
-Most leaked or hacked password databases are heavily skewed towards weak passwords. This is especially true of the largest hacks, such as those analyzed in \cite{wier-ccs10}, which all contain no password rule requirements at all. This is mostly the case because systems most vulnerable to attack are outdated and fail to follow the common practice among application developers. Rule sets employed at creation time, whether known or unknown to the attacker, also mean that the distribution of passwords may be specific to the database itself. Intuitively, training on a different database (e.g., the rockyou database that JtR relies on) may even be detrimental to performance if the set of creation rules for the target database used a similar model internally to reject predictable passwords \cite{wier-ssp09, wier-ccs10}.
-
-Mainstream adoption of creation rules is also constantly evolving. Common practice has moved from no requirements, to including one uppercase and number, to now frequently also requiring a special character.\footnote{This is the explicit creation rule set for UT Austin EIDs.} In the extreme case, one may not even know the rule set and may be faced with a target database of hashed and salted passwords of unknown distribution. In such a case, one is left with three options: 1) perform a brute force search under the worst-case assumption that the password rules forced users to choose truly random passwords, 2) use some combination of known password distributions to train a model in the hopes that the unknown distribution is sufficiently similar, or 3) attempt to approximate the unknown distribution by performing a search over the space of possible models. To the best of our knowledge, all previous work has focused on one of the first two options; our approach addresses the third option.
-
-We cast the password cracking challenge as a reinforcement learning problem and learn, via an EA, a policy for generating password guesses. At each step the agent guesses a password and receives a reward equivalent to the number of accounts that match the guess, excluding duplicates. Each guess is generated by stochastically traversing the Markov model; while this produces some guesses that have already been found in the database, they are necessary and even desirable as we wish to compare models of the entire database, not just the portion that remains encrypted. The fitness score for an individual is equivalent to the sum of all the rewards it received from its guesses. The population of individuals is then evolved using a variant of the NEAT algorithm \cite{stanley-ec02} adapted for Markov models.
-
-Our approach has several key benefits for password cracking. First, EAs are embarrassingly parallel as each individual can be evaluated independently on a separate process. Our approach is an on-line algorithm that learns the distribution while simultaneously cracking, reducing the cost of learning. The algorithm also has the appealing property of scaling \textit{inversely} proportional to the size of the database. Since the number of valid guesses defines the granularity of the search space, increasing the number of passwords to crack actually smoothens the fitness landscape and enables the algorithm to make more incremental progress.
-
-Next we describe the experimental setup and results that validate our $n$-layered Markov model and our Evolutionary Algorithm.
-
-\section{Experiments and Results}
+- xx generations (where xx is however many we get to)
+    - Bootstrapping with Lamarkian Evolution
+    
+\section{Results}
 \label{sec:results}
+\subsection*{ Baseline, Social Darwin, Social Lamark}
+        - Lamarkian quickly reaches a near-optimal solution
+        
+        - Lamarkian degrades over time after peaking in performance
+            - Speculation: Backprop results in poor agents ‘supervising’ strong ones
+            - Bad behavior gets reinforced in good agents
+            
+        - Others slowly climb to reach good solutions
+        
+        - No meaningful difference between Baseline and Social Darwin
+            - The plant rewards are static for each type
+            - Learning in darwinian evolution useful only in a dynamic environment
+            - Baldwin effect
+\subsection*{Population-based vs. Species-based}
 
-We conducted separate sets of experiments to evaluate our two approaches. To validate the use of $n$-layered Markov model, we ran it against a collection of real-world password datasets and compared its results to that of a first-order model. For our EA, we created two realistic datasets representing fundamentally different password distributions and showed that a simple first-order model trained on the first database can be drastically improved by evolving it on-line against the second database.
+Graphs!
 
-\subsection{Comparing Layered and First-Order Models}
-To evaluate the effectiveness of our $n$-layered model, we compared its performance to a first-order model on five real-world datasets: \texttt{faithwriters}, \texttt{singles.org}, \texttt{phpbb}, \texttt{rockyou}, and \texttt{myspace}. The first four have previously been analyzed in-depth \cite{wier-ccs10} and the last is a database of social networking passwords acquired via a phishing scam. All password datasets are publicly available online \cite{skullsecurity}. In the case of the \texttt{myspace} dataset, the real database had creation rules in place that required a minimum of one numeric character; however, the phishing website simply accepted any input from the user and thus only 85\% of passwords in the raw dataset contain a number. We filtered out the 15\% of passwords that could not be in the actual database and refer to the resulting cleaned dataset as the \texttt{myspace} dataset. A summary of the distributions of passwords in each database is presented in Table \ref{table:databases}.
+Bootstrapping
+    Rapidly brings population up to Lamarkian max
+    Refines with more efficient baseline of NEAT
+    
+SPECULATION!
+    Inflection points may be artifacts of NEAT
+    Some of difficulties in Lamarkian evolution may come from Average handling
+    Future experiments will remedy
 
-For each of the five databases, a model was trained based on the distribution of passwords in that database. The trained model was subsequently run for $10^{9}$ guesses on the four other databases. Figure \ref{fig:curves} shows the rate of passwords discovered and Table \ref{table:matrix} presents the overall results. The $n$-layered model clearly dominates the first-order model across all databases.
+\section{Related Work}
+\label{sec:related}
 
-\subsection{Learning an Unknown Distribution}
-Aside from the filtered \texttt{myspace} dataset,\footnote{We are currently running an evolution on the \texttt{myspace} dataset, however due to its small size the run was not able to finish by the paper deadline.} all of the real-world password databases contain no creation rules and are consequently composed of highly similar password distributions. Thus, to validate our EA we have chosen to create two realistic example databases, each a perturbed version of an English dictionary of 354K words. In our \texttt{training} dataset, we randomly mutate 10\% of the dictionary entries to contain a number; though this distribution does not match any of the datasets used above, it is not unrealistic as a recent study \cite{florencio-www07} showed that more than 90\% of seven-character passwords contain only lowercase letters. The \texttt{testing} dataset simulates the same dictionary with creation rules enforced that require a password to be at least eight characters long and contain at least one number; for each entry in the dictionary that is less than seven characters, the length constraint is satisfied by adding multiple digits. In both datasets, the digit insertions are sampled from a non-uniform distribution similar to the pattern found in the \texttt{rockyou} database \cite{wier-ccs10}. Table \ref{table:fakedatabases} summarizes the distribution of passwords in each of our example databases.
+- Behavior spaces and Culture Algorithms (Reynolds)
 
-To evaluate the performance of our on-line learning algorithm, we first train a first-order Markov model on the \texttt{training} dataset. We intentionally chose the simpler first-order model instead of the $n^{th}$ order model so as to make the comparison be against the currently-accepted state of the art. This model is run for $10^{8}$ guesses and serves as the baseline for comparison to our EA. The baseline model is then used as a seed for a population of 100 individuals, each evaluated on $10^{5}$ guesses per individual. The algorithm is run for 200 generations, producing $10^{7}$ guesses per generation.
+    - PSO
+    - Explicitly maintained repository of cultural rules
+    - Trained at the start of the generation
+    
+    
+- Culture only (Denaro)
 
-The results, shown in Figure \ref{fig:evoresults}, indicate that the final evolved model produces nearly 143\% more passwords in $10^{8}$ guesses than the baseline. Furthermore, in generation four, after only $4x10^{7}$ guesses, the on-line evolutionary algorithm surpasses the the number of correct guesses discovered by the baseline model in $10^{8}$ guesses. These results suggest that the algorithm is not only effective at learning the distribution, but also at speeding up password cracking while still in the process of learning.
+    - Shows learning can occur without any evolutionary mutation/crossover at all
+    
+    - Randomly initialized child (student) networks
+    
+    - Backprop via Student/Teacher at start of every generation
+    
+    - Select top 20% of individuals at each generation
+    
+- NEW TIES (Eiden)
 
-\section{Conclusions and Future Work}
+    - Artificial Life (foraging)
+    
+    - Decision Q-Trees
+    
+    - Student/Teacher with probabilistic example selection and propagation
+    
+- Nolfi
+
+    - Simulated annealing for embodied agents
+    
+-de Oca (Inceremental Social Learning/Particle Swarm)
+    - Foraging and Function Optimization domains
+    - Added agents to system incrementally (Steady State)
+    - Q-Learning and PSO (Value-function learning, not policy)
+    - Training examples chosen randomly from two individuals
+
+
+\section{Future Work}
+\label{sec:future}
+
+Reward-proportional updating
+
+Comparison to student/teacher models
+
+Dynamic domains
+
+Language (repellants and attractants, howler monkeys)
+
+Predators (co-evolution, fat agents)
+
+Q-Learning comparison (Ability gained per step)
+
+Variable length trajectories (Memory)
+
+\section{Conclusions}
 \label{sec:conclusions}
-
-
-
-%An important consideration is the trade-off between time spent learning a better model and time devoted to generating more guesses with a model. Learning can be wasteful as many less-fit individuals need to be evaluated to see improvement. To ensure that the evolution is truly speeding up the cracking process, we track the total number of accounts and unique passwords cracked on a per-guess basis.
+Summary
+Hopeful and uplifting ending
 
 %
 % The following two commands are all you need in the
@@ -218,51 +283,51 @@ The results, shown in Figure \ref{fig:evoresults}, indicate that the final evolv
 %
 %APPENDICES are optional
 %\balancecolumns
-\appendix
+%\appendix
 %Appendix A
-\section{Headings in Appendices}
-The rules about hierarchical headings discussed above for
-the body of the article are different in the appendices.
-In the \textbf{appendix} environment, the command
-\textbf{section} is used to
-indicate the start of each Appendix, with alphabetic order
-designation (i.e. the first is A, the second B, etc.) and
-a title (if you include one).  So, if you need
-hierarchical structure
-\textit{within} an Appendix, start with \textbf{subsection} as the
-highest level. Here is an outline of the body of this
-document in Appendix-appropriate form:
-\subsection{Introduction}
-\subsection{The Body of the Paper}
-\subsubsection{Type Changes and  Special Characters}
-\subsubsection{Math Equations}
-\paragraph{Inline (In-text) Equations}
-\paragraph{Display Equations}
-\subsubsection{Citations}
-\subsubsection{Tables}
-\subsubsection{Figures}
-\subsubsection{Theorem-like Constructs}
-\subsubsection*{A Caveat for the \TeX\ Expert}
-\subsection{Conclusions}
-\subsection{Acknowledgments}
-\subsection{Additional Authors}
-This section is inserted by \LaTeX; you do not insert it.
-You just add the names and information in the
-\texttt{{\char'134}additionalauthors} command at the start
-of the document.
-\subsection{References}
-Generated by bibtex from your ~.bib file.  Run latex,
-then bibtex, then latex twice (to resolve references)
-to create the ~.bbl file.  Insert that ~.bbl file into
-the .tex source file and comment out
-the command \texttt{{\char'134}thebibliography}.
-% This next section command marks the start of
-% Appendix B, and does not continue the present hierarchy
-\section{More Help for the Hardy}
-The acm\_proc\_article-sp document class file itself is chock-full of succinct
-and helpful comments.  If you consider yourself a moderately
-experienced to expert user of \LaTeX, you may find reading
-it useful but please remember not to change it.
-\balancecolumns
+%\section{Headings in Appendices}
+%The rules about hierarchical headings discussed above for
+%the body of the article are different in the appendices.
+%In the \textbf{appendix} environment, the command
+%\textbf{section} is used to
+%indicate the start of each Appendix, with alphabetic order
+%designation (i.e. the first is A, the second B, etc.) and
+%a title (if you include one).  So, if you need
+%hierarchical structure
+%\textit{within} an Appendix, start with \textbf{subsection} as the
+%highest level. Here is an outline of the body of this
+%document in Appendix-appropriate form:
+%\subsection{Introduction}
+%\subsection{The Body of the Paper}
+%\subsubsection{Type Changes and  Special Characters}
+%\subsubsection{Math Equations}
+%\paragraph{Inline (In-text) Equations}
+%\paragraph{Display Equations}
+%\subsubsection{Citations}
+%\subsubsection{Tables}
+%\subsubsection{Figures}
+%\subsubsection{Theorem-like Constructs}
+%\subsubsection*{A Caveat for the \TeX\ Expert}
+%\subsection{Conclusions}
+%\subsection{Acknowledgments}
+%\subsection{Additional Authors}
+%This section is inserted by \LaTeX; you do not insert it.
+%You just add the names and information in the
+%\texttt{{\char'134}additionalauthors} command at the start
+%of the document.
+%\subsection{References}
+%Generated by bibtex from your ~.bib file.  Run latex,
+%then bibtex, then latex twice (to resolve references)
+%to create the ~.bbl file.  Insert that ~.bbl file into
+%the .tex source file and comment out
+%the command \texttt{{\char'134}thebibliography}.
+%% This next section command marks the start of
+%% Appendix B, and does not continue the present hierarchy
+%\section{More Help for the Hardy}
+%The acm\_proc\_article-sp document class file itself is chock-full of succinct
+%and helpful comments.  If you consider yourself a moderately
+%experienced to expert user of \LaTeX, you may find reading
+%it useful but please remember not to change it.
+%\balancecolumns
 % That's all folks!
 \end{document}
