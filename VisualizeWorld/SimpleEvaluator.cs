@@ -91,6 +91,7 @@ namespace VisualizeWorld
         public int GenerationsPerMemorySize { get; set; }
         public int CurrentMemorySize { get; set; }
         public int MaxMemorySize { get; set; }
+        public TeachingParadigm TeachParadigm { get; set; }
 
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
@@ -197,8 +198,8 @@ namespace VisualizeWorld
                         continue;
 
                     // Only update individuals in your species
-                    //if (_genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
-                    //    continue;
+                    if (TeachParadigm == TeachingParadigm.SameSpecies && _genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
+                        continue;
 
                     var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
 

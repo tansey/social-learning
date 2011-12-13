@@ -21,7 +21,7 @@ def write_results_to_file(avg, best, counts, filename):
 def main():
     lines = []
     name = sys.argv[1] + '_results'
-    for i in range(500):
+    for i in range(501):
     	lines.append([])
     # Load each line into the arrays
     for i in range(30):

@@ -10,12 +10,13 @@
   <ComplexityThreshold>50</ComplexityThreshold>
   <AgentType>Social</AgentType>
   <Memory>
-    <Paradigm>IncrementalGrowth</Paradigm>
+    <Paradigm>Fixed</Paradigm>
     <GrowthGenerations>20</GrowthGenerations>
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <PlantLayout>Spiral</PlantLayout>
+  <TeachingParadigm>Everyone</TeachingParadigm>
+  <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
     Foraging Evolution

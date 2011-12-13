@@ -42,6 +42,7 @@ namespace VisualizeWorld
         MemoryParadigm _memory;
         int _memGens;
         int _maxMemorySize;
+        TeachingParadigm _teaching;
         SimpleEvaluator<NeatGenome> _evaluator;
         static FastRandom _random = new FastRandom();
         int _outputs;
@@ -98,6 +99,7 @@ namespace VisualizeWorld
         public MemoryParadigm MemParadigm { get { return _memory; }  set { _memory = value; } }
         public int MemoryGenerations { get { return _memGens; } set { _memGens = value; } }
         public int MaxMemorySize { get { return _maxMemorySize; } set { _maxMemorySize = value; } }
+        public TeachingParadigm TeachParadigm { get; set; }
         public SimpleEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
         
@@ -134,6 +136,7 @@ namespace VisualizeWorld
                     _memGens = XmlUtils.GetValueAsInt(memSection, "GrowthGenerations");
                     _maxMemorySize = XmlUtils.GetValueAsInt(memSection, "MaxSize");
                 }
+                _teaching = (TeachingParadigm)Enum.Parse(typeof(TeachingParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "TeachingParadigm"));
             }
             var species = new List<PlantSpecies>();
 
@@ -163,7 +166,7 @@ namespace VisualizeWorld
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
                 PlantLayoutStrategy = _plantLayout
             };
-            
+
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
             _neatGenomeParams = new NeatGenomeParameters()
@@ -258,7 +261,8 @@ namespace VisualizeWorld
                 EvoParadigm = _paradigm,
                 MemParadigm = _memory,
                 GenerationsPerMemorySize = _memGens,
-                MaxMemorySize = _maxMemorySize
+                MaxMemorySize = _maxMemorySize,
+                TeachParadigm = _teaching
             };
             
             // Initialize the evolution algorithm.

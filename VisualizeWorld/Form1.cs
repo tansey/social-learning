@@ -150,9 +150,10 @@ namespace VisualizeWorld
             }
 
             // Draw the fitness scores
-            g.FillRectangle(Brushes.White, 0, 30, 150, 15);
+            g.FillRectangle(Brushes.White, 0, 30, 150, 50);
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                             DefaultFont, Brushes.Black, 0, 30);
+            g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 
             // Draw the network inputs and outputs for the Q-Learning agent
             if (_debugOutputs)

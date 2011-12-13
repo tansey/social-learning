@@ -19,7 +19,7 @@ namespace BatchExperiment
         string _name;
         SimpleExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
-        const int MaxGenerations = 500;
+        const int MaxGenerations = 200;
         string _filename;
         bool finished = false;
         List<double>[] _averageFitness;
@@ -37,10 +37,10 @@ namespace BatchExperiment
             Console.WriteLine("WARNING: Skipping baseline results");
             for (int i = 0; i < numRuns; i++)
             {
-                //Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
+                Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
                 //p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv", sensorDict);
                 Program q = new Program("Social_Darwin_" + i, socialDarwinAvg, socialDarwinBest);
-                q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv", sensorDict);
+                //q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv", sensorDict);
                 Program m = new Program("Social_Lamark_" + i, socialLamarkAvg, socialLamarkBest);
                 m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv", sensorDict);
                 //r[3 * i] = p;
@@ -109,6 +109,7 @@ namespace BatchExperiment
              _experiment.World.dictionary = sensorDict;
              startEvolution();
 
+             
          }
 
         void startEvolution()
@@ -146,6 +147,12 @@ namespace BatchExperiment
                     finished = true;
                     Console.WriteLine("{0} Finished!", _name);
                 }
+            }
+
+            if (_ea.CurrentGeneration == 5)
+            {
+                Console.WriteLine("Switching to Darwinian evolution with no learning");
+                _experiment.Evaluator.AgentType = AgentTypes.Neural;
             }
         }
         
