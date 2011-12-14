@@ -108,27 +108,25 @@ Social learning is an extension to Evolutionary Algorithms that enables individu
 \section{Introduction} 
 One explanation for the evolution of large brains in primates is the social intelligence hypothesis, which states that the selection pressure driving the increase in brain size was the need to handle complex social behavior. The cultural intelligence hypothesis extends this concept specifically to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. As well as being an intuitive justification, these hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and has been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
 
-Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance Evolutionary Algorithms (EAs) with a hierarchical structure (students and teachers) that facilitates the automatic discovery of suitable actions (i.e., all teacher actions) to use as training examples and the target individuals (i.e., all students) to train. Thus, while cultural algorithms capture the ability of humans to learn from formal instruction, they do not fully model all forms of learning from observation in primates.
+Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance Evolutionary Algorithms (EAs) with a hierarchical structure (i.e., students and teachers) that facilitates the automatic discovery of suitable actions to use as training examples and target individuals to train. Thus, while cultural algorithms capture the ability of humans to learn from formal instruction, they do not fully model all forms of learning from observation in primates.
 
-Mirror neurons exist in primates and echo actions that they see performed. When a monkey's arm is touched, an observing monkey will fire some of the same neurons it would if its own arm was touched. \cite{gallese-98}  Our algorithm is inspired by mirror neurons - when one agent does something that results in reward, all of the other agents in the population begin to emulate that behavior in that situation.
-    
-We demonstrate and explore these interactions in a well-known foraging domain in which agents search for food in an otherwise featureless world riddled with poison.  When one individual experiences a rewarding event, it alerts all the other individuals to what has just happened, and trains them on evidence of that event.
-As an individual using social learning moves through the world, it receives feedback from other agents about actions that end in reward.  This leads to an agent having two potential strategies to reap reward - both its original fitness when it was created, and positive behaviors it learns in an epoch.
-We perform evolution on these individuals, and in every generation the agents that perform best - including what they learned in a lifetime - are those with the highest fitness in the EA.  
-Each generation is an all-new population, but each benefits from that which was learned before, and each has the opportunity to improve within its lifetime by learning from other individuals.
-    
-By using social learning, the individuals in our population were able to acheive near-optimal performance in many fewer generations than were agents that did not learn during a lifetime and only evolved.
+We present a non-hierarchical approach to social learning, inspired by mirror neurons \cite{gallese-98}, where agents learn by observing the actions of other agents. Primate brains contain mirror neurons that activate when seeing other primates carry out an action, in effect mirroring the observed primate's action internally. Analogously, agents in our algorithm oberve the population and, when a positive reward is received, mimic that action in order to learn a policy similar to that of the observed agent. This algorithm separates itself from other social learning algorithms in that the quality of a training example is measured by the reward received rather than the role of the observed agent.
 
-The novel contributions made by this paper are 
+We validate our algorithm in a well-known foraging domain in which agents must discriminate between poisonous and nutrious food. Through our experiments in this domain, we compare our non-hierarchical social learning approach in both a Darwinian and Lamarkian evolutionary paradigm. By using social learning, the individuals in our population were able to acheive near-optimal performance in many fewer generations than were agents that did not learn during a lifetime and only evolved. Our results further indicate that a social Lamarkian bootstrapping phase not only drastically speeds up learning but also increases the maximum fitness of the champion individuals.
+
+This paper makes the following novel contributions:
+ 
 \begin{itemize}
-\item A non-hierarchal social learning paradigm, in which individuals are not classified to be teachers and students.
-\item Filtering of teaching instances based only on positive rewards. 
+\item A non-hierarchal approach to social learning, in which individuals are not classified to be teachers and students.
+\item A hybrid social learning algorithm that uses social learning as a bootstrapping phase for neuroevolution.
+\item An analysis of the differences in performance between Darwinian and Lamarkian evolution in the place of social learning.
 \end{itemize}
  
- In Section \ref{sec:nhsl} we detail the workings of our Non-Hierarchal Social Learning algorithm.
-In Section \ref{sec:setup} we describe our experimental setup and domain and the specifics of our implementation.
-Section \ref{sec:results} presents the results of several empirical evaluations of our work.
-Finally, in Section \ref{sec:related} we present related work in the domain of social learning, and in Sections \ref{sec:future} and \ref{sec:conclusions} we present our conclusions.
+The remainder of the paper is structured as follows.
+In Section \ref{sec:nhsl} we detail the workings of our non-hierarchal social learning algorithm.
+In Section \ref{sec:setup} we describe our experimental setup and the foraging domain.
+Section \ref{sec:results} presents the results of our experiments.
+Related work is discussed in Section \ref{sec:related}. Planned extensions to our work is described in Section \ref{sec:future}. Finally, in Section \ref{sec:conclusions} we present our conclusions.
 
 \section{Non-Hierarchical Social Learning}
 \label{sec:nhsl}
@@ -217,15 +215,6 @@ Figure \ref{fig:population-species} shows the results comparing population-based
 The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. The hybrid version is able to achieve a slightly higher (though not statistically significant) fitness than either comparison method and does not suffer from the degradation present in the pure social Lamarkian setup.
 
 In the next section we present a brief discussion of related work on social learning in EAs.
- 
-\section{Related Work}
-\label{sec:related}
-Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record.
-We next highlight relevant prior work and explain how our approach differs from previous efforts.
-
-Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. Cultural algorithms maintain a ``belief space'' representing different categories of knowlege that the population has learned. New individuals are trained using this belief space in a student/teacher mode. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
-
-The ability of social learning to improve agents in a foraging domain is a popular setting that has explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student/teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
 \section{Future Work}
 \label{sec:future}
