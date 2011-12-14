@@ -164,9 +164,11 @@ In this section we first describe the domain in which we test our model, and dis
     Our domain is a foraging world in which agents move freely on a continuous toroidal surface.  We populate our world with various plants, some of which bear positive reward that increases an agents' fitness, and others of which bear negaive reward which reduces it. These plants are randomly distributed over the surface of the world. This foraging domain is non-competitive and non-cooperative - each agent acts independently of all other agents, with the exception of the training signals which pass between them. Each individual begins each generation in the center of the world, oriented in the same direction, and confronted with the same plants. Every agent then has several time steps to move about the surface of the world eating plants - which happens automatically when an individual draws close - before the generation is over and a new population is evolved. 
     
 \subsection*{Sensors and Outputs} 
-  Agents 'see' plants within a certian horizon via a collection of sensors - they have several sensors for each type of plant, each of which detects plants in a different sector of the 180 degrees ahead of the agent.  Agents cannot see other individuals, or plants they have already eaten- all they can see is edible food.  The strength of the signal coming into a sensor is proportional to both the proximity of the plant it is detecting and the number of plants visible. Agents also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and the individual's state.
+
+  Agents ``see'' plants within a certian horizon via a collection of sensors - they have several sensors for each type of plant, each of which detects plants in a different sector of the 180 degrees ahead of the agent.  Agents cannot see other individuals, or plants they have already eaten- all they can see is edible food.  The strength of the signal coming into a sensor is proportional to both the proximity of the plant it is detecting and the number of plants visible. Agents also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and the individual's state.
   
    Each agent has two controls that are the outputs of the neural network - an accelerator/decellerator which changes the agent velocity, and another control that turns the agent to the left or right. Each of these output nodes is mapped onto a range for the values of these controls.  The agent never knows its absolute orientation in the world or its absolute position - it must make decisions based only on the input from its sensors.
+
 
 \subsection*{Common Parameters} 
 For all of our experiments, the world is 500 by 500 units, with 20 randomly distributed plants of each value -100, -50, 0, 50, and 100. We create 100 different agents in each generation, and speciate them into 10 species. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. Each generation lasted 1000 timesteps, and each experiment was averaged over 30 runs.
@@ -221,8 +223,7 @@ In this section we discuss potential future work that could be done to exploit n
 
 \section{Conclusions}
 \label{sec:conclusions}
-Summary
-Hopeful and uplifting ending
+We have presented a non-hierarchical approach to apply social learning in evolutionary algorithms. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward. Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. Further results from our hybrid algorithm suggest that bootstrapping a traditional Darwinian EA with a brief period of non-hierarchical Lamarkian social learning can substantially improve performance of the basline EA and reaches higher fitness than either approach in isolation.
 
 %
 % The following two commands are all you need in the
