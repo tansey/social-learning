@@ -129,12 +129,23 @@ Finally, in Section \ref{sec:related} we present related work in the domain of s
 
 \section{Non-Hierarchical Social Learning}
 \label{sec:nhsl}
-Intro
-    - Agents acting in parallel
-    - Highly expensive simulations
-    
-Learning from Positive Rewards
-    - 1 step memory
+In this section, we elaborate on non-hierarchical social learning and its justification and applications.
+Social learning is valuable in expensive domains.  When computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available.
+Social learning is also valuable in dynamic domains. 
+When agents act in parallel in dynamic domains, one agent's experience of a changing condition can alert other agents so they can adjust their behavior, which might be impossible were the individuals forced to have every experience themselves.
+
+Our approach is as follows:
+Our agents move through the world. 
+At every timestep, each agent is presented with the output of a set of sensors.  
+Each agent activates its recurrent neural network and outputs actions.
+The agent then saves the input-output pair in memory, which stretches back to the last $n$ epochs.
+After performing the actions, the agent sees if it has received a reward, and if that reward is positive.
+If so, it trains every other agent in the population with its memory using backpropagation. \ref{fig:flowchart}
+
+We use positive rewards to identify those actions on which we want to train agents.
+ Previous approaches \cite{?} instead chose strong individuals as teachers and train weaker individuals on their actions.
+ 
+ There are t
 
 Why only positive
     Why backprop works
@@ -143,7 +154,7 @@ Why only positive
 \begin{figure}
   \centering
     \includegraphics[scale=.6]{flowchart.pdf}
-  \caption{FLOWCHART.}
+  \caption{Individuals remember their most recent inputs and the associated actions taken, and when rewarded will train other individuals on their recent actions.}
   \label{fig:flowchart}
 \end{figure}
 
