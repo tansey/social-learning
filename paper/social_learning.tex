@@ -105,26 +105,23 @@ Social learning is an extension to Evolutionary Algorithms that enables individu
 
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life}
 
-\section{Introduction}
-Biological inspiration
-    - Social and Cultural Intelligence Hypotheses
-    - Mirror Neurons
-        - Reinforcing seen behaviors
-    - Learning in primitive communities
+\section{Introduction} 
+	In Evolutionary Algorithms, individual agents often learn within a world and then die or reproduce without passing on the knowledge they have learned.  This is wasteful, especially in domains that are difficult or impossible to simulate, like realistic environments or real-life data.
+	Various animals have brains that are specialized for various purposes - bees dance to communicate with one another, homing pigeons navigate effectively, and humans and other primates communicate with one another.  It seems that we have evolved a specialty for social communication. 
+	Mirror neurons are neurons that exist in primates and echo actions that they see performed.  When a monkey's arm is touched, an observing monkey will fire some of the same neurons it would if its own arm was touched. \cite{gallese-98}  Our algorithm is inspired by mirror neurons - when one individual does something that results in reward, all of the other agents in the population begin to emulate that behavior in that situation.
     
-Summary of approach
-    - foraging domain
-    - generations of all-new populations
+We demonstrate and explore these interactions in a well-known foraging domain in which agents search for food in an otherwise featureless world riddles with poison.  When one individual experiences a rewarding event, it alerts all the other individuals to what has just happened, and trains them on evidence of that event.
+We perform evolution on these individuals, and in every generation the agents that performed best - including what they learned in a lifetime - are those with the highest fitness in the EA.  
+Each generation is an all-new population, but each benefits from that which was learned before, and each has the opportunity to improve within its lifetime by learning from other individuals.
     
-Summary of results
+By using social learning, the individuals in our population were able to acheive near-optimal performance in many fewer generations than were agents that did not learn during a lifetime and only evolved.
 
 The novel contributions made by this paper are 
 \begin{itemize}
 \item A non-hierarchal social learning paradigm, in which individuals are not classified to be teachers and students.
 \item Filtering of teaching instances based only on positive rewards. 
 \end{itemize}
-    
-In this paper investigate variations on our method and present experimental results. 
+ 
  In Section \ref{sec:nhsl} we detail the workings of our Non-Hierarchal Social Learning algorithm.
 In Section \ref{sec:setup} we describe our experimental setup and domain and the specifics of our implementation.
 Section \ref{sec:results} presents the results of several empirical evaluations of our work.
