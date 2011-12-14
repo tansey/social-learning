@@ -207,12 +207,40 @@ Genetic inheritance paradigms in evolution falls into one of two main categories
 
 Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In the context of \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferrable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantagous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution outperforms Darwinian evolution initially.
 
-However, the degradation of the Lamarkian fitness after generation 10 is surprising. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, the learning is derived more from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down.
+However, the degradation of the Lamarkian fitness after generation 10 is surprising. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, the learning is derived more from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down. A similar effect has been observed before \cite{denaro1996cultural}.
 
-\subsection*{Population-based vs. Species-based}
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{population_species.pdf}
+  \caption{The results of agents learning from observations of the entire population compared to only agents in the same species.}
+  \label{fig:population-species}
+\end{figure}
 
+\subsection*{Population vs. Species Learning}
+While Lamarkian social learning is clearly able to find results quickly, it suffers from two main issues. As discussed above, the population begins to regress towards the mean after reaching the initial peak fitness. Also, while in many environments the simulation time required for running thousands of backprop on each individual may be irrelevant, to maximize practical efficiency it is important that our algorithm minimizes its overall impact on total runtime. To address these issues, we next consider a cultural variant of our social learning approach in which individuals only learn from observations of other individuals in the species. In practice, this significantly speeds up the application as it performs an order of magnitude less work for a population of 100 agents divided into 10 species.
+
+Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. Interestingly, the species-based social learning not only reaches a higher peak than the population-based method, but is also able to sustain its level of fitness for longer. Unfortunately, both approaches still suffer from the degradation of fitness characteristic of Lamarkian social evolution.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{learning_bootstrapping.pdf}
+  \caption{The results of our hybrid algorithm that uses social Lamarkian evolution to bootstrap the population for five generations then switches to traditional non-social Darwinian evolution.}
+  \label{fig:learning-bootstrapping}
+\end{figure}
 
 \subsection*{Bootstrapping}
+The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. The hybrid version is able to achieve a slightly higher (though not statistically significant) fitness than either comparison method and does not suffer from the degradation present in the pure social Lamarkian setup.
+
+In the next section we present a brief discussion of related work on social learning in EAs.
+ 
+\section{Related Work}
+\label{sec:related}
+Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record.
+We next highlight relevant prior work and explain how our approach differs from previous efforts.
+
+Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. Cultural algorithms maintain a ``belief space'' representing different categories of knowlege that the population has learned. New individuals are trained using this belief space in a student/teacher mode. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
+
+The ability of social learning to improve agents in a foraging domain is a popular setting that has explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student/teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
 \section{Related Work}
 \label{sec:related}
