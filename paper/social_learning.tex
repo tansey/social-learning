@@ -221,20 +221,17 @@ However, the degradation of the Lamarkian fitness after generation 10 is surpris
 \subsection*{Population vs. Species Learning}
 While Lamarkian social learning is clearly able to find results quickly, it suffers from two main issues. As discussed above, the population begins to regress towards the mean after reaching the initial peak fitness. Also, while in many environments the simulation time required for running thousands of backprop on each individual may be irrelevant, to maximize practical efficiency it is important that our algorithm minimizes its overall impact on total runtime. To address these issues, we next consider a cultural variant of our social learning approach in which individuals only learn from observations of other individuals in the species. In practice, this significantly speeds up the application as it performs an order of magnitude less work for a population of 100 agents divided into 10 species.
 
-Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. The 
+Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. Interestingly, the species-based social learning not only reaches a higher peak than the population-based method, but is also able to sustain its level of fitness for longer. Unfortunately, both approaches still suffer from the degradation of fitness characteristic of Lamarkian social evolution.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{learning_bootstrapping.pdf}
+  \caption{The results of our hybrid algorithm that uses social Lamarkian evolution to bootstrap the population for five generations then switches to traditional non-social Darwinian evolution.}
+  \label{fig:learning-bootstrapping}
+\end{figure}
 
 \subsection*{Bootstrapping}
-
-Graphs!
-
-Bootstrapping
-    Rapidly brings population up to Lamarkian max
-    Refines with more efficient baseline of NEAT
-    
-SPECULATION!
-    Inflection points may be artifacts of NEAT
-    Some of difficulties in Lamarkian evolution may come from Average handling
-    Future experiments will remedy
+The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. The hybrid version is able to achieve a slightly higher (though not statistically significant) fitness than either comparison method and does not suffer from the degradation present in the pure social Lamarkian setup.
 
 \section{Related Work}
 \label{sec:related}
