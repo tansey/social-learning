@@ -164,7 +164,7 @@ In this section we first describe the domain in which we test our model, and dis
     Our domain is a foraging world in which agents move freely on a continuous toroidal surface.  We populate our world with various plants, some of which bear positive reward that increases an agents' fitness, and others of which bear negaive reward which reduces it. These plants are randomly distributed over the surface of the world. This foraging domain is non-competitive and non-cooperative - each agent acts independently of all other agents, with the exception of the training signals which pass between them. Each individual begins each generation in the center of the world, oriented in the same direction, and confronted with the same plants. Every agent then has several time steps to move about the surface of the world eating plants - which happens automatically when an individual draws close - before the generation is over and a new population is evolved. 
     
 \subsection*{Sensors and Outputs} 
-  Agents 'see' plants within a certian horizon via a collection of sensors - they have 8 sensors for each type of plant, each of which covers 22.5 degrees, leading to a field of view of 180 degrees in front of them.  Agents cannot see other agents, or plants they have already eaten- all they can see is edible food.  The strength of the signal coming into a sensor is proportional to both the proximity of the plant it is detecting and the number of plants visible.
+  Agents ``see'' plants within a certian horizon via a collection of sensors - they have 8 sensors for each type of plant, each of which covers 22.5 degrees, leading to a field of view of 180 degrees in front of them.  Agents cannot see other agents, or plants they have already eaten- all they can see is edible food.  The strength of the signal coming into a sensor is proportional to both the proximity of the plant it is detecting and the number of plants visible.
    Agents also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and the individual's state. Each agent has two effectors by which it can influence its position - one that controls $\delta v$, the change in velocity, and another that controls $\delta \theta$, the change in angle.
 Each of these is one output node of a neural network. $\delta v$ is capped between -1 and 1 (the agents can speed up or slow down by one unit per timestep).  $\delta \theta$ is capped between -30 and 30 degrees, the amount an agent can turn in a timestep.  The maximum velocity of an agent is 5 units per timestep.
 
@@ -224,8 +224,7 @@ In this section we discuss potential future work that could be done to exploit n
 
 \section{Conclusions}
 \label{sec:conclusions}
-Summary
-Hopeful and uplifting ending
+We have presented a non-hierarchical approach to apply social learning in evolutionary algorithms. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward. Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. Further results from our hybrid algorithm suggest that bootstrapping a traditional Darwinian EA with a brief period of non-hierarchical Lamarkian social learning can substantially improve performance of the basline EA and reaches higher fitness than either approach in isolation.
 
 %
 % The following two commands are all you need in the
