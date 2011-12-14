@@ -188,28 +188,33 @@ In Social Darwinian learning and Social Lamarkian learning, we backprop on other
 In Social Darwinism, as in Darwinan evolution in reality, the changes to the genome do not regress back to the phenome, and the offspring of an individual is determined by the phenome it had before it began learning.
 In Social Lamarkism, the changes to the genome as the individual learns are propagated back to the phenome, and the offspring of an individual incorporate what that individual has learned in its lifetime into their phenomes.
 \subsection*{Experiments} 
-We ran several different experiments to investigate the effect of our approach.
-We ran evolution using NEAT both with social learning - both Lamarkian and Darwinian - and without it.
-We ran an experiemtn in which we compared learning with all agents sharing information with all other agents to learning with agents only sharing information with other agents in their own species.
-In each of these, we kept the size of the world stable at $500\times500$, and the population of agents constant at 100, with 10 different species. 
- We populated the world with 100 plants of varying reward such that the maximum reward is 3000 and the minimum reward is -3000.
+We ran several different experiments to investigate the effectiveness of our approach.
+In each of these, we kept the size of the world stable at $500\times500$, and the population of agents constant at 100, with 10 different species.
+We populated the world with 100 plants of varying reward such that the maximum reward is 3000 and the minimum reward is -3000.
+All experiments were ran repeated in 30 independent trials and their results were averaged.
 
 \section{Results}
 \label{sec:results}
-\subsection*{ Baseline, Social Darwin, Social Lamark}
-        - Lamarkian quickly reaches a near-optimal solution
-        
-        - Lamarkian degrades over time after peaking in performance
-            - Speculation: Backprop results in poor agents ‘supervising’ strong ones
-            - Bad behavior gets reinforced in good agents
-            
-        - Others slowly climb to reach good solutions
-        
-        - No meaningful difference between Baseline and Social Darwin
-            - The plant rewards are static for each type
-            - Learning in darwinian evolution useful only in a dynamic environment
-            - Baldwin effect
+We next present the results of our three experiments that validate our non-hierarchical model. We begin by measuring the performance of social learning in both Darwinian and Lamarkian evolutionary paradigms. Following this, we determine whether social learning is effective when updates are performed only among the same species, with the goal of reducing the overall runtime cost of adding social learning. Finally, leverage the insights from the first two experiments and use Lamarkian social learning as a bootstrapping phase for Darwinian neuroevolution with no learning.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.6]{darwin_lamark.pdf}
+  \caption{A comparison of the results for our non-hierarchical social learning algorithm in Darwinian and Lamarkian evolutionary paradigms.}
+  \label{fig:darwin-lamark}
+\end{figure}
+
+\subsection*{Darwinian vs. Lamarkian}
+Genetic inheritance paradigms in evolution falls into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge gained or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring at birth. In the context of our experiments, this corresponds to whether the changes in each individual's neual network weights are propagated to their genome at the end of the generation.
+
+Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In the context of \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferrable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantagous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution outperforms Darwinian evolution initially.
+
+However, the degradation of the Lamarkian fitness after generation 10 is surprising. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, the learning is derived more from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down.
+
 \subsection*{Population-based vs. Species-based}
+
+
+\subsection*{Bootstrapping}
 
 Graphs!
 
