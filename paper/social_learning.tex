@@ -130,18 +130,13 @@ Finally, in Section \ref{sec:related} we present related work in the domain of s
 
 \section{Non-Hierarchical Social Learning}
 \label{sec:nhsl}
-In this section, we elaborate on non-hierarchical social learning and its justification and applications.
-Social learning is valuable in expensive domains.  When computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available.
-Social learning is also valuable in dynamic domains. 
-When agents act in parallel in dynamic domains, one agent's experience of a changing condition can alert other agents so they can adjust their behavior, which might be impossible were the individuals forced to have every experience themselves.
+In this section, we elaborate on our approach and its justification and applications. First, we discuss some of the advantages of non-hierarchial social learning and the domains in which it provides promising funtionality.  Next, we describe the algorithm at the core of our model, based on positive rewards.  Finally, we go into some detail about the particulars of our implementation.
 
-Our approach is as follows:
-Our agents move through the world. 
-At every timestep, each agent is presented with the output of a set of sensors.  
-Each agent activates its recurrent neural network and outputs actions.
-The agent then saves the input-output pair in memory, which stretches back to the last $n$ epochs.
-After performing the actions, the agent sees if it has received a reward, and if that reward is positive.
-If so, it trains every other agent in the population with its memory using backpropagation. \ref{fig:flowchart}
+Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.  
+
+Another important area for social learning is dynamic domains.  In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a changing condition can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
+
+Our approach, detailed in \ref{fig:flowchart} is an online-learning algorithm that operates continuously as an agent moves in the world.  At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state.  The output of this network represents the agent's motor commands - what actions it should take. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retreive its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
 
 \begin{figure}
   \centering
@@ -151,40 +146,26 @@ If so, it trains every other agent in the population with its memory using backp
 \end{figure}
 
 
-We use positive rewards to identify those actions on which we want to train agents.
-As a result, it takes only the notion of a reward to allow our social learnng agents to begin to teach one another in real time.
- Previous approaches \cite{?} instead chose strong individuals as teachers and train weaker individuals on their actions.
-By allowing any individual to train any other, we leverage a diversity of different behaviors in solving problems in a domain.
+As a result of using only positive rewards to identify those actions on which we want to train agents, it takes only the notion of a reward to allow our social learnng agents to begin to teach one another on line. Previous approaches \cite{denaro1996cultural} instead chose strong individuals as teachers to train weaker individuals in appropriate behavior. By allowing any individual to train any other, we leverage a diversity of different behaviors in solving problems in a domain.
+
+\subsection*{Evolutionary Framework}
+In this section, we discuss the framework in which we based our social learning, NeuroEvolution of Augmented Topologies (NEAT)\cite{stanley2002evolving}, and our modifications and extensions to this framework.
+
+NEAT is an evolutionary algorithm that generates recurrent neural networks.  Through a process of adding and removing nodes and changing weights, NEAT evolves phenomes that unfold into networks.  In every generation, those networks with the highest fitness continue, and those that have low fitness are less likely to do so.  NEAT maintains diversity in a number of ways, notably through maintaining a variety of different species, neural network phenomes that are related.  
+
+In our domain, NEAT is used to generate a population of individual neural nets that control agents in the world.  The input to each network is the agent's sensors, and the output is two controls, of which one accelerates and decellerates the agent and the other turns it.  The fitness of each network is determined by the success of the agent it controls - over the course of 1000 timesteps, networks controlling agents who eat a good deal of rewarding fruit and very little poison will have high fitnesses and those which control agents with less wise dietary habits will have low fitness.
+
+In standard NEAT, the networks that are created do not change within one generation, but in non-hierarchial social learning, we do backprop on the networks that NEAT creates. (Because these networks are recurrent, we use backpropagation through time to do our social learning \cite{werbos1990backpropagation}.)  The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the phenome itself is modified.
 
 \section{Experimental Setup}
 \label{sec:setup}
-In this section we describe the experimental setup of our world.
-We first describe the foraging somain, followed by the EA framework we use, NEAT.  Finally we outline the various experiments that we performed, and discuss what we varied and what we let remain constant in each.
+In this section we describe the experimental setup of our world. We first describe the foraging domain, followed by the EA framework we use, NEAT.  Finally we outline the various experiments that we performed, and discuss what we varied and what we let remain constant in each.
 
-    We use a foraging world in which agents move freely on a continuous toroidal surface which is 500 by 500 units.  
-We populate our world with five types of plants - one with a strong reward, one with a weak reward, one which is neutral,one which deals a small penalty to an agent that eats it, and one that deals a large penalty.  
-These plants are randomly distributed over the surface of the world.
-  The domain is non-competitive and non-cooperative - each agent acts independently of all other agents.
-  Each individual begins each generation in the center of the world, with a uniform orientation.
-  The plants are randomly distributed around the world, and each individual has 1000 time steps in which to move and consume plants.
-  Each plant has a radius of 5 units, and is eaten by any agent that comes within that radius and has not yet eaten the plant (each agent can only eat each plant once, and can only see plants it has not eaten.)
+    We use a foraging world in which agents move freely on a continuous toroidal surface which is 500 by 500 units.  We populate our world with five types of plants - one with a strong reward, one with a weak reward, one which is neutral,one which deals a small penalty to an agent that eats it, and one that deals a large penalty. These plants are randomly distributed over the surface of the world. The domain is non-competitive and non-cooperative - each agent acts independently of all other agents. Each individual begins each generation in the center of the world, with a uniform orientation. The plants are randomly distributed around the world, and each individual has 1000 time steps in which to move and consume plants. Each plant has a radius of 5 units, and is eaten by any agent that comes within that radius and has not yet eaten the plant (each agent can only eat each plant once, and can only see plants it has not eaten.)
   
- The agents detect plants by means of sensors - they have 8 sensors for each plant, each of which covers 22.5 degrees, leading to a field of view of 180 degrees in front of them.
-   They also have a sensor by which they can detect their current velocity.
-   These sensors constitute the inputs to the neural network, and the individual's state.
-Each agent has two effectors by which it can influence its position - one that controls $\delta v$, the change in velocity, and another that controls $\delta \theta$, the change in angle.
-Each of these is one output node of a neural network.
-  $\delta v$ is capped between -1 and 1 (the agents can speed up or slow down by one unit per timestep).
-  $\delta \theta$ is capped between -30 and 30 degrees, the amount an agent can turn in a timestep.
-  The maximum velocity of an agent is 5 units per timestep.
-\subsection*{NEAT and SharpNEAT}
-NEAT, the NeuroEvolution of Augmented Topologies algorithm for evolving neural networks, was the framework in which we performed our experiments.  
-We used NEAT to generate a population of individuals to navigate the world.  
-Each individual moving in the world is generated by a genome produced by NEAT, and the fitness of an individual is equal to the sum of all of the plants it eats in a generation (1000 timesteps).
-NEAT then uses the fitnesses of these individuals to create new networks by modifying weights and adding and removing connections.
+ The agents detect plants by means of sensors - they have 8 sensors for each plant, each of which covers 22.5 degrees, leading to a field of view of 180 degrees in front of them. They also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and the individual's state. Each agent has two effectors by which it can influence its position - one that controls $\delta v$, the change in velocity, and another that controls $\delta \theta$, the change in angle.
+Each of these is one output node of a neural network. $\delta v$ is capped between -1 and 1 (the agents can speed up or slow down by one unit per timestep).  $\delta \theta$ is capped between -30 and 30 degrees, the amount an agent can turn in a timestep.  The maximum velocity of an agent is 5 units per timestep.
 
-Because NEAT evolves recurrent neural networks, we used backpropagation through time to do our social learning \cite{somedude}. In Social Darwinian learning and Social Lamarkian learning, we backprop on other individuals whenever an individual receives reward. In Social Darwinism, as in Darwinan evolution in reality, the changes to the genome do not regress back to the phenome, and the offspring of an individual is determined by the phenome it had before it began learning.
-In Social Lamarkism, the changes to the genome as the individual learns are propagated back to the phenome, and the offspring of an individual incorporate what that individual has learned in its lifetime into their phenomes.
 \subsection*{Experiments} 
 We ran several different experiments to investigate the effectiveness of our approach.
 In each of these, we kept the size of the world stable at $500\times500$, and the population of agents constant at 100, with 10 different species.
@@ -242,36 +223,10 @@ Cultural algorithms \cite{reynolds1994introduction} have been used frequently in
 
 The ability of social learning to improve agents in a foraging domain is a popular setting that has explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student/teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
-\section{Related Work}
-\label{sec:related}
-Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record.
-We next highlight relevant prior work and explain how our approach differs from previous efforts.
-
-Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. Cultural algorithms maintain a ``belief space'' representing different categories of knowlege that the population has learned. New individuals are trained using this belief space in a student/teacher mode. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
-
-The ability of social learning to improve agents in a foraging domain is a popular setting that has explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student/teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
-
 \section{Future Work}
 \label{sec:future}
 
-In this section we discuss potential future work that could be done to exploit non-hierarchical social learning and improve it as both a model of artificial life and a machine learning algorithm.
-The most obvious extension to this work of social learning is to make it more social - to allow the agents to see and interact with one another.
-To that end, evolving communication between agents is an important step in developing these ideas. 
-Additionally, exploring the interactions between predators and social learning agents would be interesting future work. Despite being much weaker than many predators, humans thrive - perhaps because of our social brains.
-Fundamentally, our work is related to Q-learning - comparing Q-learning with social learning is another avenue of future research.
-%Reward-proportional updating
-
-%Comparison to student/teacher models
-
-%Dynamic domains
-
-%Language (repellants and attractants, howler monkeys)
-
-%Predators (co-evolution, fat agents)
-
-%Q-Learning comparison (Ability gained per step)
-
-%Variable length trajectories (Memory)
+In this section we discuss potential future work that could be done to exploit non-hierarchical social learning and improve it as both a model of artificial life and a machine learning algorithm. Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchial social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hiearchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  The current non-hierarchical social learning model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Improving the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.  Finally, the foraging domain in its current incarnation is too easy for our algorithm - Lamarkian evolution solves it within a few generations. Non-hierarchical social learning should be applied to more difficult problems.
 
 \section{Conclusions}
 \label{sec:conclusions}
