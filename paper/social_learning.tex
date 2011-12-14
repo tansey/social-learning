@@ -94,7 +94,7 @@ Social learning is an extension to Evolutionary Algorithms that enables individu
  Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one group of individuals is used to train the remaining individuals in the population.  
  We present a non-hierarchical model of social learning in which we do not label each agent, instead allowing any individual which experiences positive reward to teach the rest of the agents on its recent behavior. 
  We validate our approach in a foraging domain, comparing social learning in both Darwinian and Lamarkian paradigms to a standard Darwinian evolution with no learning. 
- We show that our non-hierarchical form facilitates rapid discovery of near-optimal solutions.
+ We show that our non-hierarchical form facilitates rapid discovery of near-optimal solutions.  While Lamarkian evolution eventually produces a regression-to-the-mean effect, we bootstrap several generations of Lamarkian evolution with regular GAs to produce a highly efficient solution to the foraging problem.
 \end{abstract}
 
 % A category with the (minimum) three required fields
@@ -106,12 +106,13 @@ Social learning is an extension to Evolutionary Algorithms that enables individu
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life}
 
 \section{Introduction} 
-	In Evolutionary Algorithms, individual agents often learn within a world and then die or reproduce without passing on the knowledge they have learned.  This is wasteful, especially in domains that are difficult or impossible to simulate, like realistic environments or real-life data.
+	In Evolutionary Algorithms, individual agents often learn within a world and then die or reproduce without passing on the knowledge they have learned.  This is wasteful, especially in domains that are difficult or impossible to simulate, like realistic environments or real-life data.  Social learning represents a way to share knowledge without the expense of sending each individual throught the world many times.
 	Various animals have brains that are specialized for various purposes - bees dance to communicate with one another, homing pigeons navigate effectively, and humans and other primates communicate with one another.  It seems that we have evolved a specialty for social communication. 
-	Mirror neurons are neurons that exist in primates and echo actions that they see performed.  When a monkey's arm is touched, an observing monkey will fire some of the same neurons it would if its own arm was touched. \cite{gallese-98}  Our algorithm is inspired by mirror neurons - when one individual does something that results in reward, all of the other agents in the population begin to emulate that behavior in that situation.
+Mirror neurons exist in primates and echo actions that they see performed.  When a monkey's arm is touched, an observing monkey will fire some of the same neurons it would if its own arm was touched. \cite{gallese-98}  Our algorithm is inspired by mirror neurons - when one agent does something that results in reward, all of the other agents in the population begin to emulate that behavior in that situation.
     
-We demonstrate and explore these interactions in a well-known foraging domain in which agents search for food in an otherwise featureless world riddles with poison.  When one individual experiences a rewarding event, it alerts all the other individuals to what has just happened, and trains them on evidence of that event.
-We perform evolution on these individuals, and in every generation the agents that performed best - including what they learned in a lifetime - are those with the highest fitness in the EA.  
+We demonstrate and explore these interactions in a well-known foraging domain in which agents search for food in an otherwise featureless world riddled with poison.  When one individual experiences a rewarding event, it alerts all the other individuals to what has just happened, and trains them on evidence of that event.
+As an individual using social learning moves through the world, it receives feedback from other agents about actions that end in reward.  This leads to an agent having two potential strategies to reap reward - both its original fitness when it was created, and positive behaviors it learns in an epoch.
+We perform evolution on these individuals, and in every generation the agents that perform best - including what they learned in a lifetime - are those with the highest fitness in the EA.  
 Each generation is an all-new population, but each benefits from that which was learned before, and each has the opportunity to improve within its lifetime by learning from other individuals.
     
 By using social learning, the individuals in our population were able to acheive near-optimal performance in many fewer generations than were agents that did not learn during a lifetime and only evolved.
@@ -142,15 +143,6 @@ The agent then saves the input-output pair in memory, which stretches back to th
 After performing the actions, the agent sees if it has received a reward, and if that reward is positive.
 If so, it trains every other agent in the population with its memory using backpropagation. \ref{fig:flowchart}
 
-We use positive rewards to identify those actions on which we want to train agents.
- Previous approaches \cite{?} instead chose strong individuals as teachers and train weaker individuals on their actions.
- 
- There are t
-
-Why only positive
-    Why backprop works
-    Evolution -> avoiding poison
-
 \begin{figure}
   \centering
     \includegraphics[scale=.6]{flowchart.pdf}
@@ -158,8 +150,16 @@ Why only positive
   \label{fig:flowchart}
 \end{figure}
 
+
+We use positive rewards to identify those actions on which we want to train agents.
+As a result, it takes only the notion of a reward to allow our social learnng agents to begin to teach one another in real time.
+ Previous approaches \cite{?} instead chose strong individuals as teachers and train weaker individuals on their actions.
+By allowing any individual to train any other, we leverage a diversity of different behaviors in solving problems in a domain.
+
 \section{Experimental Setup}
 \label{sec:setup}
+In this section we describe the experimental setup of our world.
+We first describe the foraging somain, followed by the EA framework we use, NEAT.  Finally we outline the various experiments that we performed, and discuss what we varied and what we let remain constant in each.
 
     We use a foraging world in which agents move freely on a continuous toroidal surface which is 500 by 500 units.  
 We populate our world with five types of plants - one with a strong reward, one with a weak reward, one which is neutral,one which deals a small penalty to an agent that eats it, and one that deals a large penalty.  
@@ -183,9 +183,7 @@ We used NEAT to generate a population of individuals to navigate the world.
 Each individual moving in the world is generated by a genome produced by NEAT, and the fitness of an individual is equal to the sum of all of the plants it eats in a generation (1000 timesteps).
 NEAT then uses the fitnesses of these individuals to create new networks by modifying weights and adding and removing connections.
 
-Because NEAT evolves recurrent neural networks, we used backpropagation through time to do our social learning \cite{somedude}.
-In Social Darwinian learning and Social Lamarkian learning, we backprop on other individuals whenever an individual receives reward.
-In Social Darwinism, as in Darwinan evolution in reality, the changes to the genome do not regress back to the phenome, and the offspring of an individual is determined by the phenome it had before it began learning.
+Because NEAT evolves recurrent neural networks, we used backpropagation through time to do our social learning \cite{somedude}. In Social Darwinian learning and Social Lamarkian learning, we backprop on other individuals whenever an individual receives reward. In Social Darwinism, as in Darwinan evolution in reality, the changes to the genome do not regress back to the phenome, and the offspring of an individual is determined by the phenome it had before it began learning.
 In Social Lamarkism, the changes to the genome as the individual learns are propagated back to the phenome, and the offspring of an individual incorporate what that individual has learned in its lifetime into their phenomes.
 \subsection*{Experiments} 
 We ran several different experiments to investigate the effectiveness of our approach.
@@ -239,19 +237,24 @@ The ability of social learning to improve agents in a foraging domain is a popul
 \section{Future Work}
 \label{sec:future}
 
-Reward-proportional updating
+In this section we discuss potential future work that could be done to exploit non-hierarchical social learning and improve it as both a model of artificial life and a machine learning algorithm.
+The most obvious extension to this work of social learning is to make it more social - to allow the agents to see and interact with one another.
+To that end, evolving communication between agents is an important step in developing these ideas. 
+Additionally, exploring the interactions between predators and social learning agents would be interesting future work. Despite being much weaker than many predators, humans thrive - perhaps because of our social brains.
+Fundamentally, our work is related to Q-learning - comparing Q-learning with social learning is another avenue of future research.
+%Reward-proportional updating
 
-Comparison to student/teacher models
+%Comparison to student/teacher models
 
-Dynamic domains
+%Dynamic domains
 
-Language (repellants and attractants, howler monkeys)
+%Language (repellants and attractants, howler monkeys)
 
-Predators (co-evolution, fat agents)
+%Predators (co-evolution, fat agents)
 
-Q-Learning comparison (Ability gained per step)
+%Q-Learning comparison (Ability gained per step)
 
-Variable length trajectories (Memory)
+%Variable length trajectories (Memory)
 
 \section{Conclusions}
 \label{sec:conclusions}
