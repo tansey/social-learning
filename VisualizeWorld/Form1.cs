@@ -24,7 +24,7 @@ namespace VisualizeWorld
         Random random = new Random();
         static NeatEvolutionAlgorithm<NeatGenome> _ea;
         const string CHAMPION_FILE = @"..\..\..\experiments\simple_evolution_champion.xml";
-        static SimpleExperiment _experiment;
+        static SocialExperiment _experiment;
         static PlantLayoutStrategies _plantLayout;
         const string NEURAL_CONFIG_FILE = @"..\..\..\experiments\neural.config.xml";
         const string QLEARNING_CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
@@ -176,7 +176,7 @@ namespace VisualizeWorld
                 return;
             }
             running = true;
-            _experiment = new SimpleExperiment();
+            _experiment = new SocialExperiment();
             
             // Load config XML.
             XmlDocument xmlConfig = new XmlDocument();
@@ -203,7 +203,7 @@ namespace VisualizeWorld
 
         private void startQLearning()
         {
-            //SimpleExperiment.CreateNetwork(QLEARNING_FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
+            SocialExperiment.CreateNetwork(QLEARNING_FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
 
             // Read in the agent genome from file.
             var agentGenome = _experiment.LoadPopulation(XmlReader.Create(QLEARNING_FEED_FORWARD_NETWORK_FILE));
@@ -212,7 +212,7 @@ namespace VisualizeWorld
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = _experiment.CreateGenomeDecoder();
 
             // Create the evaluator that will handle the simulation
-            _experiment.Evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
+            _experiment.Evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
             {
                 MaxTimeSteps = 50000000UL,
                 BackpropEpochsPerExample = 1
@@ -351,10 +351,6 @@ namespace VisualizeWorld
             qLearningToolStripMenuItem.Checked = false;
             socialLearningDarwinianToolStripMenuItem.Checked = false;
             socialLearningLamarkianToolStripMenuItem.Checked = false;
-            nEATQDarwinianToolStripMenuItem.Checked = false;
-            nEATQLamarkianToolStripMenuItem.Checked = false;
-            socialNEATQDarwinianToolStripMenuItem.Checked = false;
-            socialNEATQLamarkianToolStripMenuItem.Checked = false;
         }
         #endregion
 

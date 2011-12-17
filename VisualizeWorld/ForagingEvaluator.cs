@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace VisualizeWorld
 {
-    public class SimpleEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
+    public class ForagingEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
         where TGenome : SharpNeat.Genomes.Neat.NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
@@ -22,7 +22,6 @@ namespace VisualizeWorld
         private World _world;
         private IAgent[] _agents;
         private IList<TGenome> _genomeList;
-        private bool _stop;
         private int _generations;
 
         public AgentTypes AgentType { get; set; }
@@ -31,7 +30,7 @@ namespace VisualizeWorld
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
         /// The number of parallel threads defaults to Environment.ProcessorCount.
         /// </summary>
-        public SimpleEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment, AgentTypes agent_type = AgentTypes.Spinning)
+        public ForagingEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment, AgentTypes agent_type = AgentTypes.Spinning)
         {
             AgentType = agent_type;
             _genomeDecoder = genomeDecoder;
@@ -74,7 +73,7 @@ namespace VisualizeWorld
         public ulong CurrentTimeStep { get; set; }
 
         /// <summary>
-        /// Reset the internal state of the evaluation scheme if any exists.
+        /// Reset the internal stateActionPair of the evaluation scheme if any exists.
         /// </summary>
         public void Reset()
         {
@@ -142,8 +141,6 @@ namespace VisualizeWorld
             {
                 // Move the world forward one step
                 _world.Step();
-
-                //Thread.Sleep(500);
             }
 
             for(int i = 0; i < _agents.Length; i++)

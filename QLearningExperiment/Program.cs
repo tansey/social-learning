@@ -18,15 +18,15 @@ namespace QLearningExperiment
         const string CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
         const string FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
         const string RESULTS_FILE = @"..\..\..\experiments\qlearning_results.csv";
-        static SimpleExperiment _experiment;
-        static SimpleEvaluator<NeatGenome> _evaluator;
+        static SocialExperiment _experiment;
+        static ForagingEvaluator<NeatGenome> _evaluator;
         static FastRandom _random;
 
         static void Main(string[] args)
         {
             _random = new FastRandom();
 
-            _experiment = new SimpleExperiment();
+            _experiment = new SocialExperiment();
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load(CONFIG_FILE);
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
@@ -34,7 +34,7 @@ namespace QLearningExperiment
             _experiment.NeatGenomeParameters.AddNodeMutationProbability = 0;
             _experiment.NeatGenomeParameters.DeleteConnectionMutationProbability = 0;
 
-            SimpleExperiment.CreateNetwork(FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
+            SocialExperiment.CreateNetwork(FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
 
             // Record the changes at each step
             _experiment.World.Stepped += new social_learning.World.StepEventHandler(World_Stepped);
@@ -46,7 +46,7 @@ namespace QLearningExperiment
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = _experiment.CreateGenomeDecoder();
 
             // Create the evaluator that will handle the simulation
-            _evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
+            _evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
             {
                 MaxTimeSteps = 50000000UL,
                 BackpropEpochsPerExample = 1
@@ -82,10 +82,10 @@ namespace QLearningExperiment
                                                     _experiment.World.Agents.First().Fitness);
                 _experiment.World.Reset();
 
-                if (agent.LearningRate > 0.1)
-                    agent.LearningRate = Math.Max(0.1, agent.LearningRate - 0.1);
-                if (agent.DiscountFactor < 0.9)
-                    agent.DiscountFactor = Math.Min(0.9, agent.DiscountFactor + 0.1);
+                //if (agent.LearningRate > 0.1)
+                //    agent.LearningRate = Math.Max(0.1, agent.LearningRate - 0.1);
+                //if (agent.DiscountFactor < 0.9)
+                //    agent.DiscountFactor = Math.Min(0.9, agent.DiscountFactor + 0.1);
                 
             }
         }

@@ -29,11 +29,11 @@ namespace social_learning
         public int CurrentStep { get { return _step; } }
         public PlantLayoutStrategies PlantLayoutStrategy { get; set; }
 
-        // Event called when the state of the world is changed
+        // Event called when the stateActionPair of the world is changed
         public delegate void ChangedEventHandler(object sender, EventArgs e);
         public event ChangedEventHandler Changed;
 
-        // Event called when the state of the world is advanced one step
+        // Event called when the stateActionPair of the world is advanced one step
         public delegate void StepEventHandler(object sender, EventArgs e);
         public event StepEventHandler Stepped;
 
@@ -64,7 +64,6 @@ namespace social_learning
         /// </summary>
         public void Step()
         {
-
             if (dictionary == null)
                 dictionary = new SensorDictionary((int)AgentHorizon, Height, Width);
             foreach (var agent in Agents)
@@ -103,14 +102,14 @@ namespace social_learning
             _step++;
         }
 
-        // Notify any listeners that the world state has changed
+        // Notify any listeners that the world stateActionPair has changed
         private void onChanged(EventArgs e)
         {
             if (Changed != null)
                 Changed(this, e);
         }
 
-        // Notify any listeners that the world state has stepped forward
+        // Notify any listeners that the world stateActionPair has stepped forward
         private void onStepped(EventArgs e)
         {
             if (Stepped != null)
@@ -124,7 +123,7 @@ namespace social_learning
         }
 
         /// <summary>
-        /// Resets the world to the initial state.
+        /// Resets the world to the initial stateActionPair.
         /// </summary>
         public void Reset()
         {
@@ -140,7 +139,7 @@ namespace social_learning
 
             _step = 0;
 
-            // Notify any listeners that the world state has changed
+            // Notify any listeners that the world stateActionPair has changed
             onChanged(EventArgs.Empty);
         }
 
@@ -276,24 +275,11 @@ namespace social_learning
 
         private int getSensorIndex(IAgent agent, Plant plant, int pos)
         {
-            /*double[] newCoords = getClosestCoordinates(agent, plant);
-            double agentX = newCoords[0];
-            double agentY = newCoords[1];
-            double plantX = newCoords[2];
-            double plantY = newCoords[3];
-            double pos = Math.Atan((plantY - agentY) / (plantX - agentX)) * 180.0 / Math.PI + 360;
-            if (plantX < agentX)
-                pos += 180;
-            pos %= 360;
-             * */
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
             double dtheta = pos - agent.Orientation;
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
 
-            //Console.WriteLine("Plant (x, y): ({0}, {1}) Agent (x, y): ({2}, {3}) pos: {4}, dtheta: {5} orientation: {6} Sensor width: {7}",
-            //        plant.X, plant.Y, agent.X, agent.Y, pos, dtheta, agent.Orientation, sensorWidth);
-            
             // If the plant's behind us
             if(dtheta < -90 || dtheta > 90)
                 return -1;

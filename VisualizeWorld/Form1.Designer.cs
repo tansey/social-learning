@@ -37,15 +37,18 @@
             this.qLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nEATQDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nEATQLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.socialNEATQDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.socialNEATQLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setPlantLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uniformdefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spiralToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clusterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugOutputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.basicNEATnoLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPreyOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPreyAndPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,14 +94,17 @@
             // setAgentTypeToolStripMenuItem
             // 
             this.setAgentTypeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripTextBox1,
             this.basicNEATdefaultToolStripMenuItem,
             this.qLearningToolStripMenuItem,
             this.socialLearningDarwinianToolStripMenuItem,
             this.socialLearningLamarkianToolStripMenuItem,
-            this.nEATQDarwinianToolStripMenuItem,
-            this.nEATQLamarkianToolStripMenuItem,
-            this.socialNEATQDarwinianToolStripMenuItem,
-            this.socialNEATQLamarkianToolStripMenuItem});
+            this.toolStripSeparator1,
+            this.toolStripTextBox2,
+            this.basicNEATnoLearningToolStripMenuItem,
+            this.socialPreyOnlyToolStripMenuItem,
+            this.socialPredatorsToolStripMenuItem,
+            this.socialPreyAndPredatorsToolStripMenuItem});
             this.setAgentTypeToolStripMenuItem.Name = "setAgentTypeToolStripMenuItem";
             this.setAgentTypeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.setAgentTypeToolStripMenuItem.Text = "Set &Experiment";
@@ -109,7 +115,7 @@
             this.basicNEATdefaultToolStripMenuItem.CheckOnClick = true;
             this.basicNEATdefaultToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.basicNEATdefaultToolStripMenuItem.Name = "basicNEATdefaultToolStripMenuItem";
-            this.basicNEATdefaultToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.basicNEATdefaultToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.basicNEATdefaultToolStripMenuItem.Text = "Basic NEAT (default)";
             this.basicNEATdefaultToolStripMenuItem.Click += new System.EventHandler(this.basicNEATdefaultToolStripMenuItem_Click);
             // 
@@ -117,7 +123,7 @@
             // 
             this.qLearningToolStripMenuItem.CheckOnClick = true;
             this.qLearningToolStripMenuItem.Name = "qLearningToolStripMenuItem";
-            this.qLearningToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.qLearningToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.qLearningToolStripMenuItem.Text = "Q-Learning (no evolution)";
             this.qLearningToolStripMenuItem.Click += new System.EventHandler(this.qLearningToolStripMenuItem_Click);
             // 
@@ -125,7 +131,7 @@
             // 
             this.socialLearningDarwinianToolStripMenuItem.CheckOnClick = true;
             this.socialLearningDarwinianToolStripMenuItem.Name = "socialLearningDarwinianToolStripMenuItem";
-            this.socialLearningDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.socialLearningDarwinianToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.socialLearningDarwinianToolStripMenuItem.Text = "Social Learning (Darwinian)";
             this.socialLearningDarwinianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningDarwinianToolStripMenuItem_Click);
             // 
@@ -133,37 +139,9 @@
             // 
             this.socialLearningLamarkianToolStripMenuItem.CheckOnClick = true;
             this.socialLearningLamarkianToolStripMenuItem.Name = "socialLearningLamarkianToolStripMenuItem";
-            this.socialLearningLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.socialLearningLamarkianToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.socialLearningLamarkianToolStripMenuItem.Text = "Social Learning (Lamarkian)";
             this.socialLearningLamarkianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningLamarkianToolStripMenuItem_Click);
-            // 
-            // nEATQDarwinianToolStripMenuItem
-            // 
-            this.nEATQDarwinianToolStripMenuItem.CheckOnClick = true;
-            this.nEATQDarwinianToolStripMenuItem.Name = "nEATQDarwinianToolStripMenuItem";
-            this.nEATQDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.nEATQDarwinianToolStripMenuItem.Text = "NEAT+Q (Darwinian)";
-            // 
-            // nEATQLamarkianToolStripMenuItem
-            // 
-            this.nEATQLamarkianToolStripMenuItem.CheckOnClick = true;
-            this.nEATQLamarkianToolStripMenuItem.Name = "nEATQLamarkianToolStripMenuItem";
-            this.nEATQLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.nEATQLamarkianToolStripMenuItem.Text = "NEAT+Q (Lamarkian)";
-            // 
-            // socialNEATQDarwinianToolStripMenuItem
-            // 
-            this.socialNEATQDarwinianToolStripMenuItem.CheckOnClick = true;
-            this.socialNEATQDarwinianToolStripMenuItem.Name = "socialNEATQDarwinianToolStripMenuItem";
-            this.socialNEATQDarwinianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.socialNEATQDarwinianToolStripMenuItem.Text = "Social NEAT+Q (Darwinian)";
-            // 
-            // socialNEATQLamarkianToolStripMenuItem
-            // 
-            this.socialNEATQLamarkianToolStripMenuItem.CheckOnClick = true;
-            this.socialNEATQLamarkianToolStripMenuItem.Name = "socialNEATQLamarkianToolStripMenuItem";
-            this.socialNEATQLamarkianToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.socialNEATQLamarkianToolStripMenuItem.Text = "Social NEAT+Q (Lamarkian)";
             // 
             // setPlantLayoutToolStripMenuItem
             // 
@@ -209,6 +187,49 @@
             this.debugOutputsToolStripMenuItem.Text = "Debug Outputs";
             this.debugOutputsToolStripMenuItem.Click += new System.EventHandler(this.debugOutputsToolStripMenuItem_Click);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(217, 6);
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Enabled = false;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(160, 23);
+            this.toolStripTextBox1.Text = "Foraging Evolution";
+            // 
+            // basicNEATnoLearningToolStripMenuItem
+            // 
+            this.basicNEATnoLearningToolStripMenuItem.Name = "basicNEATnoLearningToolStripMenuItem";
+            this.basicNEATnoLearningToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.basicNEATnoLearningToolStripMenuItem.Text = "Basic NEAT (no learning)";
+            // 
+            // socialPreyOnlyToolStripMenuItem
+            // 
+            this.socialPreyOnlyToolStripMenuItem.Name = "socialPreyOnlyToolStripMenuItem";
+            this.socialPreyOnlyToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPreyOnlyToolStripMenuItem.Text = "Social Prey";
+            // 
+            // socialPredatorsToolStripMenuItem
+            // 
+            this.socialPredatorsToolStripMenuItem.Name = "socialPredatorsToolStripMenuItem";
+            this.socialPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPredatorsToolStripMenuItem.Text = "Social Predators";
+            // 
+            // socialPreyAndPredatorsToolStripMenuItem
+            // 
+            this.socialPreyAndPredatorsToolStripMenuItem.Name = "socialPreyAndPredatorsToolStripMenuItem";
+            this.socialPreyAndPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPreyAndPredatorsToolStripMenuItem.Text = "Social Prey and Predators";
+            // 
+            // toolStripTextBox2
+            // 
+            this.toolStripTextBox2.Enabled = false;
+            this.toolStripTextBox2.Name = "toolStripTextBox2";
+            this.toolStripTextBox2.Size = new System.Drawing.Size(160, 23);
+            this.toolStripTextBox2.Text = "Predator/Prey Co-Evolution";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -219,7 +240,7 @@
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Social Learning Platform";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -238,16 +259,19 @@
         private System.Windows.Forms.ToolStripMenuItem basicNEATdefaultToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem socialLearningDarwinianToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem socialLearningLamarkianToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nEATQDarwinianToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nEATQLamarkianToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem socialNEATQDarwinianToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem socialNEATQLamarkianToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setPlantLayoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uniformdefaultToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem spiralToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clusterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem qLearningToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debugOutputsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
+        private System.Windows.Forms.ToolStripMenuItem basicNEATnoLearningToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem socialPreyOnlyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem socialPredatorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem socialPreyAndPredatorsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
     }
 }
 

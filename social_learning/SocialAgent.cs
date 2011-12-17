@@ -18,7 +18,7 @@ namespace social_learning
         public int MemorySize { get; set; }
 
         /// <summary>
-        /// A sliding window of state-action pairs for this agent.
+        /// A sliding window of stateActionPair-action pairs for this agent.
         /// </summary>
         public LinkedList<InputOutputPair> Memory { get; set; }
 

@@ -23,7 +23,7 @@ using SharpNeat.Utility;
 
 namespace VisualizeWorld
 {
-    public class SimpleExperiment : INeatExperiment
+    public class SocialExperiment : INeatExperiment
     {
         NeatEvolutionAlgorithmParameters _eaParams;
         NeatGenomeParameters _neatGenomeParams;
@@ -43,13 +43,14 @@ namespace VisualizeWorld
         int _memGens;
         int _maxMemorySize;
         TeachingParadigm _teaching;
-        SimpleEvaluator<NeatGenome> _evaluator;
+        ForagingEvaluator<NeatGenome> _evaluator;
         static FastRandom _random = new FastRandom();
         int _outputs;
+        int _inputs;
 
         const int PLANT_TYPES = 5;
 
-        public int InputCount { get { return _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1; } }
+        public int InputCount { get { return _inputs; } }
         public int OutputCount { get { return _outputs; } }
 
         public string Description
@@ -77,7 +78,7 @@ namespace VisualizeWorld
 
         /// <summary>
         /// Gets the NeatEvolutionAlgorithmParameters to be used for the experiment. Parameters on this object can be 
-        /// modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in 
+        /// modified. Calls to CreateEvolutionAlgorithm() make a copy of and use this object in whatever stateActionPair it is in 
         /// at the time of the call.
         /// </summary>
         public NeatEvolutionAlgorithmParameters NeatEvolutionAlgorithmParameters
@@ -87,7 +88,7 @@ namespace VisualizeWorld
 
         /// <summary>
         /// Gets the NeatGenomeParameters to be used for the experiment. Parameters on this object can be modified. Calls
-        /// to CreateEvolutionAlgorithm() make a copy of and use this object in whatever state it is in at the time of the call.
+        /// to CreateEvolutionAlgorithm() make a copy of and use this object in whatever stateActionPair it is in at the time of the call.
         /// </summary>
         public NeatGenomeParameters NeatGenomeParameters
         {
@@ -100,10 +101,10 @@ namespace VisualizeWorld
         public int MemoryGenerations { get { return _memGens; } set { _memGens = value; } }
         public int MaxMemorySize { get { return _maxMemorySize; } set { _maxMemorySize = value; } }
         public TeachingParadigm TeachParadigm { get; set; }
-        public SimpleEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
+        public ForagingEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
         
-        public SimpleExperiment()
+        public SocialExperiment()
         {
             
         }
@@ -114,8 +115,6 @@ namespace VisualizeWorld
         public void Initialize(string name, XmlElement xmlConfig)
         {
             _name = name;
-            var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");
-            _outputs = outputs.HasValue ? outputs.Value : 2;
             _populationSize = XmlUtils.GetValueAsInt(xmlConfig, "PopulationSize");
             _specieCount = XmlUtils.GetValueAsInt(xmlConfig, "SpecieCount");
             _activationScheme = ExperimentUtils.CreateActivationScheme(xmlConfig, "Activation");
@@ -166,6 +165,11 @@ namespace VisualizeWorld
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
                 PlantLayoutStrategy = _plantLayout
             };
+
+            var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");
+            _outputs = outputs.HasValue ? outputs.Value : 2;
+            var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
+            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1;
 
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
@@ -254,7 +258,7 @@ namespace VisualizeWorld
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
 
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
-            _evaluator = new SimpleEvaluator<NeatGenome>(genomeDecoder, _world)
+            _evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _world)
             {
                 MaxTimeSteps = _timeStepsPerGeneration,
                 AgentType = _agentType,

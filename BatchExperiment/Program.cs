@@ -17,7 +17,7 @@ namespace BatchExperiment
     {
         static int numRuns;
         string _name;
-        SimpleExperiment _experiment;
+        SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
         const int MaxGenerations = 200;
         string _filename;
@@ -96,7 +96,7 @@ namespace BatchExperiment
          void RunExperiment(string XMLFile, string filename, SensorDictionary sensorDict)
          {
              _filename = filename;
-            _experiment = new SimpleExperiment();
+            _experiment = new SocialExperiment();
              // Load config XML.
 
              using (TextWriter writer = new StreamWriter(_filename))
