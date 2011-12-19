@@ -30,7 +30,7 @@ namespace VisualizeWorld
         const string QLEARNING_CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
         const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
         const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
-        const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
+        const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_lamark.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
         bool running = false;

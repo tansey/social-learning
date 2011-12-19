@@ -7,7 +7,8 @@ namespace VisualizeWorld
 {
     public enum TeachingParadigm
     {
-        Everyone,
-        SameSpecies
+        EveryoneRewards,
+        SameSpeciesRewards,
+        StudentTeacherActions
     }
 }

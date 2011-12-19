@@ -10,7 +10,7 @@ namespace social_learning
     {
         private Random random = new Random();
         public const int SENSORS_PER_PLANT_TYPE = 8;
-        const int DEFAULT_AGENT_HORIZON = 50;
+        const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         public SensorDictionary dictionary;
 
@@ -164,8 +164,6 @@ namespace social_learning
 
         private void uniformLayout()
         {
-            int curX = Width / 2, curY = Height / 2;
-            int lowerY = random.Next(30), upperY = random.Next(30);
             foreach (var plant in Plants)
             {
                 plant.Reset();

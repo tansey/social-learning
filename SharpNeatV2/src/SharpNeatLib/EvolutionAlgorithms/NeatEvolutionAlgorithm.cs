@@ -191,6 +191,8 @@ namespace SharpNeat.EvolutionAlgorithms
             int offspringCount;
             SpecieStats[] specieStatsArr = CalcSpecieStats(out offspringCount);
 
+            Console.WriteLine(offspringCount);
+
             // Create offspring.
             List<TGenome> offspringList = CreateOffspring(specieStatsArr, offspringCount);
 

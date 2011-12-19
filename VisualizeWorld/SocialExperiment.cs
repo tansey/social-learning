@@ -176,8 +176,7 @@ namespace VisualizeWorld
             _neatGenomeParams = new NeatGenomeParameters()
             {
                 ActivationFn = PlainSigmoid.__DefaultInstance,
-                InitialInterconnectionsProportion = 1,
-                
+                InitialInterconnectionsProportion = 1
             };
         }
 
@@ -249,7 +248,7 @@ namespace VisualizeWorld
             ISpeciationStrategy<NeatGenome> speciationStrategy = new ParallelKMeansClusteringStrategy<NeatGenome>(distanceMetric, new ParallelOptions());
 
             // Create complexity regulation strategy.
-            IComplexityRegulationStrategy complexityRegulationStrategy = ExperimentUtils.CreateComplexityRegulationStrategy(_complexityRegulationStr, _complexityThreshold);
+            IComplexityRegulationStrategy complexityRegulationStrategy = new NullComplexityRegulationStrategy();// ExperimentUtils.CreateComplexityRegulationStrategy(_complexityRegulationStr, _complexityThreshold);
 
             // Create the evolution algorithm.
             NeatEvolutionAlgorithm<NeatGenome> ea = new NeatEvolutionAlgorithm<NeatGenome>(_eaParams, speciationStrategy, complexityRegulationStrategy);

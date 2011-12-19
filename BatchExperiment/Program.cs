@@ -19,7 +19,7 @@ namespace BatchExperiment
         string _name;
         SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
-        const int MaxGenerations = 200;
+        const int MaxGenerations = 500;
         string _filename;
         bool finished = false;
         List<double>[] _averageFitness;
@@ -28,13 +28,13 @@ namespace BatchExperiment
 
         static void Main(string[] args)
         {
-            numRuns = args.Length > 0 ? int.Parse(args[0]) : 30;
+            numRuns = args.Length > 0 ? int.Parse(args[0]) : 1;
             Program[] r = new Program[numRuns * 3];
             List<double>[] neuralAvg = createAllCollection(), neuralBest = createAllCollection(),
                          socialDarwinAvg = createAllCollection(), socialDarwinBest = createAllCollection(),
                          socialLamarkAvg = createAllCollection(), socialLamarkBest = createAllCollection(); 
             SensorDictionary sensorDict = new SensorDictionary(100, 500, 500);
-            Console.WriteLine("WARNING: Skipping baseline results");
+            Console.WriteLine("WARNING: Skipping baseline and darwinian results");
             for (int i = 0; i < numRuns; i++)
             {
                 Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
@@ -44,7 +44,7 @@ namespace BatchExperiment
                 Program m = new Program("Social_Lamark_" + i, socialLamarkAvg, socialLamarkBest);
                 m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv", sensorDict);
                 //r[3 * i] = p;
-                r[3 * i + 1] = q;
+                //r[3 * i + 1] = q;
                 r[3 * i + 2] = m;
             }
             while (!AllFinished(r)) Thread.Sleep(1000);
@@ -60,12 +60,18 @@ namespace BatchExperiment
                     + "Social-Champion (Lamarkian),Social-Champion-Stdev (Lamarkian)");
                 for (int i = 0; i < r[0]._averageFitness.Length; i++)
                     writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}", i,
-                        neuralAvg[i].Average(), neuralAvg[i].Stdev(), 
-                        neuralBest[i].Average(), neuralBest[i].Stdev(),
-                        socialDarwinAvg[i].Average(), socialDarwinAvg[i].Stdev(),
-                        socialDarwinBest[i].Average(), socialDarwinBest[i].Stdev(),
-                        socialLamarkAvg[i].Average(), socialLamarkAvg[i].Stdev(),
-                        socialLamarkBest[i].Average(), socialLamarkBest[i].Stdev()
+                        neuralAvg[i].Count == 0 ? "" : neuralAvg[i].Average().ToString(), 
+                        neuralAvg[i].Count == 0 ? "" : neuralAvg[i].Stdev().ToString(), 
+                        neuralBest[i].Count == 0? "" : neuralBest[i].Average().ToString(),
+                        neuralBest[i].Count == 0? "" : neuralBest[i].Stdev().ToString(),
+                        socialDarwinAvg[i].Count == 0 ? "" : socialDarwinAvg[i].Average().ToString(),
+                        socialDarwinAvg[i].Count == 0 ? "" : socialDarwinAvg[i].Stdev().ToString(),
+                        socialDarwinBest[i].Count== 0 ? "" : socialDarwinBest[i].Average().ToString(),
+                        socialDarwinBest[i].Count == 0 ? "" : socialDarwinBest[i].Stdev().ToString(),
+                        socialLamarkAvg[i].Count == 0 ? "" : socialLamarkAvg[i].Average().ToString(),
+                        socialLamarkAvg[i].Count == 0 ? "" : socialLamarkAvg[i].Stdev().ToString(),
+                        socialLamarkBest[i].Count == 0 ? "" : socialLamarkBest[i].Average().ToString(),
+                        socialLamarkBest[i].Count == 0 ? "" : socialLamarkBest[i].Stdev().ToString()
                         ));
             }
         }
@@ -149,11 +155,11 @@ namespace BatchExperiment
                 }
             }
 
-            if (_ea.CurrentGeneration == 5)
-            {
-                Console.WriteLine("Switching to Darwinian evolution with no learning");
-                _experiment.Evaluator.AgentType = AgentTypes.Neural;
-            }
+            //if (_ea.CurrentGeneration == 5)
+            //{
+            //    Console.WriteLine("Switching to Darwinian evolution with no learning");
+            //    _experiment.Evaluator.AgentType = AgentTypes.Neural;
+            //}
         }
         
     }
