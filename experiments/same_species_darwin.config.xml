@@ -15,7 +15,7 @@
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <TeachingParadigm>EveryoneRewards</TeachingParadigm>
+  <TeachingParadigm>SameSpeciesRewards</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Darwinian</EvolutionParadigm>
   <Description>

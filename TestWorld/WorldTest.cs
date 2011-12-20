@@ -35,23 +35,7 @@ namespace TestWorld
             }
         }
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-
+        
         //Use TestInitialize to run code before running each test
         World _world;
         ActionListAgent _agent;
@@ -67,19 +51,10 @@ namespace TestWorld
             List<IAgent> agents = new List<IAgent>() { _agent };
 
             _world = new World(agents, height, width, species, PlantLayoutStrategies.Uniform);
-            _world.dictionary = new SensorDictionary((int)_world.AgentHorizon, _world.Width, _world.Height);
-
+            _world.SensorLookup = new SensorDictionary((int)_world.AgentHorizon, _world.Width, _world.Height);
+            _world.AgentHorizon = 50;
         }
-
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
+        
         /// <summary>
         ///A test for the sensor calculation
         ///</summary>

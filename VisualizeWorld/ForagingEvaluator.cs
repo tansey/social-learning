@@ -12,6 +12,7 @@ using SharpNeat.Genomes.Neat;
 using System.Diagnostics;
 using System.Threading;
 using SharpNeat.Utility;
+using System.Threading.Tasks;
 
 namespace VisualizeWorld
 {
@@ -97,12 +98,9 @@ namespace VisualizeWorld
         public int CurrentMemorySize { get; set; }
         public int MaxMemorySize { get; set; }
         public TeachingParadigm TeachParadigm { get; set; }
-        public uint CurrentGeneration { get; set; }
 
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
-        /// Individuals are competed pairwise against every other individual in the population.
-        /// Evaluations are summed to get the final genome fitness.
         /// </summary>
         public void Evaluate(IList<TGenome> genomeList)
         {
@@ -138,13 +136,14 @@ namespace VisualizeWorld
                             var network = (FastCyclicNetwork)phenome;
                             network.Momentum = ((SocialAgent)_agents[i]).Momentum;
                             network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
+
+                            // In the Student/Teacher paradigm, each agent either teachers or learns.
+                            // We assume that the survivors from the previous generation act as teachers
+                            // and children are students.
                             if (TeachParadigm == TeachingParadigm.StudentTeacherActions)
                             {
-                                if (_genomeList[i].BirthGeneration != CurrentGeneration)
-                                {
-                                    Console.WriteLine("Teacher Gen: {0} Birth: {1} Index: {2} Fitness: {3} AltFit: {4} Species: {5}", CurrentGeneration, _genomeList[i].BirthGeneration, i, _genomeList[i].EvaluationInfo.Fitness, _genomeList[i].EvaluationInfo.AlternativeFitness, _genomeList[i].SpecieIdx);
+                                if (_genomeList[i].BirthGeneration != _generations)
                                     _teachers.Add(_agents[i]);
-                                }
                                 else
                                     _students.Add(_agents[i]);
                             }
@@ -169,9 +168,13 @@ namespace VisualizeWorld
                 _world.Step();
             }
 
+            // Set the fitness of each genome to the fitness its phenome earned in the world.
             for(int i = 0; i < _agents.Length; i++)
             {
-                genomeList[i].EvaluationInfo.SetFitness(Math.Max(1, _agents[i].Fitness));
+                // NEAT requires fitness to be >= 0, so if the agent had negative fitness, we cap it at 0.
+                genomeList[i].EvaluationInfo.SetFitness(Math.Max(0, _agents[i].Fitness));
+
+                // This alternate fitness is purely for logging purposes, so we use the actual fitness
                 genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
 
@@ -199,14 +202,14 @@ namespace VisualizeWorld
                     }
                 }
 
+            // If enabled and it's time, grow the size of the agents' memory window.
             if (MemParadigm == MemoryParadigm.IncrementalGrowth 
                 && _generations % GenerationsPerMemorySize == 0
                 && CurrentMemorySize < MaxMemorySize)
                 CurrentMemorySize++;
-
-            CurrentGeneration++;
         }
 
+        // Handle the reward-based teaching paradigms whenever a plant is eaten.
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
         {
             // if we're not dealing with a social agent, then skip this notification.
@@ -217,41 +220,47 @@ namespace VisualizeWorld
             if (TeachParadigm != TeachingParadigm.EveryoneRewards && TeachParadigm != TeachingParadigm.SameSpeciesRewards)
                 return;
 
+            // Only learn from positive rewards.
             if (eaten.Species.Reward > 0)
             {
-                for(int i = 0; i < _agents.Length; i++)
+                // Train all the agents in parallel
+                Parallel.For(0, _agents.Length, i =>
                 {
                     var agent = _agents[i];
-                    
+
                     // Do not try to teach yourself
                     if (agent == eater)
-                        continue;
+                        return;//continue;
 
                     // Only update individuals in your species
-                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewards 
+                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewards
                         && _genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
-                        continue;
+                        return;//continue;
 
                     // Teach the agent to act like the eater
                     TeachAgent(eater, agent);
-                }
+                });
             }
         }
 
+        // Handle the Student/Teacher teaching paradigm at each step.
         void _world_Stepped(object sender, EventArgs e)
         {
             // Only learn from every step if we're using a student/teacher paradigm
             if (TeachParadigm != TeachingParadigm.StudentTeacherActions)
                 return;
 
+            // Probabilistically teach and probabilistically learn.
             foreach (var teacher in _teachers)
             {
                 if (_random.NextDouble() > 0.2)
                     continue;
 
-                foreach (var student in _students)
+                Parallel.ForEach(_students, student =>
+                {
                     if (_random.NextDouble() < 0.2)
                         TeachAgent(teacher, student);
+                });
             }
         }
 

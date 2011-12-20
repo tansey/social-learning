@@ -1,41 +1,45 @@
-def get_values(line):
-    
-    return [int(n) for n in line.split(',')]
-
-def get_avg_values_per_timestep(buncha_lines, j):
-    for i in range(20):
-        this_step = [line for line in buncha_lines if line[0] == i]
-        print averages(this_step, j)
-
-def averages(step, i):
-    top = [line[i + 1] for line in step]
-    bottom = len(step)
-    return sum(top) / float(bottom)
+import sys
 
 def get_vals_from_file(filename):
     f = open(filename, 'r')
     for line in f:
-        if line[0] != 'g':
-            line = get_values(line)
+        if len(line) > 0 and line[0] != 'g':
             yield line
 
+def append_lines(results, filename):
+    gen = 0
+    for line in get_vals_from_file(filename):
+        results[gen].append(line)
+        gen += 1
+
+def write_results_to_file(avg, best, counts, filename):
+	f = open(filename, 'w')
+	f.write('Generation,Average,Best,Samples\n')
+	for i in range(len(avg)):
+		f.write('{0},{1},{2},{3}\n'.format(i, avg[i], best[i], counts[i]))
+
 def main():
-    neural = []
-    social = []
-    neural_name = "neural_results"
-    social_name = "social_results"
-    for i in range(5):
-        for line in get_vals_from_file(neural_name + str(i) + '.txt'):
-            neural.append(line)
-        for line in get_vals_from_file(social_name + str(i) + '.txt'):
-            social.append(line)
-    print "neural"
-    get_avg_values_per_timestep(neural, 0)
-    get_avg_values_per_timestep(neural, 1)
-    print "social"
-    get_avg_values_per_timestep(social, 0)
-    get_avg_values_per_timestep(social, 1)
+    lines = []
+    name = sys.argv[1] + '_results'
+    for i in range(501):
+    	lines.append([])
+    runs = 30
+    if len(sys.argv) > 2:
+        runs = int(sys.argv[2])
+    # Load each line into the arrays
+    for i in range(runs):
+    	append_lines(lines, name + str(i) + '.csv')
+    avg = []
+    best = []
+    counts = []
+    # Process each generation
+    for i in range(500):
+    	counts.append(len(lines[i]))
+    	if counts[i] > 0:
+    		avg.append(sum(float(x.split(',')[1]) for x in lines[i]) / counts[i])
+    		best.append(sum(float(x.split(',')[2]) for x in lines[i]) / counts[i])
+    write_results_to_file(avg, best, counts, 'average_' + name + '.csv')
 
 
-
-main()
+if __name__ == "__main__":
+    main()

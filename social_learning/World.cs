@@ -8,13 +8,30 @@ namespace social_learning
 {
     public class World
     {
-        private Random random = new Random();
+        private Random _random = new Random();
         public const int SENSORS_PER_PLANT_TYPE = 8;
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
-        public SensorDictionary dictionary;
+        SensorDictionary _sensorDictionary;
 
+        #region Properties
+        /// <summary>
+        /// The cached lookup table that helps speed up the sensor calculations.
+        /// </summary>
+        public SensorDictionary SensorLookup
+        {
+            get { return _sensorDictionary; }
+            set { _sensorDictionary = value; }
+        }
+
+        /// <summary>
+        /// All of the agents in the world.
+        /// </summary>
         public IEnumerable<IAgent> Agents { get; set; }
+
+        /// <summary>
+        /// The radius of the agents' field of vision.
+        /// </summary>
         public double AgentHorizon { get; set; }
 
         /// <summary>
@@ -22,40 +39,68 @@ namespace social_learning
         /// </summary>
         public IList<Plant> Plants { get; set; }
 
+        /// <summary>
+        /// The types of plants in the world.
+        /// </summary>
         public IEnumerable<PlantSpecies> PlantTypes { get; set; }
 
+        /// <summary>
+        /// The height of the world.
+        /// </summary>
         public int Height { get; set; }
+
+        /// <summary>
+        /// The width of the world.
+        /// </summary>
         public int Width { get; set; }
+
+        /// <summary>
+        /// The number of steps that have been taken in this world since the last reset.
+        /// </summary>
         public int CurrentStep { get { return _step; } }
+
+        /// <summary>
+        /// The strategy used to layout the plants upon each reset.
+        /// </summary>
         public PlantLayoutStrategies PlantLayoutStrategy { get; set; }
+        #endregion
 
-        // Event called when the stateActionPair of the world is changed
-        public delegate void ChangedEventHandler(object sender, EventArgs e);
+        #region Events and Delegates
+        /// <summary>
+        /// Event called when the stateActionPair of the world is changed.
+        /// </summary>
         public event ChangedEventHandler Changed;
+        public delegate void ChangedEventHandler(object sender, EventArgs e);
 
-        // Event called when the stateActionPair of the world is advanced one step
-        public delegate void StepEventHandler(object sender, EventArgs e);
+        /// <summary>
+        /// Event called when the stateActionPair of the world is advanced one step.
+        /// </summary>
         public event StepEventHandler Stepped;
+        public delegate void StepEventHandler(object sender, EventArgs e);
 
-        // Event called when an agent eats a piece of food.
-        public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
+        /// <summary>
+        /// Event called when an agent eats a piece of food.
+        /// </summary>
         public event PlantEatenHandler PlantEaten;
+        public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
+        #endregion
+
 
         public World(IEnumerable<IAgent> agents, int height, int width, IEnumerable<PlantSpecies> species, 
-             PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform)
+             PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform, int agentHorizon = DEFAULT_AGENT_HORIZON)
         {
             Agents = agents;
             PlantTypes = species;
             Height = height;
             Width = width;
-            AgentHorizon = DEFAULT_AGENT_HORIZON;
+            AgentHorizon = agentHorizon;
             
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
             foreach (var s in species)
                 for (int i = 0; i < s.Count; i++)
-                    Plants.Add(new Plant(s) { X = random.Next() % width, Y = random.Next() % height });
+                    Plants.Add(new Plant(s));
         }
 
         /// <summary>
@@ -64,8 +109,11 @@ namespace social_learning
         /// </summary>
         public void Step()
         {
-            if (dictionary == null)
-                dictionary = new SensorDictionary((int)AgentHorizon, Height, Width);
+            // If no one set a lookup table yet, generate one.
+            if (_sensorDictionary == null)
+                _sensorDictionary = new SensorDictionary((int)AgentHorizon, Height, Width);
+
+            // Advance each agent by one step
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
@@ -86,17 +134,18 @@ namespace social_learning
             // and determine who is on top of a plant.
             foreach (var agent in Agents)
                 foreach (var plant in Plants)
-                    if (dictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y)[0]
+                    if (_sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y)[0]
                         < plant.Species.Radius && plant.AvailableForEating(agent))
                     {
                         // Eat the plant
                         plant.EatenBy(agent, _step);
                         agent.Fitness += plant.Species.Reward;
 
-                        // Update the population if the reward was good/bad
+                        // Notify listeners that someone has eaten a plant.
                         onPlantEaten(agent, plant);
                     }
 
+            // Notify listeners that the world has stepped and changed.
             onStepped(EventArgs.Empty);
             onChanged(EventArgs.Empty);
             _step++;
@@ -123,15 +172,16 @@ namespace social_learning
         }
 
         /// <summary>
-        /// Resets the world to the initial stateActionPair.
+        /// Resets the world by calling reset on each agents and plant,
+        /// then generating a new layout for the plants.
         /// </summary>
         public void Reset()
         {
             foreach (var agent in Agents)
             {
-                agent.X = Width / 2; //random.Next(Width);
-                agent.Y = Height / 2; //random.Next(Height);
-                agent.Orientation = 0;// random.Next(360);
+                agent.X = Width / 2;
+                agent.Y = Height / 2;
+                agent.Orientation = 0;
                 agent.Fitness = 0;
             }
 
@@ -162,25 +212,27 @@ namespace social_learning
             }
         }
 
+        // Lays out the plants uniformly random.
         private void uniformLayout()
         {
             foreach (var plant in Plants)
             {
                 plant.Reset();
                 // Uniform random
-                plant.X = random.Next(Width);
-                plant.Y = random.Next(Height);
+                plant.X = _random.Next(Width);
+                plant.Y = _random.Next(Height);
             }
         }
 
+        // Lays out the plants in a spiral pattern starting from the origin.
         private void spiralLayout()
         {
             int speciesIdx = 0;
             foreach (var species in PlantTypes)
             {
-                double theta = random.NextDouble() * 2 * Math.PI;
-                double dtheta = (random.NextDouble()) / 15 + .1;
-                dtheta *= random.Next(2) == 1 ? -1 : 1;
+                double theta = _random.NextDouble() * 2 * Math.PI;
+                double dtheta = (_random.NextDouble()) / 15 + .1;
+                dtheta *= _random.Next(2) == 1 ? -1 : 1;
                 int x;
                 int y;
                 double r = 6;
@@ -200,25 +252,26 @@ namespace social_learning
             }
         }
 
+        // Lays out the plants in clusters of the same species.
         private void clusteredLayout()
         {
             int speciesIdx = 0;
             foreach (var species in PlantTypes)
             {
-                int clusterRadius = random.Next(20) + 20;
-                int k = random.Next(5) + 5;
-                int curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
-                int cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
+                int clusterRadius = _random.Next(20) + 20;
+                int k = _random.Next(5) + 5;
+                int curx = _random.Next(Width - 2 * clusterRadius) + clusterRadius;
+                int cury = _random.Next(Height - 2 * clusterRadius) + clusterRadius;
                 for (int i = 0; i < species.Count; i++)
                 {
                     if (i % k == 0)
                     {
-                        curx = random.Next(Width - 2 * clusterRadius) + clusterRadius;
-                        cury = random.Next(Height - 2 * clusterRadius) + clusterRadius;
+                        curx = _random.Next(Width - 2 * clusterRadius) + clusterRadius;
+                        cury = _random.Next(Height - 2 * clusterRadius) + clusterRadius;
                     }
 
-                    int x = curx + random.Next(clusterRadius) - clusterRadius / 2;
-                    int y = cury + random.Next(clusterRadius) - clusterRadius / 2;
+                    int x = curx + _random.Next(clusterRadius) - clusterRadius / 2;
+                    int y = cury + _random.Next(clusterRadius) - clusterRadius / 2;
                     var plant = Plants[speciesIdx * species.Count + i];
                     plant.Reset();
                     plant.X = x;
@@ -233,6 +286,7 @@ namespace social_learning
         #region Helper methods for calculating mathy things
         public double[] calculateSensors(IAgent agent)
         {
+            // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
             double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
@@ -240,17 +294,14 @@ namespace social_learning
             // For every plant
             foreach (var plant in Plants)
             {
-                //Console.WriteLine("Plant: {0}", plant.Species.Name);
                 // if the plant isn't available for eating then we do not activate the sensors
                 if (!plant.AvailableForEating(agent))
                     continue;
 
                 // Calculate the distance to the object from the agent
-                //var dist = calculateDistance(agent, plant);
-                int[] distanceAndOrientation = dictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y);
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y);
                 int dist = distanceAndOrientation[0];
                 int pos = distanceAndOrientation[1];
-                //Console.WriteLine("Dist: {0}", dist);
 
                 // If it's too far away for the agent to see
                 if (dist > AgentHorizon)
@@ -259,12 +310,10 @@ namespace social_learning
                 // Identify the appropriate sensor
                 int sIdx = getSensorIndex(agent, plant, pos);
 
-                //Console.WriteLine("Sensor: {0}", sIdx);
-
                 if (sIdx == -1)
                     continue;
 
-                // Add 1/distance to the sensor
+                // Add the signal strength for this plant to the sensor
                 sensors[sIdx] += 1.0 - dist / AgentHorizon;
             }
 
@@ -288,47 +337,6 @@ namespace social_learning
                     return idx + plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE;
             return -1;
         }
-
-        /*
-        private double calculateDistance(IAgent agent, Plant plant)
-        {
-            double[] coords = getClosestCoordinates(agent, plant);
-            return calculateDistance(coords);
-        }
-
-        private double calculateDistance(double[] coords)
-        {
-            return Math.Sqrt((coords[0] - coords[2]) * (coords[0] - coords[2]) + (coords[1] - coords[3]) * (coords[1] - coords[3]));
-        }
-
-        private double[] getClosestCoordinates(IAgent agent, Plant plant)
-        {
-            double[] coords;
-            int newPlantX = plant.X + Width;
-            int newPlantY = plant.Y + Height;
-            var newAgentX = agent.X + Width;
-            var newAgentY = agent.Y + Height;
-            double[][] args = new double[][]{new double[]{ agent.X, agent.Y, plant.X, plant.Y },
-            new double[]{ agent.X, agent.Y, plant.X, newPlantY },
-            new double[]{ agent.X, agent.Y, newPlantX, plant.Y },
-            new double[]{ agent.X, newAgentY, plant.X, plant.Y },
-            new double[]{ agent.X, newAgentY, plant.X, plant.Y },
-            new double[]{ newAgentX, agent.Y, plant.X, newPlantY },
-            new double[]{ agent.X, agent.Y, newPlantX, newPlantY },
-            new double[]{ newAgentX, newAgentY, plant.X, plant.Y },
-            new double[]{ agent.X, newAgentY, newPlantX, plant.Y },
-            };
-            var min = calculateDistance(args[0]);
-            coords = args[0];
-            for (int i = 1; i < args.Length; i++)
-                if (calculateDistance(args[i]) < min)
-                {
-                    min = calculateDistance(args[i]);
-                    coords = args[i];
-                }
-            return coords;
-        }
-         * */
         #endregion
     }
 }

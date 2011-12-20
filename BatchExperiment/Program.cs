@@ -16,151 +16,198 @@ namespace BatchExperiment
     class Program
     {
         static int numRuns;
+        static SensorDictionary sensorDict;
         string _name;
         SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
-        const int MaxGenerations = 500;
+        const int DEFAULT_MAX_GENS = 500;
+        const int DEFAULT_NUM_RUNS = 30;
+        static int MaxGenerations = 500;
         string _filename;
         bool finished = false;
-        List<double>[] _averageFitness;
-        List<double>[] _bestFitness;
-
+        const string ROOT_DIR = @"..\..\..\experiments\";
 
         static void Main(string[] args)
         {
-            numRuns = args.Length > 0 ? int.Parse(args[0]) : 1;
-            Program[] r = new Program[numRuns * 3];
-            List<double>[] neuralAvg = createAllCollection(), neuralBest = createAllCollection(),
-                         socialDarwinAvg = createAllCollection(), socialDarwinBest = createAllCollection(),
-                         socialLamarkAvg = createAllCollection(), socialLamarkBest = createAllCollection(); 
-            SensorDictionary sensorDict = new SensorDictionary(100, 500, 500);
-            Console.WriteLine("WARNING: Skipping baseline and darwinian results");
-            for (int i = 0; i < numRuns; i++)
-            {
-                Program p = new Program("Baseline_" + i, neuralAvg, neuralBest);
-                //p.RunExperiment(@"..\..\..\experiments\neural.config.xml", @"..\..\..\experiments\neural_results" + i + ".csv", sensorDict);
-                Program q = new Program("Social_Darwin_" + i, socialDarwinAvg, socialDarwinBest);
-                //q.RunExperiment(@"..\..\..\experiments\social_darwin.config.xml", @"..\..\..\experiments\social_darwin_results" + i + ".csv", sensorDict);
-                Program m = new Program("Social_Lamark_" + i, socialLamarkAvg, socialLamarkBest);
-                m.RunExperiment(@"..\..\..\experiments\social_lamark.config.xml", @"..\..\..\experiments\social_lamark_results" + i + ".csv", sensorDict);
-                //r[3 * i] = p;
-                //r[3 * i + 1] = q;
-                r[3 * i + 2] = m;
-            }
-            while (!AllFinished(r)) Thread.Sleep(1000);
+            Console.Write("Number runs (default {0}): ", DEFAULT_NUM_RUNS);
+            numRuns = GetCommandLineArg(DEFAULT_NUM_RUNS);
 
-            using (TextWriter writer = new StreamWriter(@"..\..\..\experiments\average_logs.csv"))
-            {
-                writer.WriteLine("Generation,"
-                    + "Baseline-Average,Baseline-Average-Stdev,"
-                    + "Baseline-Champion,Baseline-Champion-Stdev,"
-                    + "Social-Average (Darwinian),Social-Average-Stdev (Darwinian),"
-                    + "Social-Champion (Darwinian),Social-Champion-Stdev (Darwinian),"
-                    + "Social-Average (Lamarkian),Social-Average-Stdev (Lamarkian)," 
-                    + "Social-Champion (Lamarkian),Social-Champion-Stdev (Lamarkian)");
-                for (int i = 0; i < r[0]._averageFitness.Length; i++)
-                    writer.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}", i,
-                        neuralAvg[i].Count == 0 ? "" : neuralAvg[i].Average().ToString(), 
-                        neuralAvg[i].Count == 0 ? "" : neuralAvg[i].Stdev().ToString(), 
-                        neuralBest[i].Count == 0? "" : neuralBest[i].Average().ToString(),
-                        neuralBest[i].Count == 0? "" : neuralBest[i].Stdev().ToString(),
-                        socialDarwinAvg[i].Count == 0 ? "" : socialDarwinAvg[i].Average().ToString(),
-                        socialDarwinAvg[i].Count == 0 ? "" : socialDarwinAvg[i].Stdev().ToString(),
-                        socialDarwinBest[i].Count== 0 ? "" : socialDarwinBest[i].Average().ToString(),
-                        socialDarwinBest[i].Count == 0 ? "" : socialDarwinBest[i].Stdev().ToString(),
-                        socialLamarkAvg[i].Count == 0 ? "" : socialLamarkAvg[i].Average().ToString(),
-                        socialLamarkAvg[i].Count == 0 ? "" : socialLamarkAvg[i].Stdev().ToString(),
-                        socialLamarkBest[i].Count == 0 ? "" : socialLamarkBest[i].Average().ToString(),
-                        socialLamarkBest[i].Count == 0 ? "" : socialLamarkBest[i].Stdev().ToString()
-                        ));
-            }
+            Console.Write("Number of generations (default {0}): ", DEFAULT_MAX_GENS);
+            MaxGenerations = GetCommandLineArg(DEFAULT_MAX_GENS);
+
+            Console.Write("Run baseline? ");
+            bool runBaseline = GetCommandLineArg(true);
+
+            Console.Write("Run social darwinian? ");
+            bool runSocialDarwin = GetCommandLineArg(true);
+
+            Console.Write("Run social lamarkian? ");
+            bool runSocialLamark = GetCommandLineArg(true);
+
+            Console.Write("Run same species darwinian? ");
+            bool runSameSpeciesDarwin = GetCommandLineArg(true);
+
+            Console.Write("Run same species lamarkian? ");
+            bool runSameSpeciesLamark = GetCommandLineArg(true);
+
+            Console.Write("Run student/teacher darwinian? ");
+            bool runStudentTeacherDarwin = GetCommandLineArg(true);
+
+            Console.Write("Run student/teacher lamarkian? ");
+            bool runStudentTeacherLamark = GetCommandLineArg(true);
+
+            sensorDict = new SensorDictionary(100, 500, 500);
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("*** Settings ***");
+            Console.WriteLine("Number of runs: {0}", numRuns);
+            Console.WriteLine("Number of generations: {0}", MaxGenerations);
+            Console.WriteLine("Run baseline? {0}", runBaseline ? "Yes" : "No");
+            Console.WriteLine("Run social darwinian? {0}", runSocialDarwin ? "Yes" : "No");
+            Console.WriteLine("Run social lamarkian? {0}", runSocialLamark ? "Yes" : "No");
+            Console.WriteLine("Run same species darwinian? {0}", runSameSpeciesDarwin ? "Yes" : "No");
+            Console.WriteLine("Run same species lamarkian? {0}", runSameSpeciesLamark ? "Yes" : "No");
+            Console.WriteLine("Run student/teacher darwinian? {0}", runStudentTeacherDarwin ? "Yes" : "No");
+            Console.WriteLine("Run student/teacher lamarkian? {0}", runStudentTeacherLamark ? "Yes" : "No");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("*** Starting evolution ***");
+
+            List<Program> trials = new List<Program>();
+
+            if (runBaseline)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Baseline", "neural.config.xml", i));
+
+            if (runSocialDarwin)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Social Learning (Darwinian)", "social_darwin.config.xml", i));
+
+            if (runSocialLamark)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Social Learning (Lamarkian)", "social_lamark.config.xml", i));
+
+            if (runSameSpeciesDarwin)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Same Species (Darwinian)", "same_species_darwin.config.xml", i));
+
+            if (runSameSpeciesLamark)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Same Species (Lamarkian)", "same_species_lamark.config.xml", i));
+
+            if (runStudentTeacherDarwin)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Student-Teacher (Darwinian)", "student_teacher_darwin.config.xml", i));
+
+            if (runStudentTeacherLamark)
+                for (int i = 0; i < numRuns; i++)
+                    trials.Add(StartTrial("Student-Teacher (Lamarkian)", "student_teacher_lamark.config.xml", i));
+
+            while (!AllFinished(trials)) Thread.Sleep(1000);
+
+            Console.WriteLine();
+            Console.WriteLine("All runs completed!");
         }
 
-        private static List<double>[] createAllCollection()
+        private static Program StartTrial(string name, string config, int trialNum)
         {
-            List<double>[] allNeural = new List<double>[MaxGenerations+1];
-            for (int i = 0; i < allNeural.Length; i++)
-                allNeural[i] = new List<double>();
-            return allNeural;
+            Program p = new Program(name);
+            p.RunExperiment(ROOT_DIR + config, ROOT_DIR + name.ToLower().Replace("(", "").Replace(")", "").Replace(' ', '_').Replace('-', '_') + "_results" + trialNum + ".csv");
+            return p;
         }
 
-        public Program(string name, List<double>[] avgFitness, List<double>[] bestFitness)
+        private static int GetCommandLineArg(int defaultValue)
+        {
+            string line = Console.ReadLine();
+            int result;
+            if (int.TryParse(line, out result))
+                return result;
+            return defaultValue;
+        }
+
+        private static bool GetCommandLineArg(bool defaultValue)
+        {
+            string line = Console.ReadLine();
+            line = line.ToLower();
+            if (line == "yes" || line == "y" || line == "true")
+                return true;
+            if (line == "no" || line == "n" || line == "false")
+                return false;
+            return defaultValue;
+        }
+
+        public Program(string name)
         {
             _name = name;
-            _averageFitness = avgFitness;
-            _bestFitness = bestFitness;
         }
 
-         static bool AllFinished(Program[] programs)
-         {
-             foreach (Program p in programs)
-                 if (p != null && !p.finished)
-                     return false;
-             return true;
-         }
-
-         void RunExperiment(string XMLFile, string filename, SensorDictionary sensorDict)
-         {
-             _filename = filename;
-            _experiment = new SocialExperiment();
-             // Load config XML.
-
-             using (TextWriter writer = new StreamWriter(_filename))
-                 writer.WriteLine("generation,averageFitness,topFitness");
-
-             XmlDocument xmlConfig = new XmlDocument();
-             xmlConfig.Load(XMLFile);
-             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
-             _experiment.World.PlantLayoutStrategy = social_learning.PlantLayoutStrategies.Clustered;
-             _experiment.World.dictionary = sensorDict;
-             startEvolution();
-
-             
-         }
-
-        void startEvolution()
+        static bool AllFinished(IEnumerable<Program> programs)
         {
+            foreach (Program p in programs)
+                if (p != null && !p.finished)
+                    return false;
+            return true;
+        }
 
-            // Create evolution algorithm and attach update event.
+        void RunExperiment(string XMLFile, string filename)
+        {
+            _filename = filename;
+            _experiment = new SocialExperiment();
+            
+            // Write the header for the results file in CSV format.
+            using (TextWriter writer = new StreamWriter(_filename))
+                writer.WriteLine("generation,averageFitness,topFitness");
+
+            // Load the XML configuration file
+            XmlDocument xmlConfig = new XmlDocument();
+            xmlConfig.Load(XMLFile);
+            _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
+            _experiment.World.SensorLookup = sensorDict;
+
+            // Create the evolution algorithm and attach the update event.
             _ea = _experiment.CreateEvolutionAlgorithm();
             _ea.UpdateEvent += new EventHandler(_ea_UpdateEvent);
+
             // Start algorithm (it will run on a background thread).
             _ea.StartContinue();
         }
 
+        // Called by the EA at the end of every generation.
+        // Saves the results to file and checks if we're ready to stop.
         void _ea_UpdateEvent(object sender, EventArgs e)
         {
+            // If this run has already finished, don't log anything.
+            // This is needed because SharpNEAT calls this an extra
+            // time when the algorithm is stopped.
             if (finished)
                 return;
-            using (TextWriter writer = new StreamWriter(_filename, true))
-            {
-                double averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);
-                double topFitness = _ea.CurrentChampGenome.EvaluationInfo.Fitness;
-                int generation = (int)_ea.CurrentGeneration;
 
-                Console.WriteLine("{0} Generation: {1} Best: {2} Avg: {3} MemorySize: {4}",
-                                   _name, generation, topFitness, averageFitness, _experiment.Evaluator.CurrentMemorySize);
+
+            // The average fitness of each genome.
+            double averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);
+
+            // The fitness of the best individual in the population.
+            double topFitness = _ea.CurrentChampGenome.EvaluationInfo.Fitness;
+
+            // The generation that just completed.
+            int generation = (int)_ea.CurrentGeneration;
+
+            // Write the progress to the console.
+            Console.WriteLine("{0} Generation: {1} Best: {2} Avg: {3} MemorySize: {4}",
+                               _name, generation, topFitness, averageFitness, _experiment.Evaluator.CurrentMemorySize);
+
+            // Append the progress to the results file in CSV format.
+            using (TextWriter writer = new StreamWriter(_filename, true))
                 writer.WriteLine(generation + "," + averageFitness + "," + topFitness);
 
-                lock (_bestFitness)
-                    _bestFitness[generation].Add(topFitness);
-                lock (_averageFitness)
-                    _averageFitness[generation].Add(averageFitness);
-
-                if (_ea.CurrentGeneration >= MaxGenerations)
-                {
-                    _ea.Stop();
-                    finished = true;
-                    Console.WriteLine("{0} Finished!", _name);
-                }
+            // Stop if we've evolved for enough generations
+            if (_ea.CurrentGeneration >= MaxGenerations)
+            {
+                _ea.Stop();
+                finished = true;
+                Console.WriteLine("{0} Finished!", _name);
             }
-
-            //if (_ea.CurrentGeneration == 5)
-            //{
-            //    Console.WriteLine("Switching to Darwinian evolution with no learning");
-            //    _experiment.Evaluator.AgentType = AgentTypes.Neural;
-            //}
         }
-        
+
     }
 }

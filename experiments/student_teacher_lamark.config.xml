@@ -7,7 +7,7 @@
     <Iters>4</Iters>
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
-  <ComplexityThreshold>50</ComplexityThreshold>
+  <ComplexityThreshold>1000</ComplexityThreshold>
   <AgentType>Social</AgentType>
   <Memory>
     <Paradigm>Fixed</Paradigm>
@@ -15,9 +15,9 @@
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <TeachingParadigm>EveryoneRewards</TeachingParadigm>
+  <TeachingParadigm>StudentTeacherActions</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
-  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
     Foraging Evolution
  
