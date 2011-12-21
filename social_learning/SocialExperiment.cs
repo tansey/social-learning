@@ -10,10 +10,8 @@ using SharpNeat.SpeciationStrategies;
 using SharpNeat.EvolutionAlgorithms.ComplexityRegulation;
 using SharpNeat.Phenomes;
 using SharpNeat.Decoders.Neat;
-using social_learning;
 using System.Threading.Tasks;
 using System;
-using System.Windows.Forms;
 using System.Linq;
 using SharpNeat.Network;
 using System.Text;
@@ -21,7 +19,7 @@ using System.IO;
 using System.Diagnostics;
 using SharpNeat.Utility;
 
-namespace VisualizeWorld
+namespace social_learning
 {
     public class SocialExperiment : INeatExperiment
     {

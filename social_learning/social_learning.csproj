@@ -53,9 +53,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="AgentTypes.cs" />
     <Compile Include="DumbAgent.cs" />
+    <Compile Include="EvolutionParadigm.cs" />
+    <Compile Include="ForagingEvaluator.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="InputOutputPair.cs" />
+    <Compile Include="MemoryParadigm.cs" />
     <Compile Include="NeuralAgent.cs" />
     <Compile Include="NumberExtensions.cs" />
     <Compile Include="Plant.cs" />
@@ -64,7 +68,9 @@
     <Compile Include="QLearningAgent.cs" />
     <Compile Include="SensorDictionary.cs" />
     <Compile Include="SocialAgent.cs" />
+    <Compile Include="SocialExperiment.cs" />
     <Compile Include="SpinningAgent.cs" />
+    <Compile Include="TeachingParadigm.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

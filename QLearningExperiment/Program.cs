@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VisualizeWorld;
 using SharpNeat.Genomes.Neat;
 using SharpNeat.Utility;
 using System.Xml;

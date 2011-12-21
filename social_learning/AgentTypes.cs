@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VisualizeWorld
+namespace social_learning
 {
-    public enum EvolutionParadigm
+    public enum AgentTypes
     {
-        Darwinian,
-        Lamarkian
+        Neural, Social, QLearning, Spinning
     }
 }

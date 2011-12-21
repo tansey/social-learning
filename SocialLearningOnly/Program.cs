@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.IO;
-using VisualizeWorld;
 using System.Xml;
 using SharpNeat.Core;
 using SharpNeat.Genomes.Neat;

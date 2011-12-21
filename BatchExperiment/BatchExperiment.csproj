@@ -62,10 +62,6 @@
       <Project>{52490C63-ED3A-48D6-B0B0-752795FAC313}</Project>
       <Name>social_learning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VisualizeWorld\VisualizeWorld.csproj">
-      <Project>{B0199B00-9127-49AA-852B-BC3498862F4E}</Project>
-      <Name>VisualizeWorld</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

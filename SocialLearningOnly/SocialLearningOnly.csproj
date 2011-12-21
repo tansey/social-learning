@@ -57,17 +57,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\social_learning\social_learning.csproj">
       <Project>{52490C63-ED3A-48D6-B0B0-752795FAC313}</Project>
       <Name>social_learning</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VisualizeWorld\VisualizeWorld.csproj">
-      <Project>{B0199B00-9127-49AA-852B-BC3498862F4E}</Project>
-      <Name>VisualizeWorld</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

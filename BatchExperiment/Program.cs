@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using VisualizeWorld;
 using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System.IO;
@@ -73,45 +72,47 @@ namespace BatchExperiment
             Console.WriteLine();
             Console.WriteLine("*** Starting evolution ***");
 
-            List<Program> trials = new List<Program>();
-
             if (runBaseline)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Baseline", "neural.config.xml", i));
+                RunTrials("Baseline", "neural.config.xml");
 
             if (runSocialDarwin)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Social Learning (Darwinian)", "social_darwin.config.xml", i));
+                RunTrials("Social Learning (Darwinian)", "social_darwin.config.xml");
 
             if (runSocialLamark)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Social Learning (Lamarkian)", "social_lamark.config.xml", i));
+                RunTrials("Social Learning (Lamarkian)", "social_lamark.config.xml");
 
             if (runSameSpeciesDarwin)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Same Species (Darwinian)", "same_species_darwin.config.xml", i));
+                RunTrials("Same Species (Darwinian)", "same_species_darwin.config.xml");
 
             if (runSameSpeciesLamark)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Same Species (Lamarkian)", "same_species_lamark.config.xml", i));
+                RunTrials("Same Species (Lamarkian)", "same_species_lamark.config.xml");
 
             if (runStudentTeacherDarwin)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Student-Teacher (Darwinian)", "student_teacher_darwin.config.xml", i));
+                RunTrials("Student-Teacher (Darwinian)", "student_teacher_darwin.config.xml");
 
             if (runStudentTeacherLamark)
-                for (int i = 0; i < numRuns; i++)
-                    trials.Add(StartTrial("Student-Teacher (Lamarkian)", "student_teacher_lamark.config.xml", i));
-
-            while (!AllFinished(trials)) Thread.Sleep(1000);
+                RunTrials("Student-Teacher (Lamarkian)", "student_teacher_lamark.config.xml");            
 
             Console.WriteLine();
             Console.WriteLine("All runs completed!");
         }
 
+        private static void RunTrials(string name, string config)
+        {
+            List<Program> trials = new List<Program>();
+            Console.WriteLine("*** Starting {0} Runs ***", name);
+            
+            for (int i = 0; i < numRuns; i++)
+                trials.Add(StartTrial(name, config, i));
+            
+            while (!AllFinished(trials)) Thread.Sleep(1000);
+
+            Console.WriteLine("*** Finished {0} Runs ***", name);
+        }
+
         private static Program StartTrial(string name, string config, int trialNum)
         {
-            Program p = new Program(name);
+            Program p = new Program(name + "_" + trialNum);
             p.RunExperiment(ROOT_DIR + config, ROOT_DIR + name.ToLower().Replace("(", "").Replace(")", "").Replace(' ', '_').Replace('-', '_') + "_results" + trialNum + ".csv");
             return p;
         }

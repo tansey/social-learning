@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpNeat.Core;
-using social_learning;
 using SharpNeat.Phenomes;
 using SharpNeat.Phenomes.NeuralNets;
-using System.Windows.Forms;
 using System.IO;
 using SharpNeat.Genomes.Neat;
 using System.Diagnostics;
@@ -14,10 +12,10 @@ using System.Threading;
 using SharpNeat.Utility;
 using System.Threading.Tasks;
 
-namespace VisualizeWorld
+namespace social_learning
 {
     public class ForagingEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
-        where TGenome : SharpNeat.Genomes.Neat.NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
+        where TGenome : NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
         private ulong _evaluationCount;
