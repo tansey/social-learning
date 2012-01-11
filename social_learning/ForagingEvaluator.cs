@@ -236,7 +236,9 @@ namespace social_learning
                         return;//continue;
 
                     // Teach the agent to act like the eater
-                    TeachAgent(eater, agent);
+                    int numiterations = eaten.Species.Reward / 50;
+                    for(int iter = 0; iter < numiterations ; iter++ )
+                        TeachAgent(eater, agent);
                 });
             }
         }

@@ -31,6 +31,7 @@ namespace VisualizeWorld
         const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
         const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
         const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_lamark.config.xml";
+        const string REWARD_PROPORTIONAL_CONFIG_FILE = @"..\..\..\experiments\reward_proportional.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
         bool running = false;
@@ -340,6 +341,13 @@ namespace VisualizeWorld
         {
             uncheckAllExperimentMenusAndStopEvolution();
             _configFile = SOCIAL_LAMARK_CONFIG_FILE;
+            socialLearningLamarkianToolStripMenuItem.Checked = true;
+        }
+
+        private void rewardProportionalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = REWARD_PROPORTIONAL_CONFIG_FILE;
             socialLearningLamarkianToolStripMenuItem.Checked = true;
         }
 
