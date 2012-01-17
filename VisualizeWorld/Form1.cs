@@ -344,7 +344,7 @@ namespace VisualizeWorld
             socialLearningLamarkianToolStripMenuItem.Checked = true;
         }
 
-        private void rewardProportionalToolStripMenuItem_Click(object sender, EventArgs e)
+        private void proportionalLearningToolStripMenuItem_Click(object sender, EventArgs e)
         {
             uncheckAllExperimentMenusAndStopEvolution();
             _configFile = REWARD_PROPORTIONAL_CONFIG_FILE;
@@ -366,5 +366,6 @@ namespace VisualizeWorld
         {
             _debugOutputs = debugOutputsToolStripMenuItem.Checked;
         }
+
     }
 }

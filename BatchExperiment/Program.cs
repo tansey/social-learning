@@ -43,6 +43,9 @@ namespace BatchExperiment
             Console.Write("Run social lamarkian? ");
             bool runSocialLamark = GetCommandLineArg(true);
 
+            Console.Write("Run social proportional? ");
+            bool runProportional = GetCommandLineArg(true);
+
             Console.Write("Run same species darwinian? ");
             bool runSameSpeciesDarwin = GetCommandLineArg(true);
 
@@ -55,6 +58,7 @@ namespace BatchExperiment
             Console.Write("Run student/teacher lamarkian? ");
             bool runStudentTeacherLamark = GetCommandLineArg(true);
 
+
             sensorDict = new SensorDictionary(100, 500, 500);
             Console.WriteLine();
             Console.WriteLine();
@@ -64,6 +68,7 @@ namespace BatchExperiment
             Console.WriteLine("Run baseline? {0}", runBaseline ? "Yes" : "No");
             Console.WriteLine("Run social darwinian? {0}", runSocialDarwin ? "Yes" : "No");
             Console.WriteLine("Run social lamarkian? {0}", runSocialLamark ? "Yes" : "No");
+            Console.WriteLine("Run social proportional? {0}", runProportional ? "Yes" : "No");
             Console.WriteLine("Run same species darwinian? {0}", runSameSpeciesDarwin ? "Yes" : "No");
             Console.WriteLine("Run same species lamarkian? {0}", runSameSpeciesLamark ? "Yes" : "No");
             Console.WriteLine("Run student/teacher darwinian? {0}", runStudentTeacherDarwin ? "Yes" : "No");
@@ -80,6 +85,9 @@ namespace BatchExperiment
 
             if (runSocialLamark)
                 RunTrials("Social Learning (Lamarkian)", "social_lamark.config.xml");
+
+            if (runProportional)
+                RunTrials("Social Proportional (Lamarkian)", "reward_proportional.config.xml");
 
             if (runSameSpeciesDarwin)
                 RunTrials("Same Species (Darwinian)", "same_species_darwin.config.xml");

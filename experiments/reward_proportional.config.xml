@@ -40,19 +40,19 @@
     <Plant>
       <Name>Neutral_1</Name>
       <Radius>5</Radius>
-      <Reward>200</Reward>
+      <Reward>150</Reward>
       <Count>20</Count>
     </Plant>
     <Plant>
       <Name>Nutritious_1</Name>
       <Radius>5</Radius>
-      <Reward>500</Reward>
+      <Reward>200</Reward>
       <Count>20</Count>
     </Plant>
     <Plant>
       <Name>Nutritious_2</Name>
       <Radius>5</Radius>
-      <Reward>1000</Reward>
+      <Reward>250</Reward>
       <Count>20</Count>
     </Plant>
   </PlantSpecies>

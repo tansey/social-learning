@@ -33,22 +33,23 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadPopulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setAgentTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.basicNEATdefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.qLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
+            this.basicNEATnoLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPreyOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.socialPreyAndPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.proportionalLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setPlantLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uniformdefaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.spiralToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clusterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugOutputsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.basicNEATnoLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.socialPreyOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.socialPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.socialPreyAndPredatorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,10 +105,18 @@
             this.basicNEATnoLearningToolStripMenuItem,
             this.socialPreyOnlyToolStripMenuItem,
             this.socialPredatorsToolStripMenuItem,
-            this.socialPreyAndPredatorsToolStripMenuItem});
+            this.socialPreyAndPredatorsToolStripMenuItem,
+            this.proportionalLearningToolStripMenuItem});
             this.setAgentTypeToolStripMenuItem.Name = "setAgentTypeToolStripMenuItem";
             this.setAgentTypeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.setAgentTypeToolStripMenuItem.Text = "Set &Experiment";
+            // 
+            // toolStripTextBox1
+            // 
+            this.toolStripTextBox1.Enabled = false;
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(160, 23);
+            this.toolStripTextBox1.Text = "Foraging Evolution";
             // 
             // basicNEATdefaultToolStripMenuItem
             // 
@@ -142,6 +151,49 @@
             this.socialLearningLamarkianToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.socialLearningLamarkianToolStripMenuItem.Text = "Social Learning (Lamarkian)";
             this.socialLearningLamarkianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningLamarkianToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(217, 6);
+            // 
+            // toolStripTextBox2
+            // 
+            this.toolStripTextBox2.Enabled = false;
+            this.toolStripTextBox2.Name = "toolStripTextBox2";
+            this.toolStripTextBox2.Size = new System.Drawing.Size(160, 23);
+            this.toolStripTextBox2.Text = "Predator/Prey Co-Evolution";
+            // 
+            // basicNEATnoLearningToolStripMenuItem
+            // 
+            this.basicNEATnoLearningToolStripMenuItem.Name = "basicNEATnoLearningToolStripMenuItem";
+            this.basicNEATnoLearningToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.basicNEATnoLearningToolStripMenuItem.Text = "Basic NEAT (no learning)";
+            // 
+            // socialPreyOnlyToolStripMenuItem
+            // 
+            this.socialPreyOnlyToolStripMenuItem.Name = "socialPreyOnlyToolStripMenuItem";
+            this.socialPreyOnlyToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPreyOnlyToolStripMenuItem.Text = "Social Prey";
+            // 
+            // socialPredatorsToolStripMenuItem
+            // 
+            this.socialPredatorsToolStripMenuItem.Name = "socialPredatorsToolStripMenuItem";
+            this.socialPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPredatorsToolStripMenuItem.Text = "Social Predators";
+            // 
+            // socialPreyAndPredatorsToolStripMenuItem
+            // 
+            this.socialPreyAndPredatorsToolStripMenuItem.Name = "socialPreyAndPredatorsToolStripMenuItem";
+            this.socialPreyAndPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.socialPreyAndPredatorsToolStripMenuItem.Text = "Social Prey and Predators";
+            // 
+            // proportionalLearningToolStripMenuItem
+            // 
+            this.proportionalLearningToolStripMenuItem.Name = "proportionalLearningToolStripMenuItem";
+            this.proportionalLearningToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.proportionalLearningToolStripMenuItem.Text = "Proportional Learning";
+            this.proportionalLearningToolStripMenuItem.Click += new System.EventHandler(this.proportionalLearningToolStripMenuItem_Click);
             // 
             // setPlantLayoutToolStripMenuItem
             // 
@@ -187,49 +239,6 @@
             this.debugOutputsToolStripMenuItem.Text = "Debug Outputs";
             this.debugOutputsToolStripMenuItem.Click += new System.EventHandler(this.debugOutputsToolStripMenuItem_Click);
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(217, 6);
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Enabled = false;
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(160, 23);
-            this.toolStripTextBox1.Text = "Foraging Evolution";
-            // 
-            // basicNEATnoLearningToolStripMenuItem
-            // 
-            this.basicNEATnoLearningToolStripMenuItem.Name = "basicNEATnoLearningToolStripMenuItem";
-            this.basicNEATnoLearningToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-            this.basicNEATnoLearningToolStripMenuItem.Text = "Basic NEAT (no learning)";
-            // 
-            // socialPreyOnlyToolStripMenuItem
-            // 
-            this.socialPreyOnlyToolStripMenuItem.Name = "socialPreyOnlyToolStripMenuItem";
-            this.socialPreyOnlyToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-            this.socialPreyOnlyToolStripMenuItem.Text = "Social Prey";
-            // 
-            // socialPredatorsToolStripMenuItem
-            // 
-            this.socialPredatorsToolStripMenuItem.Name = "socialPredatorsToolStripMenuItem";
-            this.socialPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-            this.socialPredatorsToolStripMenuItem.Text = "Social Predators";
-            // 
-            // socialPreyAndPredatorsToolStripMenuItem
-            // 
-            this.socialPreyAndPredatorsToolStripMenuItem.Name = "socialPreyAndPredatorsToolStripMenuItem";
-            this.socialPreyAndPredatorsToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-            this.socialPreyAndPredatorsToolStripMenuItem.Text = "Social Prey and Predators";
-            // 
-            // toolStripTextBox2
-            // 
-            this.toolStripTextBox2.Enabled = false;
-            this.toolStripTextBox2.Name = "toolStripTextBox2";
-            this.toolStripTextBox2.Size = new System.Drawing.Size(160, 23);
-            this.toolStripTextBox2.Text = "Predator/Prey Co-Evolution";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -272,6 +281,7 @@
         private System.Windows.Forms.ToolStripMenuItem socialPredatorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem socialPreyAndPredatorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
+        private System.Windows.Forms.ToolStripMenuItem proportionalLearningToolStripMenuItem;
     }
 }
 
