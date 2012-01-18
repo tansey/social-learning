@@ -171,11 +171,14 @@ In this section we first describe the domain in which we test our model, and dis
    Each agent has two controls that are the outputs of the neural network - an accelerator/decellerator which changes the agent velocity, and another control that turns the agent to the left or right. Each of these output nodes is mapped onto a range for the values of these controls.  The agent never knows its absolute orientation in the world or its absolute position - it must make decisions based only on the input from its sensors.
 
 \subsection*{Common Parameters} 
-For all of our experiments, the world is 500 by 500 units, with 20 randomly distributed plants of each value -100, -50, 0, 50, and 100. We create 100 different agents in each generation, and speciate them into 10 species. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. Each generation lasted 1000 timesteps, and each experiment was averaged over 30 runs.
+
+For our simple world, the world is 2000 by 2000 units, with 20 randomly distributed plants of each value -100, -50, 0, 50, and 100. We create 100 different agents in each generation, and speciate them into 10 species. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. Each generation lasted 1000 timesteps, and each experiment was averaged over 30 runs.
+
+For our complex world, the world is 500 by 500 units, with 20 randomly distributed plants of each value -100, -50, 0, 50, and 100. We create 100 different agents in each generation, and speciate them into 10 species. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. Each generation lasted 1000 timesteps, and each experiment was averaged over 30 runs.
 
 \section{Results}
 \label{sec:results}
-We next present the results of our three experiments that validate our non-hierarchical model. We begin by measuring the performance of social learning in both Darwinian and Lamarkian evolutionary paradigms. Following this, we determine whether social learning is effective when updates are performed only among the same species, with the goal of reducing the overall runtime cost of adding social learning. Finally, leverage the insights from the first two experiments and use Lamarkian social learning as a bootstrapping phase for Darwinian neuroevolution with no learning.
+We next present the results of our three experiments that validate our non-hierarchical model. We begin by measuring the performance of social learning in both Darwinian and Lamarkian evolutionary paradigms. Following this, we determine whether social learning is effective when updates are performed only among the same species, with the goal of reducing the overall runtime cost of adding social learning. Finally, we leverage the insights from the first two experiments and use Lamarkian social learning as a bootstrapping phase for Darwinian neuroevolution with no learning.
 
 \begin{figure}
   \centering
@@ -189,7 +192,7 @@ Genetic inheritance paradigms in evolution falls into one of two main categories
 
 Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In the context of \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution outperforms Darwinian evolution initially.
 
-However, the degradation of the Lamarkian fitness after generation 10 is surprising. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, the learning is derived more from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down. A similar effect has been observed before \cite{denaro1996cultural}.
+%However, the degradation of the Lamarkian fitness after generation 10 is surprising. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, the learning is derived more from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down. A similar effect has been observed before \cite{denaro1996cultural}.
 
 \begin{figure}
   \centering
@@ -210,10 +213,10 @@ Figure \ref{fig:population-species} shows the results comparing population-based
   \label{fig:learning-bootstrapping}
 \end{figure}
 
-\subsection*{Bootstrapping}
-The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. The hybrid version is able to achieve a slightly higher (though not statistically significant) fitness than either comparison method and does not suffer from the degradation present in the pure social Lamarkian setup.
+%\subsection*{Bootstrapping}
+%The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. The hybrid version is able to achieve a slightly higher (though not statistically significant) fitness than either comparison method and does not suffer from the degradation present in the pure social Lamarkian setup.
 
-In the next section we present a brief discussion of related work on social learning in EAs.
+%In the next section we present a brief discussion of related work on social learning in EAs.
 
 
 -\section{Related Work}

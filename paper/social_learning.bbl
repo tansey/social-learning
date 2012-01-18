@@ -1,0 +1,86 @@
+\begin{thebibliography}{10}
+
+\bibitem{gallese-98}
+Mirror neurons and the simulation theory of mind-reading.
+\newblock {\em Trends in Cognitive Sciences}, 2(12):493 -- 501, 1998.
+
+\bibitem{acerbi2007social}
+A.~Acerbi and S.~Nolfi.
+\newblock Social learning and cultural evolution in embodied and situated
+  agents.
+\newblock In {\em Artificial Life, 2007. ALIFE'07. IEEE Symposium on}, pages
+  333--340. IEEE, 2007.
+
+\bibitem{de2011incremental}
+M.~de~Oca, T.~Stutzle, K.~Van~den Enden, and M.~Dorigo.
+\newblock Incremental social learning in particle swarms.
+\newblock {\em Systems, Man, and Cybernetics, Part B: Cybernetics, IEEE
+  Transactions on}, 41(2):368--384, 2011.
+
+\bibitem{denaro1996cultural}
+D.~Denaro and D.~Parisi.
+\newblock Cultural evolution in a population of neural networks.
+\newblock {\em M. marinaro and r. tagliaferri (eds), neural nets wirn-96. new
+  york: Springer}, pages 100--111, 1996.
+
+\bibitem{haasdijk2008social}
+E.~Haasdijk, P.~Vogt, and A.~Eiben.
+\newblock Social learning in population-based adaptive systems.
+\newblock In {\em Evolutionary Computation, 2008. CEC 2008.(IEEE World Congress
+  on Computational Intelligence). IEEE Congress on}, pages 1386--1392. IEEE,
+  2008.
+
+\bibitem{herrmann2007humans}
+E.~Herrmann, J.~Call, M.~Hern{\'a}ndez-Lloreda, B.~Hare, and M.~Tomasello.
+\newblock Humans have evolved specialized skills of social cognition: The
+  cultural intelligence hypothesis.
+\newblock {\em science}, 317(5843):1360, 2007.
+
+\bibitem{holekamp2007questioning}
+K.~Holekamp.
+\newblock Questioning the social intelligence hypothesis.
+\newblock {\em Trends in cognitive sciences}, 11(2):65--69, 2007.
+
+\bibitem{kennedy1995particle}
+J.~Kennedy and R.~Eberhart.
+\newblock Particle swarm optimization.
+\newblock In {\em Neural Networks, 1995. Proceedings., IEEE International
+  Conference on}, volume~4, pages 1942--1948. IEEE, 1995.
+
+\bibitem{reynolds1994introduction}
+R.~Reynolds.
+\newblock An introduction to cultural algorithms.
+\newblock In {\em Proceedings of the Third Annual Conference on Evolutionary
+  Programming}, pages 131--139. World Scientific, 1994.
+
+\bibitem{simpson1953baldwin}
+G.~Simpson.
+\newblock The baldwin effect.
+\newblock {\em Evolution}, 7(2):110--117, 1953.
+
+\bibitem{stanley2002evolving}
+K.~Stanley and R.~Miikkulainen.
+\newblock Evolving neural networks through augmenting topologies.
+\newblock {\em Evolutionary computation}, 10(2):99--127, 2002.
+
+\bibitem{vogt2010modeling}
+P.~Vogt and E.~Haasdijk.
+\newblock Modeling social learning of language and skills.
+\newblock {\em Artificial Life}, 16(4):289--309, 2010.
+
+\bibitem{watkins1992q}
+C.~Watkins and P.~Dayan.
+\newblock Q-learning.
+\newblock {\em Machine learning}, 8(3):279--292, 1992.
+
+\bibitem{werbos1990backpropagation}
+P.~Werbos.
+\newblock Backpropagation through time: what it does and how to do it.
+\newblock {\em Proceedings of the IEEE}, 78(10):1550--1560, 1990.
+
+\bibitem{whiteson2006evolutionary}
+S.~Whiteson and P.~Stone.
+\newblock Evolutionary function approximation for reinforcement learning.
+\newblock {\em The Journal of Machine Learning Research}, 7:877--917, 2006.
+
+\end{thebibliography}

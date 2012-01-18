@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2010)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: social_learning.aux
+The style file: abbrv.bst
+Database file #1: sigproc.bib
+Warning--to sort, need author or key in gallese-98
+Warning--empty author in gallese-98
+You've used 15 entries,
+            2118 wiz_defined-function locations,
+            603 strings with 6122 characters,
+and the built_in function-call counts, 5647 in all, are:
+= -- 600
+> -- 189
+< -- 6
++ -- 77
+- -- 60
+* -- 395
+:= -- 870
+add.period$ -- 48
+call.type$ -- 15
+change.case$ -- 75
+chr.to.int$ -- 0
+cite$ -- 17
+duplicate$ -- 226
+empty$ -- 471
+format.name$ -- 60
+if$ -- 1227
+int.to.chr$ -- 0
+int.to.str$ -- 15
+missing$ -- 15
+newline$ -- 77
+num.names$ -- 28
+pop$ -- 67
+preamble$ -- 1
+purify$ -- 60
+quote$ -- 0
+skip$ -- 174
+stack$ -- 0
+substring$ -- 489
+swap$ -- 69
+text.length$ -- 6
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 60
+warning$ -- 2
+while$ -- 61
+width$ -- 17
+write$ -- 170
+(There were 2 warnings)
