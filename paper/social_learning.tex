@@ -66,13 +66,20 @@ In this section, we elaborate on our approach and its justification and applicat
 
 Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.
 
+\begin{figure}
+  \centering
+    \includegraphics[scale=.65]{foraging_agent_architecture.pdf}
+  \caption{The architecture of our foraging agents. A) Each agent has a $180^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+  \label{fig:agent-architecture}
+\end{figure}
+
 Another important area for social learning is dynamic domains. In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
 
 \begin{figure}
   \centering
     \includegraphics[scale=.3]{world.pdf}
   \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  \textbf{1} is a piece of nutritious food which increases fitness, \textbf{2} is poison which decreases fitness, and \textbf{3} is one of our agents.}
-  \label{fig:darwin-lamark}
+  \label{fig:foraging-world}
 \end{figure}
 
 \subsection*{Evolutionary Framework}
