@@ -1,4 +1,6 @@
 \documentclass{acm_proc_article-sp}
+\usepackage{algorithmic}
+\usepackage{algorithm}
 
 \begin{document}
 
@@ -104,6 +106,32 @@ The ability of social learning to improve agents in a foraging domain has been e
 \label{sec:rbsl}
 
 Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algorithm that operates continuously as an agent moves in the world. At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state. The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retrieve its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
+
+\begin{algorithm}
+\begin{algorithmic}
+\REQUIRE $n \geq 0 \vee x \neq 0$
+\ENSURE $y = x^n$
+\STATE $y \Leftarrow 1$
+\IF{$n < 0$}
+\STATE $X \Leftarrow 1 / x$
+\STATE $N \Leftarrow -n$
+\ELSE
+\STATE $X \Leftarrow x$
+\STATE $N \Leftarrow n$
+\ENDIF
+\WHILE{$N \neq 0$}
+\IF{$N$ is even}
+\STATE $X \Leftarrow X \times X$
+\STATE $N \Leftarrow N / 2$
+\ELSE[$N$ is odd]
+\STATE $y \Leftarrow y \times X$
+\STATE $N \Leftarrow N - 1$
+\ENDIF
+\ENDWHILE
+\end{algorithmic}
+\caption{The pseudo-code for our rewards-based social learning algorithm.}
+\label{alg:rewardsbased}
+\end{algorithm}
 
 \begin{figure}
   \centering
