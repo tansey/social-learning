@@ -28,7 +28,7 @@ Risto Miikkulainen\\
 
 \maketitle
 \begin{abstract}
-Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train the remaining agents in the population. We present a reward-based model of social learning in which we do not label agents as teachers or students, instead allowing any individual receiving a positive reward to teach other agents to mimic its recent behavior. We validate our approach in two foraging tasks, comparing reward-based social learning with two variants of student-teacher social learning, as well as traditional neuroevolution. We show that in a complex foraging task, our reward-based approach converges to a strategy superior to that of other methods. Moreover, our algorithm discovers near-optimal solutions in both foraging tasks with up to two orders of magnitude fewer agent evaluations than any of our benchmark strategies. Our results suggest reward-based social learning can substantially speed up evolutionary search in domains with online rewards.
+Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. We present a reward-based model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of reward-based social learning with pure neuroevolution and a variant of student-teacher social learning. We show that our algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. Our results suggest reward-based social learning holds substantial potential to revolutionize the field of social learning.
 \end{abstract}
 
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life}
@@ -68,21 +68,8 @@ In this section, we elaborate on our approach and its justification and applicat
 
 Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.65]{foraging_agent_architecture.pdf}
-  \caption{The architecture of our foraging agents. A) Each agent has a $180^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
-  \label{fig:agent-architecture}
-\end{figure}
-
 Another important area for social learning is dynamic domains. In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.3]{world.pdf}
-  \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  \textbf{1} is a piece of nutritious food which increases fitness, \textbf{2} is poison which decreases fitness, and \textbf{3} is one of our agents.}
-  \label{fig:foraging-world}
-\end{figure}
 
 \subsection*{Evolutionary Framework}
 In this section, we discuss the framework on which we base our social learning and our modifications and extensions to this framework.
@@ -129,7 +116,7 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
 \ENDIF
 \ENDWHILE
 \end{algorithmic}
-\caption{The pseudo-code for our rewards-based social learning algorithm.}
+\caption{Our reward-based social learning algorithm. (temporary pseudo-code placeholder)}
 \label{alg:rewardsbased}
 \end{algorithm}
 
@@ -142,26 +129,50 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
 
 
 As a result of using only positive rewards to identify those actions on which we want to train agents, social learning can begin immediately in the first generation of the evolutionary algorithm. In contrast, previous approaches \cite{denaro1996cultural} instead chose strong individuals as teachers to train weaker individuals in appropriate behavior, thereby requiring at least one generation in which to identify strong individuals. Additionally, by allowing any individual to train any other, we leverage a diversity of different behaviors in problem solving.
- 
+
 \section{Experimental Setup}
 \label{sec:setup}
-In this section we first describe the domain in which we test our model, the inputs and outputs that our agents receive, and the common parameters across all our experiments.
+In this section we describe our evaluation domain, including the inputs and outputs that our agents receive, and the common parameters across all our experiments.
+
+
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.3]{world.pdf}
+  \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  \textbf{1} is a piece of nutritious food which increases fitness, \textbf{2} is poison which decreases fitness, and \textbf{3} is one of our agents.}
+  \label{fig:foraging-world}
+\end{figure}
 
 \subsection*{The Foraging Domain}
-    Our domain is a foraging world in which agents move freely on a continuous toroidal surface. We populate our world with various plants, some of which are considered nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. This foraging domain is non-competitive and non-cooperative - each agent acts independently of all other agents, with the exception of the training signals which pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plants. Every agent then has some time steps to move about the surface of the world eating plants - which happens automatically when an individual draws close - before the generation is over and a new population is evolved.
+Our domain is a foraging world in which agents move freely on a continuous toroidal surface. We populate our world with various plants, some of which are nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. The foraging domain is non-competitive and non-cooperative; each agent acts independently of all other agents, with the exception of the teaching signals which pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plant layout and configuration. Every agent then has a fixed number time steps to move about the surface of the world eating plants--- which happens automatically when an agent draws sufficiently close to one--- before the evaluation is over. Figure \ref{fig:foraging-world} shows an example of a foraging world with two types of plants and eight agents.
     
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.65]{foraging_agent_architecture.pdf}
+  \caption{The architecture of our foraging agents. A) Each agent has a $180^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+  \label{fig:agent-architecture}
+\end{figure}
+
 \subsection*{Sensors and Outputs}
 
-  Agents ``see'' plants within a certain horizon via a collection of sensors - they have eight sensors for each type of plant, each of which detects plants in a different 12.5 degree sector of the 180 degrees ahead of the agent. Agents cannot see other individuals, or plants they have already eaten- all they can see is edible food. The strength of the signal generated by each plant is proportional to its proximity to the agent. Agents also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and thusly the individual's state.
-
+Agents ``see'' plants within a 180$^\circ$ horizon via a collection discretized sensors. Each agent has eight sensors for each type of plant, each of which detects plants in a different 12.5 degree$^\circ$ sector of the 180$^\circ$ ahead of the agent. Agents cannot see other individuals, or plants they have already eaten--- all they can see is edible food. The strength of the signal generated by each plant is proportional to its proximity to the agent. Agents also have a sensor by which they can detect their current velocity. Each agent is controlled by an artificial neural network that maps from the agent's sensor readings to the desired change in orientation and velocity. Figure \ref{fig:agent-architecture} shows the architecture of a foraging agent.
 
 \subsection*{Common Parameters}
 
-In our simple world, the toroidal surface is 2000 by 2000 units, with 50 randomly distributed plants of value 100. Our complex world has a surface of 500 by 500 units, with 20 randomly distributed plants of each value -100, -50, 0, 50, and 100. We create 100 different agents in each generation,  and divide them into 10 cultural cliques. In both worlds, there are 100 agents and when they are divided into cultural cliques, there are ten cliques of ten agents. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. Each generation lasted 1000 timesteps, and each experiment was averaged over 30 runs.
+In our experiments, we used two separate configurations for the robot foraging world. In the first three experiments, we used a ``simple'' world where the toroidal surface is 2000 by 2000 units, with a single plant type of value 100 and 50 randomly distributed instances of the plants. In this world, the agents have a straight-forward task of learning to efficiently navigate and gather as many plants as possible.
+
+For our fourth set of experiments, we evaluated using both the simple world and a second, more complex world. Our ``complex'' world has a surface of 500 by 500 units, with five different plant types of value: $\{-100, -50, 0, 50, 100\}$. For each plant type, we create 20 randomly distributed plant instances. This world presents the agents with a more difficult task as they must both efficiently gather nutrious food while simultaneously avoiding the poisonous food.
+
+In all our experiments, we create 100 different agents in each generation. All networks are initialized with fully-connected weights with no hidden neurons. Agents automatically eat any plant with which they are within five units. Each evaluation lasts 1000 timesteps and our results for each experiment are the average of 30 independent runs.
+
+We next describe our experiments and their outcomes in detail.
+
+%In both worlds, there are 100 agents and when they are divided into cultural cliques, there are ten cliques of ten agents. Each agent had 8 different sensors for each type of plant, and automatically ate any plant it came within 5 units of. 
 
 \section{Results}
 \label{sec:results}
-In this section we review the results of our experimentation.  We have four experiments, viz. Reward-Based Learning with and without Evolution, Darwinian and Lamarkian Evolution, Population-Wide and Cultural Evolution, and Reward-Based Learning and Student-Teacher Learning.   The first three experiments each examine a different part of our final algorithm for reward-based learning and the motivation and experimental results for each of them.  The last compares our algorithm with a recent student-teacher learning algorithm, and shows that our reward-based social learning produces excellent results faster.
+In this section we present our experimental results. We conducted four main experiments, 1) determining the baseline performance of reward-based social learning and neuroevolution, each in isolation, 2) measuring the performance of reward-based learning in Darwinian and Lamarkian evolutionary paradigms, 3) evaluating whether cultural learning improves performance compared to having a mono-culture population, and 4) comparing reward-based learning to a student-teacher learning algorithm in both simple and complex foraging tasks. The first three experiments examine the efficacy of the various components of our algorithm while the fourth experiment serves as a validation for our final algorithm against a variant of a related approach in the literature. The results of our experiments show that our algorithm is able to evolve high-quality strategies with substantially less agent evaluations than previous algorithms.
+
+%determining the feasibility of reward-based social learning in isolation without any evolution and establishing a baseline result for pure neuroevolution with no on-line learning
 
 \begin{figure}
   \centering
@@ -172,12 +183,16 @@ In this section we review the results of our experimentation.  We have four expe
 
 \subsection*{Reward-Based learning vs. Neuroevolution}
 
-Our first experiment was to examine the effect of pure reward-based learning without evolution to the effect of pure neuroevolution.  As our results in Figure \ref{fig:social-neuro} show, while reward-based learning alone is effective initially at improving, after several epochs a regression to the mean approach is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.   Neuroevolution, our baseline algorithm, is significantly better at discovering strong solutions. 
+We first wish to establish a baseline for understanding the ability of our two component methods, social learning and neuroevolution, to evolve high-quality strategies in isolation. To evaluate social learning in isolation, we created a population of 100 randomly initialized neural networks and evaluated them without selection or reproduction for 200K time steps. After every 1000 time steps, the population champion was recorded and this was treated as a ``generation'' in order to compare it to baseline neuroevolution.
+
+Figure \ref{fig:social-neuro} shows the results of the experiment. While reward-based social learning alone is initially able to improve, after several epochs a regression to the mean effect is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}, suggesting that some form of mutation is needed to prevent population collapse. In contrast, neuroevolution converges to strong solutions with fitnesses of around 3500 after approximately 50 generations.
+
+Having validated that social learning alone is not sufficient, we next compare the performance of social learning when used as an enhancement to evolution.
 
 
 \subsection*{Darwinian vs. Lamarkian evolution}
 
-Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights are propagated to their genome at the end of the generation.
+Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights, as a result of social learning, are propagated to their genome at the end of the generation.
 
 \begin{figure}
   \centering
@@ -187,20 +202,25 @@ Genetic inheritance paradigms in evolution fall into one of two main categories:
 \end{figure}
 
 
-Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In  \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution initially outperforms Darwinian evolution.
+Figure \ref{fig:darwin-lamark} shows the results of applying our reward-based social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. The performance of both algorithms quickly converges, with Lamarkian converging to a higher solution than Darwinian evolution. In the context of \textit{on-line} evolutionary learning algorithms, previous work \cite{whiteson2006evolutionary} has shown that Darwinian evolution is likely to be preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. However, as adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it seems reasonable that Lamarkian evolution outperforms Darwinian evolution.
 
+Nevertheless, in both cases performance converges to a lower score than that of our baseline neuroevolution. We next present the results of introducing culture into reward-based social learning to overcome premature convergence.
 
 \subsection*{Population vs. Cultural Learning}
-While Lamarkian social learning is able to find good results quickly, it takes an extremely long time and is likely to provide redundant information.  Moreover, harmfully mutated agents will train all other agents in the population on bad behavior.  In order to address this problem, we form 10 cliques in the population of 10 agents each, and have agents within each of these cliques only learn from one another.  This cultural variant of reward-based learning increases behavioral diversity relative to learning from the entire population (Figure \ref{fig:orientation} and Figure \ref{fig:velocity}) , and   decreases the number of iteration of backprop by a factor of ten.
+While Lamarkian social learning is able to find good results quickly, it is likely to provide redundant information and harmfully mutated agents will train all other agents in the population on bad behavior. Thus, it is likely that a mono-culture population will converge too quickly to a sub-optimal fitness as the majority drags down the top performing agents with mediocre training examples.
+
+In order to address this problem, we introduce a cultural version of reward-based social learning designed to promote and protect diversity. At the start of each generation, the population is divided into 10 cliques of 10 agents each, with each agent's clique decided at random. During the evaluation, agents only teach and learn from other agents in their own clique. In addition to increasing behavioral diversity relative to learning from the entire population, this cultural variant of reward-based learning also has the appealing practical advantage that it decreases the worst-case number of iterations of backprop in a generation by a factor of ten.
 
 \begin{figure}
   \centering
     \includegraphics[scale=.35]{population_vs_cultural_learning.pdf}
   \caption{The results of agents learning from observations of the entire population compared to only agents in the same clique.}
   \label{fig:population-social}
-\end{figure}ls
+\end{figure}
 
-Figure \ref{fig:population-social} shows the results comparing population-based and cultural social learning. Interestingly, the cultural social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly.  Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted.  Because cultural evolution is more efficient and provides better results, likely due to this protection from mutation and the fostering of diversity, we use it in our final model.
+Figure \ref{fig:population-social} shows the results comparing population-based and cultural learning. The cultural social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly than the baseline neuroevolution approach. Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted. Because cultural evolution is more efficient and provides better results, likely due to this protection from mutation and the fostering of diversity, we incorporate it in our final algorithm.
+
+The next experiment compares our cultural learning algorithm to a benchmark student-teacher model.
 
 \begin{figure}
   \centering
@@ -210,15 +230,17 @@ Figure \ref{fig:population-social} shows the results comparing population-based 
 \end{figure}
 
 \subsection*{Reward-Based Learning vs. Student-Teacher Learning}
-Finally, we compare our evolutionary, Lamarkian, cultural reward-based algorithm to a version of student-teacher learning based on the NEW TIES system \cite{haasdijk2008social} which chooses champions of previous generations to be teachers, and at every timestep probabilistically teaches the lowest-fitness member of each clique the response of the generation of the previous generation.  This student-teacher model works and outperforms baseline, but our model, which filters on each training example by reward rather than by filtering on individuals outperforms it.
+In our final set of experiments, we compare our cultural reward-based algorithm to an on-line student-teacher learning algorithm inspired by the NEW TIES system \cite{haasdijk2008social}. The NEW TIES system utilizes a steady-state evolution in which at every timestep each agent probabilistically teaches the lowest-fitness member of that is close to it, effectively forming geographical cliques. Since the system relies on a steady-state evolution, weaker agents eventually die out and do not have as much of a chance to propagate poor training examples relative to that of long-lasting agents. To adapt this approach to our generational EA, and to maximize the fairness of our comparison, we create a population of 10 cliques with 10 agents each. At each time step, the current champion from each clique teaches its clique's lowest-fitness member.
 
-Figure REFFIGURE shows our results.  Reward-based learning converges to a near-optimal solution very rapidly in both the simple and the complex world.  In the simple world, student-teacher learning eventually reaches a slightly superior solution, after much more computational effort.  In the complex world, not only does social learning reach a better solution than student-teacher learning, it also converges to that solution several orders of magnitude faster.  
+It is worth noting that many social learning algorithms focus on off-line training, where teachers are simply the previous generation's champions. In these models, students are trained before the actual evaluation to mimic the champion(s), often with Gaussian noise added to the teacher's outputs to promote diversity in the population. However, at evaluation time these agents are static and do not learn from their own experiences or that of others. Thus, to minimize the differences in approaches, we have implemented our NEW TIES variant since it requires only a slight change in the filtering of which agents send and receive training examples.
+
+Figure \ref{fig:reward-studetteacher} shows the results of our cultural reward-based learning algorithm compared to our student-teacher variant and pure neuroevolution. Reward-based learning converges to a near-optimal solution faster than the student-teacher variant in both the simple and the complex world. While in the simple world this speed up is slight, in the complex world our reward-based approach is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either student-teacher or baseline neuroevolution achieve by generation 500.
+
+In the next section, we present a discussion of our experimental results and indicate possible future directions for reward-based social learning.
 
 \section{Discussion and Future Work}
 \label{sec:future}
-
-
-In this section we discuss possible mechanisms at work in and areas for exploration in the domain of reward-based social learning.  We then discuss potential future work that could be done to exploit these phenomena and improve reward-based social learning as both a model of artificial life and a machine learning algorithm. 
+The results of our experiments in reward-based social learning clearly indicate that it has the potential to breathe new life into social algorithms. 
 
 
 \begin{figure}
