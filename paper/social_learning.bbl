@@ -11,6 +11,11 @@ A.~Acerbi and S.~Nolfi.
 \newblock In {\em Artificial Life, 2007. ALIFE'07. IEEE Symposium on}, pages
   333--340. IEEE, 2007.
 
+\bibitem{dawkins2006selfish}
+R.~Dawkins.
+\newblock {\em The selfish gene}.
+\newblock Oxford University Press, 1976.
+
 \bibitem{de2011incremental}
 M.~de~Oca, T.~Stutzle, K.~Van~den Enden, and M.~Dorigo.
 \newblock Incremental social learning in particle swarms.
@@ -47,11 +52,34 @@ J.~Kennedy and R.~Eberhart.
 \newblock In {\em Neural Networks, 1995. Proceedings., IEEE International
   Conference on}, volume~4, pages 1942--1948. IEEE, 1995.
 
+\bibitem{ku2000study}
+K.~Ku, M.~Mak, and W.~Siu.
+\newblock A study of the lamarckian evolution of recurrent neural networks.
+\newblock {\em Evolutionary Computation, IEEE Transactions on}, 4(1):31--42,
+  2000.
+
+\bibitem{moscato1989evolution}
+P.~Moscato.
+\newblock On evolution, search, optimization, genetic algorithms and martial
+  arts: Towards memetic algorithms.
+\newblock {\em Caltech Concurrent Computation Program, C3P Report}, 826:1989,
+  1989.
+
+\bibitem{onwubolu2004new}
+G.~Onwubolu and B.~Babu.
+\newblock {\em New optimization techniques in engineering}, volume 141.
+\newblock Springer Verlag, 2004.
+
 \bibitem{reynolds1994introduction}
 R.~Reynolds.
 \newblock An introduction to cultural algorithms.
 \newblock In {\em Proceedings of the Third Annual Conference on Evolutionary
   Programming}, pages 131--139. World Scientific, 1994.
+
+\bibitem{simpson1953baldwin}
+G.~Simpson.
+\newblock The baldwin effect.
+\newblock {\em Evolution}, 7(2):110--117, 1953.
 
 \bibitem{stanley2002evolving}
 K.~Stanley and R.~Miikkulainen.
@@ -72,5 +100,10 @@ C.~Watkins and P.~Dayan.
 P.~Werbos.
 \newblock Backpropagation through time: what it does and how to do it.
 \newblock {\em Proceedings of the IEEE}, 78(10):1550--1560, 1990.
+
+\bibitem{whiteson2006evolutionary}
+S.~Whiteson and P.~Stone.
+\newblock Evolutionary function approximation for reinforcement learning.
+\newblock {\em The Journal of Machine Learning Research}, 7:877--917, 2006.
 
 \end{thebibliography}

@@ -60,7 +60,7 @@ Planned extensions to our work are described in Section \ref{sec:future}. Finall
 
 \section{Background}
 \label{sec:background}
-In this section, we review the prior work in and motivation for social learning, and introduce our evolutionary framework, Neuroevolution of Augmented Topologies (NEAT).
+In this section, we provide background information and motivation for social learning, and introduce our evolutionary framework, Neuroevolution of Augmented Topologies (NEAT).
 
 \subsection*{Social Learning}
 
@@ -80,11 +80,13 @@ In our domain, NEAT is used to generate a population of individual neural networ
 
 In standard NEAT, the networks that are created do not change within one generation, but in reward-based social learning, we do backpropagation\cite{rumelhart1986learning} on the networks that NEAT creates. (Because these networks are recurrent, we use backpropagation through time to do our social learning \cite{werbos1990backpropagation}.) The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
 
-\subsection*{Prior Work}
+\subsection*{Previous Work}
 
 Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record. We next highlight relevant prior work and explain how our approach differs from previous efforts.
 
 Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. These algorithms maintain a ``belief space'' representing different categories of knowledge that the population has learned. New individuals are trained using this belief space in a student-teacher paradigm. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
+
+Interestingly, our approach could be seen as a Memetic Algorithm (MA) \cite{moscato1989evolution}. As originally defined by Dawkins \cite{dawkins2006selfish}, a meme is a ``unit of imitation in cultural transmission'' including ``tunes, ideas, catch-phrases, clothes fashions, ways of making pots or of building arches''. Our approach particularly relates to the latter--- ways of making pots or building arches are similar to learning strategies for gathering food in that all are instances of transmitting specific strategies for performing skilled tasks. Thus, each reward-based learning example could be considered as a meme being shared within the agent's population or cultural group. Nevertheless, traditional MAs \cite{onwubolu2004new}, including similar Lamarkian evolution methods for evolving recurrent neural networks \cite{ku2000study}, focus on using local improvement heuristics and typically rely on off-line transmission of memes via mating and genetic recombination. However, agents in our approach transmit memes on-line, as they are generated and observed during the evaluation process. Thus, while we could classify our approach as an MA, we believe the distinct transmission and learning techniques employed by our algorithm better characterize it as a social learning method.
 
 The ability of social learning to improve agents in a foraging domain has been explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student-teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
