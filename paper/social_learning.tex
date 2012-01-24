@@ -148,7 +148,7 @@ Our domain is a foraging world in which agents move freely on a continuous toroi
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.65]{foraging_agent_architecture.pdf}
-  \caption{The architecture of our foraging agents. A) Each agent has a $180^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
   \label{fig:agent-architecture}
 \end{figure}
 
@@ -224,8 +224,14 @@ The next experiment compares our cultural learning algorithm to a benchmark stud
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{reward_based_vs_student_teacher.pdf}
+    \includegraphics[scale=.35]{complex_reward_based_vs_student_teacher.pdf}
   \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
+  \label{fig:reward-studetteacher}
+\end{figure}
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{simple_reward_based_vs_student_teacher.pdf}
+  \caption{The results of our algorithm in a simple world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
   \label{fig:reward-studetteacher}
 \end{figure}
 
