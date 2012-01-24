@@ -1,49 +1,49 @@
-This is BibTeX, Version 0.99d (TeX Live 2010)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99c (Web2C 7.5.7)
 The top-level auxiliary file: social_learning.aux
 The style file: abbrv.bst
 Database file #1: sigproc.bib
+Warning--I didn't find a database entry for "rumelhart1986learning"
 Warning--to sort, need author or key in gallese-98
 Warning--empty author in gallese-98
-You've used 15 entries,
+You've used 13 entries,
             2118 wiz_defined-function locations,
-            603 strings with 6122 characters,
-and the built_in function-call counts, 5647 in all, are:
-= -- 600
-> -- 189
+            589 strings with 5894 characters,
+and the built_in function-call counts, 5020 in all, are:
+= -- 533
+> -- 169
 < -- 6
-+ -- 77
-- -- 60
-* -- 395
-:= -- 870
-add.period$ -- 48
-call.type$ -- 15
-change.case$ -- 75
++ -- 68
+- -- 54
+* -- 350
+:= -- 766
+add.period$ -- 42
+call.type$ -- 13
+change.case$ -- 66
 chr.to.int$ -- 0
-cite$ -- 17
-duplicate$ -- 226
-empty$ -- 471
-format.name$ -- 60
-if$ -- 1227
+cite$ -- 15
+duplicate$ -- 204
+empty$ -- 418
+format.name$ -- 54
+if$ -- 1099
 int.to.chr$ -- 0
-int.to.str$ -- 15
-missing$ -- 15
-newline$ -- 77
-num.names$ -- 28
-pop$ -- 67
+int.to.str$ -- 13
+missing$ -- 13
+newline$ -- 67
+num.names$ -- 24
+pop$ -- 62
 preamble$ -- 1
-purify$ -- 60
+purify$ -- 53
 quote$ -- 0
-skip$ -- 174
+skip$ -- 159
 stack$ -- 0
-substring$ -- 489
-swap$ -- 69
+substring$ -- 428
+swap$ -- 67
 text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 60
+type$ -- 52
 warning$ -- 2
-while$ -- 61
-width$ -- 17
-write$ -- 170
-(There were 2 warnings)
+while$ -- 53
+width$ -- 15
+write$ -- 148
+(There were 3 warnings)

@@ -1,31 +1,3 @@
-% THIS IS SIGPROC-SP.TEX - VERSION 3.1
-% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
-% APRIL 2009
-%
-% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
-% LaTeX2e document class file for Conference Proceedings submissions.
-% ----------------------------------------------------------------------------------------------------------------
-% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
-% 1) The Permission Statement
-% 2) The Conference (location) Info information
-% 3) The Copyright Line with ACM data
-% 4) Page numbering
-% ---------------------------------------------------------------------------------------------------------------
-% It is an example which *does* use the .bib file (from which the .bbl file
-% is produced).
-% REMEMBER HOWEVER: After having produced the .bbl file,
-% and prior to final submission,
-% you need to 'insert' your .bbl file into your source .tex file so as to provide
-% ONE 'self-contained' source file.
-%
-% Questions regarding SIGS should be sent to
-% Adrienne Griscti ---> griscti@acm.org
-%
-% Questions/suggestions regarding the guidelines, .tex and .cls files, etc. to
-% Gerald Murray ---> murray@hq.acm.org
-%
-% For tracking purposes - this is V3.1SP - APRIL 2009
-
 \documentclass{acm_proc_article-sp}
 
 \begin{document}
@@ -45,12 +17,11 @@ Eli Feasley\\
        \affaddr{1 University Station C0500, Austin, TX, USA}\\
        \email{elie@cs.utexas.edu}
 }
-\date{12 December 2011}
-
+\date{25 January 2012}
 
 \maketitle
 \begin{abstract}
-Social learning is an extension to Evolutionary Algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train the remaining agents in the population. We present a reward-based model of social learning in which we do not label agents as teachers or students, instead allowing any individual receiving a positive reward to teach other agents to mimic its recent behavior. We validate our approach in two foraging tasks, comparing reward-based social learning with two variants of student-teacher social learning, as well as traditional neuroevolution. We show that in a complex foraging task, our reward-based approach converges to a strategy superior to that of other methods. Moreover, our algorithm discovers near-optimal solutions in both foraging tasks with up to two orders of magnitude fewer agent evaluations than any of our benchmark strategies. Our results suggest reward-based social learning can substantially speed up evolutionary search in domains with online rewards.
+Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train the remaining agents in the population. We present a reward-based model of social learning in which we do not label agents as teachers or students, instead allowing any individual receiving a positive reward to teach other agents to mimic its recent behavior. We validate our approach in two foraging tasks, comparing reward-based social learning with two variants of student-teacher social learning, as well as traditional neuroevolution. We show that in a complex foraging task, our reward-based approach converges to a strategy superior to that of other methods. Moreover, our algorithm discovers near-optimal solutions in both foraging tasks with up to two orders of magnitude fewer agent evaluations than any of our benchmark strategies. Our results suggest reward-based social learning can substantially speed up evolutionary search in domains with online rewards.
 \end{abstract}
 
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life}
@@ -69,12 +40,13 @@ This paper makes the following novel contributions:
  
 \begin{itemize}
 \item A reward-based approach to social learning, in which individuals are not classified into roles.
+\item An exploration of the role of filtering by rewarded examples and by similarity between agents.
 \item An analysis of the differences in performance between reward-based social learning and traditional student-teacher social learning
 \end{itemize}
  
 The remainder of the paper is structured as follows.
 In Section \ref{sec:rbsl} we detail the workings of our reward-based social learning algorithm.
-Prior work is discussed in Section \ref{sec:related}.
+Prior work is discussed in Section \ref{sec:background}.
 In Section \ref{sec:setup} we describe our experimental setup and the foraging domain.
 Section \ref{sec:results} presents the results of our experiments.
 Planned extensions to our work are described in Section \ref{sec:future}. Finally, in Section \ref{sec:conclusions} we present our conclusions.
@@ -144,30 +116,18 @@ For our complex world, the world is 500 by 500 units, with 20 randomly distribut
 
 \section{Results}
 \label{sec:results}
+In this section we review the results of our experimentation.  We have four experiments, viz. Reward-Based Learning with and without Evolution, Darwinian and Lamarkian Evolution, Population-Wide and Cultural Evolution, and Reward-Based Learning and Student-Teacher Learning.   The first three experiments each examine a different part of our final algorithm for reward-based learning and the experimental and philisophical justification for each of them.  The last compares our algorithm with a recent student-teacher learning algorithm, and shows that our reward-based social learning produces excellent results faster.
 
+\subsection*{Reward-Based learning vs. Reward-Based learning with Neuroevolution}
+A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.
 
 \subsection*{Darwinian vs. Lamarkian evolution}
-\subsection*{Population vs. Species}
-\subsection*{Reward-Based vs Student-Teacher model}
 
-
-\section{OLDResults}
-\label{sec:results}
-We next present the results of our three experiments that validate our non-hierarchical model. We begin by measuring the performance of social learning in both Darwinian and Lamarkian evolutionary paradigms. Following this, we determine whether social learning is effective when updates are performed only among the same species, with the goal of reducing the overall runtime cost of adding social learning. Finally, we leverage insights gained from the first two experiments and use Lamarkian social learning as a bootstrapping phase for Darwinian neuroevolution with no learning.
-
-\begin{figure}
-  \centering
-    \includegraphics[scale=.35]{darwin_lamark.pdf}
-  \caption{A comparison of the results for our non-hierarchical social learning algorithm in Darwinian and Lamarkian evolutionary paradigms.}
-  \label{fig:darwin-lamark}
-\end{figure}
-
-\subsection*{Darwinian vs. Lamarkian}
 Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights are propagated to their genome at the end of the generation.
 
-Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution initially outperforms Darwinian evolution.
+Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In  \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution initially outperforms Darwinian evolution.
 
-It is, however, suprising that the Lamarkian fitness degrades after generation 10. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, more learning is derived from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.
+
 
 \begin{figure}
   \centering
@@ -177,30 +137,31 @@ It is, however, suprising that the Lamarkian fitness degrades after generation 1
 \end{figure}
 
 \subsection*{Population vs. Species Learning}
-While Lamarkian social learning is clearly able to find results quickly, it suffers from two main issues. As discussed above, the population begins to regress towards the mean after reaching its initial peak fitness. Also, while in many environments the simulation time required for running thousands of backprop iterations on each individual may be negligible, to maximize practical utiliy it is important that our algorithm minimizes its overall impact on total runtime. To address these issues, we next consider a cultural variant of our social learning approach in which individuals only learn from observations of other individuals in their own species. In practice, this significantly speeds up the application as it performs an order of magnitude less work for a population of 100 agents divided into 10 species.
+While Lamarkian social learning is able to find good results quickly, it takes an extremely long time and is likely to provide redundant information.  Moreover, mutated agents will train all other agents in the population on bad behavior.  In order to address this problem, we form 10 cliques in the population of 10 agents each, and have agents within each of these cliques only learn from one another.  This cultural variant of reward-based learning increases behavioral diversity relative to learning from the entire population CITEFIGUREOMFG, and   decreases the number of iteration of backprop by a factor of ten.
 
-Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. Interestingly, the species-based social learning not only reaches a higher peak than the population based method, but is also able to sustain its peak level of fitness for longer. Unfortunately, both approaches still suffer from the degradation of fitness characteristic of Lamarkian social evolution.
+Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. Interestingly, the species-based social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly.  Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted.  Because speciation is more efficient and provides better results, likely due to this protection from mutation, we use it in our final model.
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.35]{learning_bootstrapping.pdf}
-  \caption{The results of our hybrid algorithm that uses social Lamarkian evolution to bootstrap the population for five generations, then switches to traditional non-social Darwinian evolution.}
-  \label{fig:learning-bootstrapping}
-\end{figure}
 
-\subsection*{Bootstrapping}
-The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. This hybrid version is able to achieve a slightly (though not statistically significantly) higher fitness than either component method and does not suffer from the degradation present in the pure social Lamarkian setup.
+\subsection*{Reward-Based Learning vs. Student-Teacher Learning}
+Finally, we compare our evolutionary, Lamarkian, speciated reward-based algorithm to a version of student-teacher learning based on the NEW TIES system \cite{haasdijk2008social} which chooses champions of previous generations to be teachers, and at every timestep probabilistically teaches the lowest-fitness member of each species the response of the generation of the previous generation.  This student-teacher model works and outperforms baseline, but our model, which filters on each training example by reward rather than by filtering on individuals outperforms it.
 
-In the next section we present a brief discussion of related work on social learning in EAs.
-\section{OLDFuture Work}
+Figure REFFIGURE shows our results.  Reward-based learning converges to a near-optimal solution very rapidly in both the simple and the complex world.  In the simple world, student-teacher learning eventually reaches a slightly superior solution, after much more computational effort.  In the complex world, not only does social learning reach a better solution than student-teacher learning, it also converges to that solution several orders of magnitude faster.  
+
+\section{Discussion and Future Work}
 \label{sec:future}
 
-In this section we discuss potential future work that could be done to exploit non-hierarchical social learning and improve it as both a model of artificial life and a machine learning algorithm. Future work may involve investigating the relationship between this and other forms of social learning and Q-learning. Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves. As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research. Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward. Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.
 
+In this section we discuss possible mechanisms at work in and areas for exploration in the domain of reward-based social learning.  We then discuss potential future work that could be done to exploit these phenomena and improve reward-based social learning as both a model of artificial life and a machine learning algorithm. 
 
-\section{OLDConclusions}
+We have shown that social learning is an important way to leverage information that might otherwise be 
+
+Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.   
+
+\section{Conclusions}
 \label{sec:conclusions}
-We have presented a non-hierarchical approach to apply social learning in evolutionary algorithms. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward. Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. Further results from our hybrid algorithm suggest that bootstrapping a traditional Darwinian EA with a brief period of non-hierarchical Lamarkian social learning can substantially improve performance of the baseline EA and reaches higher fitness than either approach in isolation.
+
+We have presented a reward-based approach to apply social learning in evolutionary algorithms that converges to better solutions faster than previous known solutions. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward. Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution.  Further filtering of results by constraining teaching samples to those from the same species results in further improvement to performance.
+
 \bibliographystyle{abbrv}
 \bibliography{sigproc}
 \end{document}

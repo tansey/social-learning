@@ -53,11 +53,6 @@ R.~Reynolds.
 \newblock In {\em Proceedings of the Third Annual Conference on Evolutionary
   Programming}, pages 131--139. World Scientific, 1994.
 
-\bibitem{simpson1953baldwin}
-G.~Simpson.
-\newblock The baldwin effect.
-\newblock {\em Evolution}, 7(2):110--117, 1953.
-
 \bibitem{stanley2002evolving}
 K.~Stanley and R.~Miikkulainen.
 \newblock Evolving neural networks through augmenting topologies.
@@ -77,10 +72,5 @@ C.~Watkins and P.~Dayan.
 P.~Werbos.
 \newblock Backpropagation through time: what it does and how to do it.
 \newblock {\em Proceedings of the IEEE}, 78(10):1550--1560, 1990.
-
-\bibitem{whiteson2006evolutionary}
-S.~Whiteson and P.~Stone.
-\newblock Evolutionary function approximation for reinforcement learning.
-\newblock {\em The Journal of Machine Learning Research}, 7:877--917, 2006.
 
 \end{thebibliography}
