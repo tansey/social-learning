@@ -121,30 +121,51 @@ In our simple world, the toroidal surface is 2000 by 2000 units, with 50 randoml
 \label{sec:results}
 In this section we review the results of our experimentation.  We have four experiments, viz. Reward-Based Learning with and without Evolution, Darwinian and Lamarkian Evolution, Population-Wide and Cultural Evolution, and Reward-Based Learning and Student-Teacher Learning.   The first three experiments each examine a different part of our final algorithm for reward-based learning and the motivation and experimental results for each of them.  The last compares our algorithm with a recent student-teacher learning algorithm, and shows that our reward-based social learning produces excellent results faster.
 
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{social_learning_vs_neuroevolution.pdf}
+  \caption{Pure reward-based learning collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution.}
+  \label{fig:social-neuro}
+\end{figure}
+
 \subsection*{Reward-Based learning vs. Neuroevolution}
 
-Our first experiment was to examine the effect of pure reward-based learning without evolution to the effect of pure neuroevolution.  As our results in Figure TODOFIGUREWHATEVER show, while reward-based learning alone is effective initially at improving, after several epochs a regression to the mean approach is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.   Neuroevolution, our baseline algorithm, is significantly better at discovering strong solutions. 
+Our first experiment was to examine the effect of pure reward-based learning without evolution to the effect of pure neuroevolution.  As our results in Figure \ref{fig:social-neuro} show, while reward-based learning alone is effective initially at improving, after several epochs a regression to the mean approach is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.   Neuroevolution, our baseline algorithm, is significantly better at discovering strong solutions. 
+
 
 \subsection*{Darwinian vs. Lamarkian evolution}
 
 Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights are propagated to their genome at the end of the generation.
 
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{darwinian_vs_lamarkian_evolution.pdf}
+  \caption{Lamarkian learning is more effective than Darwinian and converges more rapidly.}
+  \label{fig:darwin-lamark}
+\end{figure}
+
+
 Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In  \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution initially outperforms Darwinian evolution.
 
 
+\subsection*{Population vs. Cultural Learning}
+While Lamarkian social learning is able to find good results quickly, it takes an extremely long time and is likely to provide redundant information.  Moreover, harmfully mutated agents will train all other agents in the population on bad behavior.  In order to address this problem, we form 10 cliques in the population of 10 agents each, and have agents within each of these cliques only learn from one another.  This cultural variant of reward-based learning increases behavioral diversity relative to learning from the entire population (Figure \ref{fig:orientation} and Figure \ref{fig:velocity}) , and   decreases the number of iteration of backprop by a factor of ten.
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{population_species.pdf}
+    \includegraphics[scale=.35]{population_vs_cultural_learning.pdf}
   \caption{The results of agents learning from observations of the entire population compared to only agents in the same clique.}
-  \label{fig:population-species}
+  \label{fig:population-social}
+\end{figure}ls
+
+Figure \ref{fig:population-social} shows the results comparing population-based and cultural social learning. Interestingly, the cultural social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly.  Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted.  Because cultural evolution is more efficient and provides better results, likely due to this protection from mutation and the fostering of diversity, we use it in our final model.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{reward_based_vs_student_teacher.pdf}
+  \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
+  \label{fig:reward-studetteacher}
 \end{figure}
-
-\subsection*{Population vs. Cultural Learning}
-While Lamarkian social learning is able to find good results quickly, it takes an extremely long time and is likely to provide redundant information.  Moreover, harmfully mutated agents will train all other agents in the population on bad behavior.  In order to address this problem, we form 10 cliques in the population of 10 agents each, and have agents within each of these cliques only learn from one another.  This cultural variant of reward-based learning increases behavioral diversity relative to learning from the entire population CITEFIGUREOMFG, and   decreases the number of iteration of backprop by a factor of ten.
-
-Figure \ref{fig:population-species} shows the results comparing population-based and cultural social learning. Interestingly, the cultural social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly.  Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted.  Because cultural evolution is more efficient and provides better results, likely due to this protection from mutation and the fostering of diversity, we use it in our final model.
-
 
 \subsection*{Reward-Based Learning vs. Student-Teacher Learning}
 Finally, we compare our evolutionary, Lamarkian, cultural reward-based algorithm to a version of student-teacher learning based on the NEW TIES system \cite{haasdijk2008social} which chooses champions of previous generations to be teachers, and at every timestep probabilistically teaches the lowest-fitness member of each clique the response of the generation of the previous generation.  This student-teacher model works and outperforms baseline, but our model, which filters on each training example by reward rather than by filtering on individuals outperforms it.
@@ -156,6 +177,22 @@ Figure REFFIGURE shows our results.  Reward-based learning converges to a near-o
 
 
 In this section we discuss possible mechanisms at work in and areas for exploration in the domain of reward-based social learning.  We then discuss potential future work that could be done to exploit these phenomena and improve reward-based social learning as both a model of artificial life and a machine learning algorithm. 
+
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{orientation_diversity.pdf}
+  \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
+  \label{fig:orientation}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{velocity_diversity.pdf}
+  \caption{Velocity converges more quickly in the cultural model than in the population model.}
+  \label{fig:velocity}
+\end{figure}
+
 
 By preserving the diversity of behavior present in the entire population and presenting all agents with information from other agents in the same environment, our algorithm leverages the advantages of both evolution and cultural learning. Interestingly, by dividing our population into cultural groups of ten agents, we were able to maintain a higher level of performance than via individuals not communicating, or communicating with a larger population.  By both maintaining diversity (a task which is anathema to student-teacher learning and difficult in full population learning) and keeping agents from being negatively impacted by harmful agents making and teaching bad decisions, our cultural reward-based algorithm works better than any other.
 
