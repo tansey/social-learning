@@ -100,32 +100,34 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
 \caption{Our Reward-Based Learning Algorithm}
 \label{reward-algo}
 \begin{algorithmic}
-\STATE $population \leftarrow$RandomPopulation()
+\STATE \textbf{Input:} $generations, maxTimesteps$
+\STATE $population \leftarrow$InitializePopulation()
+\STATE $g \leftarrow 0$
+\STATE $t \leftarrow 0$
 \LOOP
-\FOR{each generation in generations}
-\STATE $cliques \leftarrow$ FormCliques($population$)
-\FORALL{timesteps}
-\FOR{each $clique$ in $cliques$}
-\FORALL{$agents$ in $clique$}
-\STATE receive \textit{state}
-\STATE $memory \leftarrow memory + state$
-\STATE Activate($agent.network$)
-\STATE $memory \leftarrow memory + output$
-\ENDFOR
-\FORALL{$agents$ in $clique$}
-\STATE execute actions
-\STATE $reward=$CheckForReward()
-\IF{$reward$ positive}
-\FORALL{$agents$ in $clique$}
-\STATE Train($agent, reward$)
-\ENDFOR
-\STATE reset $memory$
-\ENDIF
-\ENDFOR
-\ENDFOR
-\ENDFOR
-\STATE $population \leftarrow$GenerateAgents($population$)
-\ENDFOR
+\WHILE{$g < generations$}
+  \STATE $cliques \leftarrow$ FormCliques($population$)
+  \WHILE{$t < maxTimesteps$}
+    \FOR{each $clique$ in $cliques$}
+      \FORALL{$agents$ in $clique$}
+        \STATE $state \leftarrow $ReceiveAgentInputs()
+        \STATE $action \leftarrow $Activate($agent.network$)
+        \STATE $agent.memory \leftarrow (state, action)$
+        \STATE $agent.reward \leftarrow $TakeAction(action)
+      \ENDFOR
+    \FORALL{$agents$ in $clique$}
+      \IF{$agent.reward > 0$}
+        \FORALL{$observer$ in $clique$}
+          \STATE Train($observer, agent.memory$)
+        \ENDFOR
+      \ENDIF
+    \ENDFOR
+    \ENDFOR
+    \STATE $t \leftarrow t + 1$
+  \ENDWHILE
+  \STATE $population \leftarrow$SelectAndReproduce($population$)
+  \STATE $g \leftarrow g + 1$
+\ENDWHILE
 \ENDLOOP
 \end{algorithmic}
 \end{algorithm}
@@ -147,7 +149,7 @@ In this section we describe our evaluation domain, including the inputs and outp
 
 \begin{figure}[t]
   \centering
-    \includegraphics[scale=.3]{world.pdf}
+    \includegraphics[scale=.31]{world.pdf}
   \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  \textbf{1} is a piece of nutritious food which increases fitness, \textbf{2} is poison which decreases fitness, and \textbf{3} is one of our agents.}
   \label{fig:foraging-world}
 \end{figure}
@@ -157,7 +159,7 @@ Our domain is a foraging world in which agents move freely on a continuous toroi
     
 \begin{figure}[t]
   \centering
-    \includegraphics[scale=.65]{foraging_agent_architecture.pdf}
+    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}
   \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
   \label{fig:agent-architecture}
 \end{figure}
@@ -263,6 +265,10 @@ To better understand why the cultural version of our algorithm was able to preve
 Although the orientation and velocity results may seem contradictory, they are actually reflecting a desirable property of cultural evolution. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since there is no benefit to slowing down in our current domain, one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
 
 We believe the results of our diversity analysis support the hypothesis that our cultural algorithm preserves diversity only when it is useful (e.g., orientation response), while not preventing convergence when diversity is unnecessary (e.g., velocity response).
+
+The robot foraging domain is a well-suited domain for exploring extensions and improvements to our social learning algorithm. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward. Where as the current problem domain only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require that the memory contains sequences of input-output pairs. Additionally, we have plan to introduce predators into the world and measure the effects reward-based social learning has when leveraged by either predators, prey, or both.
+
+Finally, we plan to expand our benchmark suite to include more student-teacher variants in the future. Although we believe our experiment sufficiently demonstrated the advantages of reward-based social learning, student-teacher methods can be implemented in many ways, including off-line learning \cite{acerbi2007social}, probabilistic teaching \cite{haasdijk2008social}, and noisy examples \cite{denaro1996cultural}, to name only a few. A more complete set of benchmarks will help us better understand the relative performance of our approach.
 
 \begin{figure}
   \centering

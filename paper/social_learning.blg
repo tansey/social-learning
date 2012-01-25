@@ -1,5 +1,4 @@
-This is BibTeX, Version 0.99c (Web2C 7.5.7)
-The top-level auxiliary file: social_learning.aux
+This is BibTeX, Version 0.99dThe top-level auxiliary file: social_learning.aux
 The style file: abbrv.bst
 Database file #1: sigproc.bib
 I was expecting a `,' or a `}'---line 168 of file sigproc.bib
@@ -10,45 +9,4 @@ I'm skipping whatever remains of this entry
 Warning--I didn't find a database entry for "rumelhart1986learning"
 Warning--to sort, need author or key in gallese-98
 Warning--empty author in gallese-98
-You've used 19 entries,
-            2118 wiz_defined-function locations,
-            627 strings with 6677 characters,
-and the built_in function-call counts, 6726 in all, are:
-= -- 702
-> -- 234
-< -- 7
-+ -- 97
-- -- 74
-* -- 462
-:= -- 1057
-add.period$ -- 60
-call.type$ -- 19
-change.case$ -- 92
-chr.to.int$ -- 0
-cite$ -- 21
-duplicate$ -- 272
-empty$ -- 563
-format.name$ -- 74
-if$ -- 1449
-int.to.chr$ -- 0
-int.to.str$ -- 19
-missing$ -- 21
-newline$ -- 97
-num.names$ -- 36
-pop$ -- 89
-preamble$ -- 1
-purify$ -- 75
-quote$ -- 0
-skip$ -- 202
-stack$ -- 0
-substring$ -- 542
-swap$ -- 74
-text.length$ -- 7
-text.prefix$ -- 0
-top$ -- 0
-type$ -- 72
-warning$ -- 2
-while$ -- 72
-width$ -- 21
-write$ -- 213
 (There was 1 error message)
