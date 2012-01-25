@@ -97,29 +97,31 @@ The ability of social learning to improve agents in a foraging domain has been e
 Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algorithm that operates continuously as an agent moves in the world. At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state. The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retrieve its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
 
 \begin{algorithm}
+\caption{Our Reward-Based Learning Algorithm}
+\label{alg:rewards}
 \begin{algorithmic}
-\REQUIRE $n \geq 0 \vee x \neq 0$
-\ENSURE $y = x^n$
-\STATE $y \Leftarrow 1$
-\IF{$n < 0$}
-\STATE $X \Leftarrow 1 / x$
-\STATE $N \Leftarrow -n$
-\ELSE
-\STATE $X \Leftarrow x$
-\STATE $N \Leftarrow n$
+\LOOP
+\FORALL{generations}
+\STATE generate new agents
+\STATE form new cliques
+\FORALL{timesteps}
+\FORALL{agents in the population}
+\STATE receive \textit{state}
+\STATE add \textit{state} to \textit{memory}
+\STATE      activate network
+\STATE    add outputs to \textit{memory}
+\STATE    execute actions
+\IF{reward received}
+\IF{reward positive}
+\STATE  teach clique
+\STATE reset \textit{memory}
 \ENDIF
-\WHILE{$N \neq 0$}
-\IF{$N$ is even}
-\STATE $X \Leftarrow X \times X$
-\STATE $N \Leftarrow N / 2$
-\ELSE[$N$ is odd]
-\STATE $y \Leftarrow y \times X$
-\STATE $N \Leftarrow N - 1$
 \ENDIF
-\ENDWHILE
+\ENDFOR
+\ENDFOR
+\ENDFOR
+\ENDLOOP
 \end{algorithmic}
-\caption{Our reward-based social learning algorithm. (temporary pseudo-code placeholder)}
-\label{alg:rewardsbased}
 \end{algorithm}
 
 \begin{figure}
@@ -248,8 +250,13 @@ In the next section, we present a discussion of our experimental results and ind
 
 \section{Discussion and Future Work}
 \label{sec:future}
-The results of our experiments in reward-based social learning clearly indicate that it has the potential to breathe new life into social algorithms. 
+The results of our experiments in reward-based social learning clearly indicate that it has the potential to breathe new life into social algorithms.
 
+To better understand why the cultural version of our algorithm was able to prevent premature convergence and achieve significant results, we analyzed the behavioral diversity of the population after every generation. After the evaluation phase, we generated a new instance of the simple world and created a set of input states corresponding to random locations, orientations, and velocities. For every agent, we then observed its output response (i.e., the desired change in velocity and orientation) for each of the input states. Figures \ref{fig:orientation} and \ref{fig:velocity} show the average variance of the population response to each of the 100 input states after every generation, effectively measuring the behavioral diversity of the popluation.
+
+Although the orientation and velocity results may seem contradictory, they are actually reflecting a desirable property of cultural evolution. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since there is no benefit to slowing down in our current domain, one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
+
+We believe the results of our diversity analysis support the hypothesis that our cultural algorithm preserves diversity only when it is useful (e.g., orientation response), while not preventing convergence when diversity is unnecessary (e.g., velocity response).
 
 \begin{figure}
   \centering
@@ -264,9 +271,6 @@ The results of our experiments in reward-based social learning clearly indicate 
   \caption{Velocity converges more quickly in the cultural model than in the population model.}
   \label{fig:velocity}
 \end{figure}
-
-
-By preserving the diversity of behavior present in the entire population and presenting all agents with information from other agents in the same environment, our algorithm leverages the advantages of both evolution and cultural learning. Interestingly, by dividing our population into cultural groups of ten agents, we were able to maintain a higher level of performance than via individuals not communicating, or communicating with a larger population.  By both maintaining diversity (a task which is anathema to student-teacher learning and difficult in full population learning) and keeping agents from being negatively impacted by harmful agents making and teaching bad decisions, our cultural reward-based algorithm works better than any other.
 
 Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.   
 
