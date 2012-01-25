@@ -98,27 +98,33 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
 
 \begin{algorithm}
 \caption{Our Reward-Based Learning Algorithm}
-\label{alg:rewards}
+\label{reward-algo}
 \begin{algorithmic}
+\STATE $population \leftarrow$RandomPopulation()
 \LOOP
-\FORALL{generations}
-\STATE generate new agents
-\STATE form new cliques
+\FOR{each generation in generations}
+\STATE $cliques \leftarrow$ FormCliques($population$)
 \FORALL{timesteps}
-\FORALL{agents in the population}
+\FOR{each $clique$ in $cliques$}
+\FORALL{$agents$ in $clique$}
 \STATE receive \textit{state}
-\STATE add \textit{state} to \textit{memory}
-\STATE      activate network
-\STATE    add outputs to \textit{memory}
-\STATE    execute actions
-\IF{reward received}
-\IF{reward positive}
-\STATE  teach clique
-\STATE reset \textit{memory}
-\ENDIF
+\STATE $memory \leftarrow memory + state$
+\STATE Activate($agent.network$)
+\STATE $memory \leftarrow memory + output$
+\ENDFOR
+\FORALL{$agents$ in $clique$}
+\STATE execute actions
+\STATE $reward=$CheckForReward()
+\IF{$reward$ positive}
+\FORALL{$agents$ in $clique$}
+\STATE Train($agent, reward$)
+\ENDFOR
+\STATE reset $memory$
 \ENDIF
 \ENDFOR
 \ENDFOR
+\ENDFOR
+\STATE $population \leftarrow$GenerateAgents($population$)
 \ENDFOR
 \ENDLOOP
 \end{algorithmic}
@@ -211,7 +217,7 @@ Figure \ref{fig:darwin-lamark} shows the results of applying our reward-based so
 Nevertheless, in both cases performance converges to a lower score than that of our baseline neuroevolution. We next present the results of introducing culture into reward-based social learning to overcome premature convergence.
 
 \subsection*{Population vs. Cultural Learning}
-While Lamarkian social learning is able to find good results quickly, it is likely to provide redundant information and harmfully mutated agents will train all other agents in the population on bad behavior. Thus, it is likely that a mono-culture population will converge too quickly to a sub-optimal fitness as the majority drags down the top performing agents with mediocre training examples.
+While Lamarkian social learning is able to find good results quickly, it is likely to provide redundant information and harmfully mutated agents will train all other agents in the population on bad behavior. Thus, it is likely that a mono-culture population will converge too quickly to a sub-optimal fitness as the majority drags down t
 
 In order to address this problem, we introduce a cultural version of reward-based social learning designed to promote and protect diversity. At the start of each generation, the population is divided into 10 cliques of 10 agents each, with each agent's clique decided at random. During the evaluation, agents only teach and learn from other agents in their own clique. In addition to increasing behavioral diversity relative to learning from the entire population, this cultural variant of reward-based learning also has the appealing practical advantage that it decreases the worst-case number of iterations of backprop in a generation by a factor of ten.
 
