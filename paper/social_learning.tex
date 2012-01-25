@@ -93,7 +93,9 @@ The ability of social learning to improve agents in a foraging domain has been e
 \section{Reward-Based Social Learning}
 \label{sec:rbsl}
 
-Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line learning algorithm that operates continuously as an agent moves in the world. At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state. The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retrieve its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
+Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line, generational learning algorithm designed for domains where an agent receives multiple rewards throughout its lifetime. Agents maintain a sliding window of their most recent states, actions, and rewards that serve as training examples for observing agents. When an agent receives a reward, other agents observe the event and determine if it qualifies as an acceptable training example. Our key insight is that the agents should focus on the event itself to determine if the observed actions should be emulated. The overall fitness of the acting agent is not considered, as it is possible that a low-fitness strategy may still perform some high-quality actions in certain circumstances.
+
+To promote diversity and prevent the population from prematurely converging to a local optimal, all agents are divided into observation groups called \textit{cliques}. At each timestep, each agent is given its state, responds with a desired action, and receives a resulting reward. The memory of an individual agent is thus a tuple containing its most recent state, action, and reward. Each agent's memory is evaluated by all other members of its clique using a user-defined acceptability function. The role of this function is to filter out low-quality examples and focus the agents on learning only from actions that will lead to strong strategies. When an agent's recent memory is judged as acceptable, it is then used as a teaching example for all other agents in its clique.
 
 \begin{algorithm}
 \caption{Reward-Based Social Learning}
@@ -109,13 +111,13 @@ Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line learni
   \WHILE{$t < maxTimesteps$}
     \FOR{each $clique$ in $cliques$}
       \FOR{each $agent$ in $clique$}
-        \STATE $state \leftarrow $ReceiveAgentInputs()
-        \STATE $action \leftarrow $Activate($agent.network$)
-        \STATE $agent.memory \leftarrow (state, action)$
-        \STATE $agent.reward \leftarrow $TakeAction(action)
+        \STATE $s \leftarrow $ReceiveAgentInputs()
+        \STATE $a \leftarrow $Activate($agent.network$)
+        \STATE $r \leftarrow $TakeAction(action)
+        \STATE $agent.memory \leftarrow $UpdateMemory($\{s, a, r\}$)
       \ENDFOR
     \FOR{each $agent$ in $clique$}
-      \IF{Acceptable($agent.memory, agent.reward$)}
+      \IF{Acceptable($agent.memory$)}
         \FORALL{$observer$ in $clique$}
           \STATE Train($observer, agent.memory$)
         \ENDFOR
@@ -138,8 +140,9 @@ Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line learni
 %   \label{fig:flowchart}
 % \end{figure}
 
+As a pragmatic note, by focusing on rewards rather than overall agent fitness, social learning can begin immediately in the first generation of the algorithm. In contrast, generational student-teacher models typically require a preliminary evaluation phase to determine high-quality agents and an off-line teaching phase to train new agents \cite{denaro1996cultural}. Thus, we expect our approach to be faster in practice as well as potentially producing stronger strategies.
 
-As a result of using only positive rewards to identify those actions on which we want to train agents, social learning can begin immediately in the first generation of the evolutionary algorithm. In contrast, previous approaches \cite{denaro1996cultural} instead chose strong individuals as teachers to train weaker individuals in appropriate behavior, thereby requiring at least one generation in which to identify strong individuals. Additionally, by allowing any individual to train any other, we leverage a diversity of different behaviors in problem solving.
+In the next section we present our experimental domain that we use to evalaute the efficacy of our algorithm.
 
 \section{Experimental Setup}
 \label{sec:setup}
@@ -173,7 +176,7 @@ In our experiments, we used two separate configurations for the robot foraging w
 
 For our fourth set of experiments, we evaluated using both the simple world and a second, more complex world. Our ``complex'' world has a surface of 500 by 500 units, with five different plant types of value: $\{-100, -50, 0, 50, 100\}$. For each plant type, we create 20 randomly distributed plant instances. This world presents the agents with a more difficult task as they must both efficiently gather nutrious food while simultaneously avoiding the poisonous food.
 
-In all our experiments, we create 100 different agents in each generation. All networks are initialized with fully-connected weights with no hidden neurons. Agents automatically eat any plant with which they are within five units. Each evaluation lasts 1000 timesteps and our results for each experiment are the average of 30 independent runs. The filtering function for all experiments is to learn from any action yielding a positive reward.
+In all our experiments, we create 100 different agents in each generation. All networks are initialized with fully-connected weights with no hidden neurons. We use a learning rate of 0.1 when performing backpropagation. Agents automatically eat any plant with which they are within five units. Each evaluation lasts 1000 timesteps and our results for each experiment are the average of 30 independent runs. The filtering function for all experiments is to learn from any action yielding a positive reward.
 
 We next describe our experiments and their outcomes in detail.
 
