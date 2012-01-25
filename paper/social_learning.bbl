@@ -28,6 +28,11 @@ D.~Denaro and D.~Parisi.
 \newblock {\em M. marinaro and r. tagliaferri (eds), neural nets wirn-96. new
   york: Springer}, pages 100--111, 1996.
 
+\bibitem{fogel1966artificial}
+L.~Fogel, A.~Owens, and M.~Walsh.
+\newblock Artificial intelligence through simulated evolution.
+\newblock 1966.
+
 \bibitem{haasdijk2008social}
 E.~Haasdijk, P.~Vogt, and A.~Eiben.
 \newblock Social learning in population-based adaptive systems.
@@ -75,6 +80,11 @@ R.~Reynolds.
 \newblock An introduction to cultural algorithms.
 \newblock In {\em Proceedings of the Third Annual Conference on Evolutionary
   Programming}, pages 131--139. World Scientific, 1994.
+
+\bibitem{rumelhart1986learning}
+D.~Rumelhart, G.~Hintont, and R.~Williams.
+\newblock Learning representations by back-propagating errors.
+\newblock {\em Nature}, 323(6088):533--536, 1986.
 
 \bibitem{simpson1953baldwin}
 G.~Simpson.

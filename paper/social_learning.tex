@@ -31,9 +31,11 @@ Risto Miikkulainen\\
 Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. We present a reward-based model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of reward-based social learning with pure neuroevolution and a variant of student-teacher social learning. We show that our algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. Our results suggest reward-based social learning holds substantial potential to revolutionize the field of social learning.
 \end{abstract}
 
-\terms{Social Learning, Evolutionary Algorithms, Artificial Life}
+\terms{Social Learning, Evolutionary Algorithms, Artificial Life, Cultural Algorithms, On-line Evolution}
 
 \section{Introduction}
+
+In Evolutionary Algorithms (EAs) \cite{fogel1966artificial}, a population of agents is evaluated for performance in a given domain. Canonical EAs evaluate each agent either in isolation or in direct competition with a subset of the other members of the population. Social learning algorithms \cite{} extend EAs by enabling agents to observe other members of the population. 
 
 One explanation for the evolution of large brains in primates is the social intelligence hypothesis, which states that the selection pressure driving the increase in brain size was the need to handle complex social behaviors. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and has been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
 
@@ -46,17 +48,18 @@ We validate our algorithm in a well-known foraging domain in which agents must d
 This paper makes the following novel contributions:
  
 \begin{itemize}
-\item A reward-based approach to social learning, in which individuals are not classified into roles.
-\item An exploration of the role of filtering by rewarded examples and by similarity between agents.
+\item A reward-based social learning algorithm, in which all individuals in a group observe and learn from each other
 \item An analysis of the differences in performance between reward-based social learning and traditional student-teacher social learning
+\item A behavioral diversity analysis of two reward-based social learning variants
 \end{itemize}
  
 The remainder of the paper is structured as follows.
-In Section \ref{sec:rbsl} we detail the workings of our reward-based social learning algorithm.
 Prior work is discussed in Section \ref{sec:background}.
-In Section \ref{sec:setup} we describe our experimental setup and the foraging domain.
+In Section \ref{sec:rbsl} we detail the workings of our reward-based social learning algorithm.
+Section \ref{sec:setup} describes our experimental setup and the foraging domain in detail.
 Section \ref{sec:results} presents the results of our experiments.
-Planned extensions to our work are described in Section \ref{sec:future}. Finally, in Section \ref{sec:conclusions} we present our conclusions.
+A discussion of our results and planned extensions to our work are described in Section \ref{sec:future}.
+Finally, in Section \ref{sec:conclusions} we present our conclusions.
 
 \section{Background}
 \label{sec:background}
@@ -64,21 +67,17 @@ In this section, we provide background information and motivation for social lea
 
 \subsection*{Social Learning}
 
-In this section, we elaborate on our approach and its justification and applications. First, we discuss some of the advantages of reward-based social learning and the domains in which it provides promising functionality. Next, we describe the algorithm at the core of our model. Finally, we go into some detail about the particulars of our implementation.
-
 Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.
 
 Another important area for social learning is dynamic domains. In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
 
 
 \subsection*{Evolutionary Framework}
-In this section, we discuss the framework on which we base our social learning and our modifications and extensions to this framework.
-
 NeuroEvolution of Augmented Topologies (NEAT)\cite{stanley2002evolving} is an evolutionary algorithm that generates recurrent neural networks. Through a process of adding and removing nodes and changing weights, NEAT evolves genomes that unfold into networks. In every generation, those networks with the highest fitness reproduce, and those that have low fitness are less likely to do so. NEAT maintains genetic diversity through speciation and encourages innovation through explicit fitness sharing.
 
 In our domain, NEAT is used to generate a population of individual neural networks that control agents in the world. The input to each network is the agent's sensors, and the outputs control the agent's velocity and orientation. The fitness of each network is determined by the success of the agent it controls - over the course of a generation, networks controlling agents who eat a good deal of rewarding food and very little poison will have high fitnesses and those which control agents with less wise dietary habits will have low fitness.
 
-In standard NEAT, the networks that are created do not change within one generation, but in reward-based social learning, we do backpropagation\cite{rumelhart1986learning} on the networks that NEAT creates. (Because these networks are recurrent, we use backpropagation through time to do our social learning \cite{werbos1990backpropagation}.) The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
+In standard NEAT, the networks that are created do not change within one generation, but in reward-based social learning, we do backpropagation \cite{rumelhart1986learning} on the networks that NEAT creates.\footnote{Since NEAT networks are recurrent, we use backpropagation through time \cite{werbos1990backpropagation} as our training algorithm.} The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
 
 \subsection*{Previous Work}
 
@@ -86,7 +85,7 @@ Enhancing EAs with social and cultural learning is a flourishing area of researc
 
 Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. These algorithms maintain a ``belief space'' representing different categories of knowledge that the population has learned. New individuals are trained using this belief space in a student-teacher paradigm. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
 
-Interestingly, our approach could be seen as a Memetic Algorithm (MA) \cite{moscato1989evolution}. As originally defined by Dawkins \cite{dawkins2006selfish}, a meme is a ``unit of imitation in cultural transmission'' including ``tunes, ideas, catch-phrases, clothes fashions, ways of making pots or of building arches''. Our approach particularly relates to the latter--- ways of making pots or building arches are similar to learning strategies for gathering food in that all are instances of transmitting specific strategies for performing skilled tasks. Thus, each reward-based learning example could be considered as a meme being shared within the agent's population or cultural group. Nevertheless, traditional MAs \cite{onwubolu2004new}, including similar Lamarkian evolution methods for evolving recurrent neural networks \cite{ku2000study}, focus on using local improvement heuristics and typically rely on off-line transmission of memes via mating and genetic recombination. However, agents in our approach transmit memes on-line, as they are generated and observed during the evaluation process. Thus, while we could classify our approach as an MA, we believe the distinct transmission and learning techniques employed by our algorithm better characterize it as a social learning method.
+Interestingly, our approach could be seen as a Memetic Algorithm (MA) \cite{moscato1989evolution}. As originally defined by Dawkins \cite{dawkins2006selfish}, a meme is a ``unit of imitation in cultural transmission'' including ``tunes, ideas, catch-phrases, clothes fashions, ways of making pots or of building arches''. Our approach particularly relates to the latter--- ways of making pots or building arches are similar to learning strategies for gathering food in that all are instances of transmitting specific strategies for performing skilled tasks. Thus, each reward-based learning example could be considered as a meme being shared within the agent's population or cultural group. Nevertheless, traditional MAs \cite{onwubolu2004new}, including similar Lamarkian evolution methods for evolving recurrent neural networks \cite{ku2000study}, focus on using local improvement heuristics and typically rely on off-line transmission of memes via mating and genetic recombination. However, agents in our approach transmit memes on-line as they are generated and observed during the evaluation process. Thus, while we could classify our approach as an MA, we believe the distinct transmission and learning techniques employed by our algorithm better characterize it as a social learning method.
 
 The ability of social learning to improve agents in a foraging domain has been explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student-teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
@@ -94,11 +93,11 @@ The ability of social learning to improve agents in a foraging domain has been e
 \section{Reward-Based Social Learning}
 \label{sec:rbsl}
 
-Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algorithm that operates continuously as an agent moves in the world. At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state. The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retrieve its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
+Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line learning algorithm that operates continuously as an agent moves in the world. At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state. The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retrieve its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
 
 \begin{algorithm}
-\caption{Our Reward-Based Learning Algorithm}
-\label{reward-algo}
+\caption{Reward-Based Social Learning}
+\label{reward-algorithm}
 \begin{algorithmic}
 \STATE \textbf{Input:} $generations, maxTimesteps$
 \STATE $population \leftarrow$InitializePopulation()
@@ -109,14 +108,14 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
   \STATE $cliques \leftarrow$ FormCliques($population$)
   \WHILE{$t < maxTimesteps$}
     \FOR{each $clique$ in $cliques$}
-      \FORALL{$agents$ in $clique$}
+      \FOR{each $agent$ in $clique$}
         \STATE $state \leftarrow $ReceiveAgentInputs()
         \STATE $action \leftarrow $Activate($agent.network$)
         \STATE $agent.memory \leftarrow (state, action)$
         \STATE $agent.reward \leftarrow $TakeAction(action)
       \ENDFOR
-    \FORALL{$agents$ in $clique$}
-      \IF{$agent.reward > 0$}
+    \FOR{each $agent$ in $clique$}
+      \IF{Acceptable($agent.memory, agent.reward$)}
         \FORALL{$observer$ in $clique$}
           \STATE Train($observer, agent.memory$)
         \ENDFOR
@@ -132,12 +131,12 @@ Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algo
 \end{algorithmic}
 \end{algorithm}
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.6]{flowchart.pdf}
-  \caption{Individuals remember their most recent inputs and the associated actions taken, and when rewarded will train other individuals on their recent actions.}
-  \label{fig:flowchart}
-\end{figure}
+% \begin{figure}
+%   \centering
+%     \includegraphics[scale=.6]{flowchart.pdf}
+%   \caption{Individuals remember their most recent inputs and the associated actions taken, and when rewarded will train other individuals on their recent actions.}
+%   \label{fig:flowchart}
+% \end{figure}
 
 
 As a result of using only positive rewards to identify those actions on which we want to train agents, social learning can begin immediately in the first generation of the evolutionary algorithm. In contrast, previous approaches \cite{denaro1996cultural} instead chose strong individuals as teachers to train weaker individuals in appropriate behavior, thereby requiring at least one generation in which to identify strong individuals. Additionally, by allowing any individual to train any other, we leverage a diversity of different behaviors in problem solving.
@@ -150,7 +149,7 @@ In this section we describe our evaluation domain, including the inputs and outp
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.31]{world.pdf}
-  \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  \textbf{1} is a piece of nutritious food which increases fitness, \textbf{2} is poison which decreases fitness, and \textbf{3} is one of our agents.}
+  \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  1) a piece of nutritious food which increases fitness, 2) is poison which decreases fitness, and 3) is one of our agents.}
   \label{fig:foraging-world}
 \end{figure}
 
@@ -174,7 +173,7 @@ In our experiments, we used two separate configurations for the robot foraging w
 
 For our fourth set of experiments, we evaluated using both the simple world and a second, more complex world. Our ``complex'' world has a surface of 500 by 500 units, with five different plant types of value: $\{-100, -50, 0, 50, 100\}$. For each plant type, we create 20 randomly distributed plant instances. This world presents the agents with a more difficult task as they must both efficiently gather nutrious food while simultaneously avoiding the poisonous food.
 
-In all our experiments, we create 100 different agents in each generation. All networks are initialized with fully-connected weights with no hidden neurons. Agents automatically eat any plant with which they are within five units. Each evaluation lasts 1000 timesteps and our results for each experiment are the average of 30 independent runs.
+In all our experiments, we create 100 different agents in each generation. All networks are initialized with fully-connected weights with no hidden neurons. Agents automatically eat any plant with which they are within five units. Each evaluation lasts 1000 timesteps and our results for each experiment are the average of 30 independent runs. The filtering function for all experiments is to learn from any action yielding a positive reward.
 
 We next describe our experiments and their outcomes in detail.
 
@@ -193,7 +192,7 @@ In this section we present our experimental results. We conducted four main expe
   \label{fig:social-neuro}
 \end{figure}
 
-\subsection*{Reward-Based learning vs. Neuroevolution}
+\subsection*{Reward-Based Learning vs. Neuroevolution}
 
 We first wish to establish a baseline for understanding the ability of our two component methods, social learning and neuroevolution, to evolve high-quality strategies in isolation. To evaluate social learning in isolation, we created a population of 100 randomly initialized neural networks and evaluated them without selection or reproduction for 200K time steps. After every 1000 time steps, the population champion was recorded and this was treated as a ``generation'' in order to compare it to baseline neuroevolution.
 
@@ -202,7 +201,7 @@ Figure \ref{fig:social-neuro} shows the results of the experiment. While reward-
 Having validated that social learning alone is not sufficient, we next compare the performance of social learning when used as an enhancement to evolution.
 
 
-\subsection*{Darwinian vs. Lamarkian evolution}
+\subsection*{Darwinian vs. Lamarkian Evolution}
 
 Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights, as a result of social learning, are propagated to their genome at the end of the generation.
 
@@ -236,18 +235,18 @@ The next experiment compares our cultural learning algorithm to a benchmark stud
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{complex_reward_based_vs_student_teacher.pdf}
-  \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
-  \label{fig:reward-studetteacher}
-\end{figure}
-\begin{figure}
-  \centering
     \includegraphics[scale=.35]{simple_reward_based_vs_student_teacher.pdf}
   \caption{The results of our algorithm in a simple world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
   \label{fig:reward-studetteacher}
 \end{figure}
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{complex_reward_based_vs_student_teacher.pdf}
+  \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
+  \label{fig:reward-studetteacher}
+\end{figure}
 
-\subsection*{Reward-Based Learning vs. Student-Teacher Learning}
+\subsection*{Reward-Based vs. Student-Teacher}
 In our final set of experiments, we compare our cultural reward-based algorithm to an on-line student-teacher learning algorithm inspired by the NEW TIES system \cite{haasdijk2008social}. The NEW TIES system utilizes a steady-state evolution in which at every timestep each agent probabilistically teaches the lowest-fitness member of that is close to it, effectively forming geographical cliques. Since the system relies on a steady-state evolution, weaker agents eventually die out and do not have as much of a chance to propagate poor training examples relative to that of long-lasting agents. To adapt this approach to our generational EA, and to maximize the fairness of our comparison, we create a population of 10 cliques with 10 agents each. At each time step, the current champion from each clique teaches its clique's lowest-fitness member.
 
 It is worth noting that many social learning algorithms focus on off-line training, where teachers are simply the previous generation's champions. In these models, students are trained before the actual evaluation to mimic the champion(s), often with Gaussian noise added to the teacher's outputs to promote diversity in the population. However, at evaluation time these agents are static and do not learn from their own experiences or that of others. Thus, to minimize the differences in approaches, we have implemented our NEW TIES variant since it requires only a slight change in the filtering of which agents send and receive training examples.
@@ -272,17 +271,18 @@ Finally, we plan to expand our benchmark suite to include more student-teacher v
 
 \begin{figure}
   \centering
+    \includegraphics[scale=.35]{velocity_diversity.pdf}
+  \caption{Velocity converges more quickly in the cultural model than in the population model.}
+  \label{fig:velocity}
+\end{figure}
+
+\begin{figure}
+  \centering
     \includegraphics[scale=.35]{orientation_diversity.pdf}
   \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
   \label{fig:orientation}
 \end{figure}
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.35]{velocity_diversity.pdf}
-  \caption{Velocity converges more quickly in the cultural model than in the population model.}
-  \label{fig:velocity}
-\end{figure}
 
 Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.   
 
