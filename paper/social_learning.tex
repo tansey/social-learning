@@ -28,29 +28,27 @@ Risto Miikkulainen\\
 
 \maketitle
 \begin{abstract}
-Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. We present a reward-based model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of reward-based social learning with pure neuroevolution and a variant of student-teacher social learning. We show that our algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. Our results suggest reward-based social learning holds substantial potential to revolutionize the field of social learning.
+Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. We present a reward-based model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of reward-based social learning with pure neuroevolution and a variant of student-teacher social learning. We show that our algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. Our results suggest reward-based social learning is a promising new paradigm for social learning.
 \end{abstract}
 
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life, Cultural Algorithms, On-line Evolution}
 
 \section{Introduction}
 
-In Evolutionary Algorithms (EAs) \cite{fogel1966artificial}, a population of agents is evaluated for performance in a given domain. Canonical EAs evaluate each agent either in isolation or in direct competition with a subset of the other members of the population. Social learning algorithms \cite{} extend EAs by enabling agents to observe other members of the population. 
+Canonical Evolutionary Algorithms (EAs) \cite{fogel1966artificial} evaluate every agent either in isolation or in direct competition with a subset of the other members of the population. Social and cultural learning algorithms \cite{reynolds1994introduction} extend EAs by enabling agents to leverage observations of other members of the population to improve their own performance during their lifetime. 
 
-One explanation for the evolution of large brains in primates is the social intelligence hypothesis, which states that the selection pressure driving the increase in brain size was the need to handle complex social behaviors. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and has been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
 
-Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance Evolutionary Algorithms (EAs) with a hierarchical structure (i.e., students and teachers) that facilitates the automatic discovery of suitable actions to use as training examples and target individuals to train. Thus, while cultural algorithms capture the ability of humans to learn from formal instruction, they do not fully model all forms of learning from observation in primates.
 
 We present a reward-based approach to social learning, inspired by mirror neurons \cite{gallese-98}, in which agents learn by observing the actions of other individuals. Primate brains contain mirror neurons that activate when other primates are observed, in effect mirroring the observed primate's action internally. Analogously, agents in our algorithm observe the population and, when a positive reward is received, mimic that action in order to learn a policy similar to that of the observed agent. This algorithm separates itself from other social learning algorithms in that the quality of a training example is measured by the reward received rather than the hierarchical role of the agent generating the example.
 
-We validate our algorithm in a well-known foraging domain in which agents must discriminate between poisonous and nutritious food. \textit{Summarize results section here}
+We validate our algorithm in a well-known foraging domain in which agents must learn to efficiently navigate the world gathering nutritious food while avoiding poisonous food. Our results indicate that reward-based social learning is able to quickly find near-optimal strategies more than an order of magnitude faster than a student-teacher variant and plain neuroevolution. Additionally, we show that our use of culture promotes behavioral diversity and prevents premature convergence to sub-optimal strategies that would otherwise emerge if agents observed all individuals in the population.
 
 This paper makes the following novel contributions:
  
 \begin{itemize}
-\item A reward-based social learning algorithm, in which all individuals in a group observe and learn from each other
-\item An analysis of the differences in performance between reward-based social learning and traditional student-teacher social learning
+\item A reward-based social learning algorithm, in which all individuals in a group observe and learn from, and teach each other
 \item A behavioral diversity analysis of two reward-based social learning variants
+\item A performance comparison between reward-based social learning and traditional student-teacher social learning
 \end{itemize}
  
 The remainder of the paper is structured as follows.
@@ -63,13 +61,13 @@ Finally, in Section \ref{sec:conclusions} we present our conclusions.
 
 \section{Background}
 \label{sec:background}
-In this section, we provide background information and motivation for social learning, and introduce our evolutionary framework, Neuroevolution of Augmented Topologies (NEAT).
+In this section, we provide background information and motivation for social learning and introduce our evolutionary framework.
 
 \subsection*{Social Learning}
 
-Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.
+One explanation for the evolution of large brains in primates is the social intelligence hypothesis, which states that the selection pressure driving the increase in brain size was the need to handle complex social behaviors. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and has been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
 
-Another important area for social learning is dynamic domains. In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
+Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance EAs with a hierarchical structure (i.e., students and teachers) that facilitates the automatic discovery of suitable actions to use as training examples and target individuals to train. Typical cultural algorithms therefore capture the ability of humans to learn from formal instruction by an expert, but they do not fully model all forms of learning from observation in primates.
 
 \subsection*{Related Work}
 
