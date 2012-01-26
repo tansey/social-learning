@@ -93,7 +93,7 @@ In standard NEAT, the networks that are created do not change within one generat
 
 Our approach, presented in Algorithm \ref{reward-algorithm} is an on-line, generational learning algorithm designed for domains where an agent receives multiple rewards throughout its lifetime. Agents maintain a sliding window of their most recent states, actions, and rewards that serve as training examples for observing agents. When an agent receives a reward, other agents observe the event and determine if it qualifies as an acceptable training example. Our key insight is that the agents should focus on the event itself to determine if the observed actions should be emulated. The overall fitness of the acting agent is not considered, as it is possible that a low-fitness strategy may still perform some high-quality actions in certain circumstances.
 
-To promote diversity and prevent the population from prematurely converging to a local optimal, all agents are divided into observation groups called \textit{cliques}. At each timestep, each agent is given its state, responds with a desired action, and receives a resulting reward. The memory of an individual agent is thus a tuple containing its most recent state, action, and reward. Each agent's memory is evaluated by all other members of its clique using a user-defined acceptability function. The role of this function is to filter out low-quality examples and focus the agents on learning only from actions that will lead to strong strategies. When an agent's recent memory is judged as acceptable, it is then used as a teaching example for all other agents in its clique.
+To promote diversity and prevent the population from prematurely converging to a local optimum, all agents are divided into observation groups called \textit{cliques}. At each timestep, each agent is given its state, responds with a desired action, and receives a resulting reward. The memory of an individual agent is thus a tuple containing its most recent state, action, and reward. Each agent's memory is evaluated by all other members of its clique using a user-defined acceptability function. The role of this function is to filter out low-quality examples and focus the agents on learning only from actions that will lead to strong strategies. When an agent's recent memory is judged as acceptable, it is then used as a teaching example for all other agents in its clique.
 
 \begin{algorithm}
 \caption{Reward-Based Social Learning}
@@ -188,7 +188,7 @@ In this section we present our experimental results. We conducted four main expe
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{social_learning_vs_neuroevolution.pdf}
+    \includegraphics[scale=.43]{social_learning_vs_neuroevolution.pdf}
   \caption{Pure reward-based learning collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution.}
   \label{fig:social-neuro}
 \end{figure}
@@ -208,7 +208,7 @@ Genetic inheritance paradigms in evolution fall into one of two main categories:
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{darwinian_vs_lamarkian_evolution.pdf}
+    \includegraphics[scale=.43]{darwinian_vs_lamarkian_evolution.pdf}
   \caption{Lamarkian learning is more effective than Darwinian and converges more rapidly.}
   \label{fig:darwin-lamark}
 \end{figure}
@@ -225,7 +225,7 @@ In order to address this problem, we introduce a cultural version of reward-base
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{population_vs_cultural_learning.pdf}
+    \includegraphics[scale=.43]{population_vs_cultural_learning.pdf}
   \caption{The results of agents learning from observations of the entire population compared to only agents in the same clique.}
   \label{fig:population-social}
 \end{figure}
@@ -234,14 +234,14 @@ Figure \ref{fig:population-social} shows the results comparing population-based 
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{velocity_diversity.pdf}
+    \includegraphics[scale=.43]{velocity_diversity.pdf}
   \caption{Velocity converges more quickly in the cultural model than in the population model.}
   \label{fig:velocity}
 \end{figure}
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{orientation_diversity.pdf}
+    \includegraphics[scale=.43]{orientation_diversity.pdf}
   \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
   \label{fig:orientation}
 \end{figure}
@@ -257,13 +257,13 @@ The next experiment compares our cultural learning algorithm to a benchmark stud
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{simple_reward_based_vs_student_teacher.pdf}
+    \includegraphics[scale=.43]{simple_reward_based_vs_student_teacher.pdf}
   \caption{The results of our algorithm in a simple world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
   \label{fig:reward-studetteacher}
 \end{figure}
 \begin{figure}
   \centering
-    \includegraphics[scale=.35]{complex_reward_based_vs_student_teacher.pdf}
+    \includegraphics[scale=.43]{complex_reward_based_vs_student_teacher.pdf}
   \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
   \label{fig:reward-studetteacher}
 \end{figure}
@@ -273,7 +273,7 @@ In our final set of experiments, we compare our cultural reward-based algorithm 
 
 It is worth noting that many social learning algorithms focus on off-line training, where teachers are simply the previous generation's champions. In these models, students are trained before the actual evaluation to mimic the champion(s), often with Gaussian noise added to the teacher's outputs to promote diversity in the population. However, at evaluation time these agents are static and do not learn from their own experiences or that of others. Thus, to minimize the differences in approaches, we have implemented our NEW TIES variant since it requires only a slight change in the filtering of which agents send and receive training examples.
 
-Figure \ref{fig:reward-studetteacher} shows the results of our cultural reward-based learning algorithm compared to our student-teacher variant and pure neuroevolution. Reward-based learning converges to a near-optimal solution faster than the student-teacher variant in both the simple and the complex world. While in the simple world this speed up is slight, in the complex world our reward-based approach is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either student-teacher or baseline neuroevolution achieve by generation 500.
+Figure \ref{fig:reward-studetteacher} shows the results of our cultural reward-based learning algorithm compared to our student-teacher variant and pure neuroevolution. Reward-based learning converges to a near-optimal solution faster than the student-teacher variant in both the simple and the complex world. While in the simple world this speed-up is slight, in the complex world our reward-based approach is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either student-teacher or baseline neuroevolution achieve by generation 500.
 
 In the next section, we present a discussion of our experimental results and indicate possible future directions for reward-based social learning.
 
@@ -283,9 +283,9 @@ The results of our experiments in reward-based social learning suggest that lear
 
 For our experiments, we chose a simple division of 10 groups of equal size for our clique creation strategy. Preliminary experiments showed that our algorithm was robust to moderate variations in the number of equal-sized cliques, with 5 groups and 20 groups both demonstrating strong speedup compared to our benchmarks. It's possible that equal-sized groups are not optimal or that a dynamic clique creation algorithm that maximizes behavioral diversity would perform better.
 
-Creating an acceptability function is a closely related task to that of creating a fitness function. Consequently, the performance of our algorithm depends on the ability of the user to craft a useful acceptability function. This task is not always easy and may require paying attention to the subtle details of one's domain. We intentionally kept the acceptability function simple in our domains so as to demonstrate the strength of our general approach, however it is possible that employing a more sophisticated could have sped up learning even faster.
+Creating an acceptability function is a closely related task to that of creating a fitness function. Consequently, the performance of our algorithm depends on the ability of the user to craft a useful acceptability function. This task is not always easy and may require paying attention to the subtle details of one's domain. We intentionally kept the acceptability function simple in our domains so as to demonstrate the strength of our general approach, however it is possible that employing a more sophisticated heuristic could have sped up learning even faster.
 
-The robot foraging domain is a well-suited domain for exploring extensions and improvements to our social learning algorithm. Where as the current problem domain only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require larger memory sizes. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward, necessitating agents to learn compound trajectories to navigate to the food. Additionally, we plan to introduce predators into the world and measure the effects reward-based social learning has when present in predators, prey, or both.
+The robot foraging domain is a well-suited domain for exploring extensions and improvements to our social learning algorithm. Whereas the current problem domain only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require larger memory sizes. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward, necessitating that agents learn compound trajectories to navigate to the food. Additionally, we plan to introduce predators into the world and measure the effects reward-based social learning has when present in predators, prey, or both.
 
 Finally, we plan to expand our benchmark suite to include more student-teacher variants in the future. Although we believe our experiment sufficiently demonstrated the advantages of reward-based social learning, student-teacher methods can be implemented in many ways, including off-line learning \cite{acerbi2007social}, probabilistic teaching \cite{haasdijk2008social}, and noisy examples \cite{denaro1996cultural}, to name only a few. A more complete set of benchmarks will help us better understand the relative performance of our approach.
 
