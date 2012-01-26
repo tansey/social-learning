@@ -71,15 +71,7 @@ Social learning is valuable in expensive domains; when computing time is limited
 
 Another important area for social learning is dynamic domains. In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
 
-
-\subsection*{Evolutionary Framework}
-NeuroEvolution of Augmented Topologies (NEAT)\cite{stanley2002evolving} is an evolutionary algorithm that generates recurrent neural networks. Through a process of adding and removing nodes and changing weights, NEAT evolves genomes that unfold into networks. In every generation, those networks with the highest fitness reproduce, and those that have low fitness are less likely to do so. NEAT maintains genetic diversity through speciation and encourages innovation through explicit fitness sharing.
-
-In our domain, NEAT is used to generate a population of individual neural networks that control agents in the world. The input to each network is the agent's sensors, and the outputs control the agent's velocity and orientation. The fitness of each network is determined by the success of the agent it controls - over the course of a generation, networks controlling agents who eat a good deal of rewarding food and very little poison will have high fitnesses and those which control agents with less wise dietary habits will have low fitness.
-
-In standard NEAT, the networks that are created do not change within one generation, but in reward-based social learning, we do backpropagation \cite{rumelhart1986learning} on the networks that NEAT creates.\footnote{Since NEAT networks are recurrent, we use backpropagation through time \cite{werbos1990backpropagation} as our training algorithm.} The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
-
-\subsection*{Previous Work}
+\subsection*{Related Work}
 
 Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record. We next highlight relevant prior work and explain how our approach differs from previous efforts.
 
@@ -89,6 +81,12 @@ Interestingly, our approach could be seen as a Memetic Algorithm (MA) \cite{mosc
 
 The ability of social learning to improve agents in a foraging domain has been explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student-teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
 
+\subsection*{Evolutionary Framework}
+NeuroEvolution of Augmented Topologies (NEAT)\cite{stanley2002evolving} is an evolutionary algorithm that generates recurrent neural networks. Through a process of adding and removing nodes and changing weights, NEAT evolves genomes that unfold into networks. In every generation, those networks with the highest fitness reproduce, and those that have low fitness are less likely to do so. NEAT maintains genetic diversity through speciation and encourages innovation through explicit fitness sharing.
+
+In our domain, NEAT is used to generate a population of individual neural networks that control agents in the world. The input to each network is the agent's sensors, and the outputs control the agent's velocity and orientation. The fitness of each network is determined by the success of the agent it controls - over the course of a generation, networks controlling agents who eat a good deal of rewarding food and very little poison will have high fitnesses and those which control agents with less wise dietary habits will have low fitness.
+
+In standard NEAT, the networks that are created do not change within one generation, but in reward-based social learning, we do backpropagation \cite{rumelhart1986learning} on the networks that NEAT creates.\footnote{Since NEAT networks are recurrent, we use backpropagation through time \cite{werbos1990backpropagation} as our training algorithm.} The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
 
 \section{Reward-Based Social Learning}
 \label{sec:rbsl}
@@ -112,7 +110,7 @@ To promote diversity and prevent the population from prematurely converging to a
     \FOR{each $clique$ in $cliques$}
       \FOR{each $agent$ in $clique$}
         \STATE $s \leftarrow $ReceiveAgentInputs()
-        \STATE $a \leftarrow $Activate($agent.network$)
+        \STATE $a \leftarrow $GetResponse($agent, s$)
         \STATE $r \leftarrow $TakeAction(action)
         \STATE $agent.memory \leftarrow $UpdateMemory($\{s, a, r\}$)
       \ENDFOR
@@ -140,7 +138,7 @@ To promote diversity and prevent the population from prematurely converging to a
 %   \label{fig:flowchart}
 % \end{figure}
 
-As a pragmatic note, by focusing on rewards rather than overall agent fitness, social learning can begin immediately in the first generation of the algorithm. In contrast, generational student-teacher models typically require a preliminary evaluation phase to determine high-quality agents and an off-line teaching phase to train new agents \cite{denaro1996cultural}. Thus, we expect our approach to be faster in practice as well as potentially producing stronger strategies.
+%As a pragmatic note, by focusing on rewards rather than overall agent fitness, social learning can begin immediately in the first generation of the algorithm. In contrast, generational student-teacher models typically require a preliminary evaluation phase to determine high-quality agents and an off-line teaching phase to train new agents \cite{denaro1996cultural}. Thus, we expect our approach to be faster in practice as well as potentially producing stronger strategies.
 
 In the next section we present our experimental domain that we use to evalaute the efficacy of our algorithm.
 
@@ -234,6 +232,27 @@ In order to address this problem, we introduce a cultural version of reward-base
 
 Figure \ref{fig:population-social} shows the results comparing population-based and cultural learning. The cultural social learning not only reaches a higher peak than the population based method, but also arrives at this level of fitness more rapidly than the baseline neuroevolution approach. Preventing agents who have behavior that is harmful from impacting the remainder of the population provides safety and protection; when every mutated organism has the opportunity to train every other, as is the case in population-wide learning, the entire population may be negatively impacted. Because cultural evolution is more efficient and provides better results, likely due to this protection from mutation and the fostering of diversity, we incorporate it in our final algorithm.
 
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{velocity_diversity.pdf}
+  \caption{Velocity converges more quickly in the cultural model than in the population model.}
+  \label{fig:velocity}
+\end{figure}
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{orientation_diversity.pdf}
+  \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
+  \label{fig:orientation}
+\end{figure}
+
+To better understand why the cultural version of our algorithm was able to prevent premature convergence and achieve significant results, we analyzed the behavioral diversity of the population after every generation. After the evaluation phase, we generated a new instance of the simple world and created a set of input states corresponding to random locations, orientations, and velocities. For every agent, we then observed its output response (i.e., the desired change in velocity and orientation) for each of the input states. Figures \ref{fig:orientation} and \ref{fig:velocity} show the average variance of the population response to each of the 100 input states after every generation, effectively measuring the behavioral diversity of the popluation.
+
+Although the orientation and velocity results may seem contradictory, they are actually reflecting a desirable property of cultural evolution. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since there is no benefit to slowing down in our current domain, one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
+
+We believe the results of our diversity analysis support the hypothesis that our cultural algorithm preserves diversity only when it is useful (e.g., orientation response), while not preventing convergence when diversity is unnecessary (e.g., velocity response).
+
+
 The next experiment compares our cultural learning algorithm to a benchmark student-teacher model.
 
 \begin{figure}
@@ -260,39 +279,22 @@ In the next section, we present a discussion of our experimental results and ind
 
 \section{Discussion and Future Work}
 \label{sec:future}
-The results of our experiments in reward-based social learning clearly indicate that it has the potential to breathe new life into social algorithms.
+The results of our experiments in reward-based social learning suggest that learning from strong actions, rather than high-fitness agents, is a powerful approach to social learning. The success of our algorithm in a given domain is predicated on two main user-defined parameters: the grouping of agents into cliques and the criteria of the acceptability function.
 
-To better understand why the cultural version of our algorithm was able to prevent premature convergence and achieve significant results, we analyzed the behavioral diversity of the population after every generation. After the evaluation phase, we generated a new instance of the simple world and created a set of input states corresponding to random locations, orientations, and velocities. For every agent, we then observed its output response (i.e., the desired change in velocity and orientation) for each of the input states. Figures \ref{fig:orientation} and \ref{fig:velocity} show the average variance of the population response to each of the 100 input states after every generation, effectively measuring the behavioral diversity of the popluation.
+For our experiments, we chose a simple division of 10 groups of equal size for our clique creation strategy. Preliminary experiments showed that our algorithm was robust to moderate variations in the number of equal-sized cliques, with 5 groups and 20 groups both demonstrating strong speedup compared to our benchmarks. It's possible that equal-sized groups are not optimal or that a dynamic clique creation algorithm that maximizes behavioral diversity would perform better.
 
-Although the orientation and velocity results may seem contradictory, they are actually reflecting a desirable property of cultural evolution. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since there is no benefit to slowing down in our current domain, one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
+Creating an acceptability function is a closely related task to that of creating a fitness function. Consequently, the performance of our algorithm depends on the ability of the user to craft a useful acceptability function. This task is not always easy and may require paying attention to the subtle details of one's domain. We intentionally kept the acceptability function simple in our domains so as to demonstrate the strength of our general approach, however it is possible that employing a more sophisticated could have sped up learning even faster.
 
-We believe the results of our diversity analysis support the hypothesis that our cultural algorithm preserves diversity only when it is useful (e.g., orientation response), while not preventing convergence when diversity is unnecessary (e.g., velocity response).
-
-The robot foraging domain is a well-suited domain for exploring extensions and improvements to our social learning algorithm. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward. Where as the current problem domain only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require that the memory contains sequences of input-output pairs. Additionally, we have plan to introduce predators into the world and measure the effects reward-based social learning has when leveraged by either predators, prey, or both.
+The robot foraging domain is a well-suited domain for exploring extensions and improvements to our social learning algorithm. Where as the current problem domain only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require larger memory sizes. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward, necessitating agents to learn compound trajectories to navigate to the food. Additionally, we plan to introduce predators into the world and measure the effects reward-based social learning has when present in predators, prey, or both.
 
 Finally, we plan to expand our benchmark suite to include more student-teacher variants in the future. Although we believe our experiment sufficiently demonstrated the advantages of reward-based social learning, student-teacher methods can be implemented in many ways, including off-line learning \cite{acerbi2007social}, probabilistic teaching \cite{haasdijk2008social}, and noisy examples \cite{denaro1996cultural}, to name only a few. A more complete set of benchmarks will help us better understand the relative performance of our approach.
 
-\begin{figure}
-  \centering
-    \includegraphics[scale=.35]{velocity_diversity.pdf}
-  \caption{Velocity converges more quickly in the cultural model than in the population model.}
-  \label{fig:velocity}
-\end{figure}
-
-\begin{figure}
-  \centering
-    \includegraphics[scale=.35]{orientation_diversity.pdf}
-  \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
-  \label{fig:orientation}
-\end{figure}
-
-
-Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.   
+%Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.   
 
 \section{Conclusions}
 \label{sec:conclusions}
 
-We have presented a reward-based approach to apply social learning in evolutionary algorithms that converges to better solutions faster than previous known solutions. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward.  Further filtering of results by constraining teaching samples to those from the same cultural group results in further improvement to performance.  Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. 
+We have presented a reward-based approach to social learning in evolutionary algorithms that enables agents to learn from high-quality actions. As opposed to traditional social learning algorithms which follow a student-teacher model, our approach instead teaches agents based on acceptable actions taken by any agent in its clique. By constraining teaching samples to those from the same cultural group, our algorithm promotes diversity in the overall population and prevents premature convergence. Experiments in a complex robot foraging domain demonstrated that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. Our results suggest that reward-based learning is a strong technique and represents a promising new paradigm for social learning algorithms.
 
 \bibliographystyle{abbrv}
 \bibliography{sigproc}
