@@ -7,13 +7,18 @@
 \citation{acerbi2007social}
 \citation{de2011incremental}
 \citation{watkins1992q}
-\citation{TODO}
+\citation{parisi1997cultural}
+\citation{acerbi2006cultural}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{\thepage }}
-\citation{TODO}
+\citation{byrne1989machiavellian}
+\citation{humphrey1976social}
 \citation{holekamp2007questioning}
 \citation{herrmann2007humans}
 \citation{reynolds1994introduction}
 \citation{gallese-98}
+\citation{sep2009egalitarianism}
+\citation{boehm2001hierarchy}
+\citation{erda1996egalitarianism}
 \citation{reynolds1994introduction}
 \citation{kennedy1995particle}
 \citation{moscato1989evolution}
@@ -33,35 +38,37 @@
 \newlabel{sec:background}{{2}{\thepage }}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Egalitarian Social Learning}{\thepage }}
 \newlabel{sec:rbsl}{{3}{\thepage }}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Egalitarian Social Learning}}{\thepage }}
-\newlabel{reward-algorithm}{{1}{\thepage }}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Experimental Setup}{\thepage }}
 \newlabel{sec:setup}{{4}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Our domain: a foraging world in which agents gain fitness by consuming plants which they approach. 1) a piece of nutritious food which increases fitness, 2) is poison which decreases fitness, and 3) is one of our agents.}}{\thepage }}
-\newlabel{fig:foraging-world}{{1}{\thepage }}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Egalitarian Social Learning}}{\thepage }}
+\newlabel{reward-algorithm}{{1}{\thepage }}
 \citation{denaro1996cultural}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The architecture of foraging agents. A) Each agent has a 180$^{\circ }$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}}{\thepage }}
-\newlabel{fig:agent-architecture}{{2}{\thepage }}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{\thepage }}
-\newlabel{sec:results}{{5}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Pure reward-based learning collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution.}}{\thepage }}
-\newlabel{fig:social-neuro}{{3}{\thepage }}
 \citation{whiteson2006evolutionary}
 \citation{simpson1953baldwin}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Lamarckian learning is more effective than Darwinian and converges more rapidly.}}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach. 1) A piece of nutritious food which increases fitness. 2) A piece of poisonous food which decreases fitness. 3) An agent, the architecture of which is described in Figure 2\hbox {}.}}{\thepage }}
+\newlabel{fig:foraging-world}{{1}{\thepage }}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Results}{\thepage }}
+\newlabel{sec:results}{{5}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The architecture of our foraging agents. A) Each agent has a 180$^{\circ }$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}}{\thepage }}
+\newlabel{fig:agent-architecture}{{2}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Agents learning from social information without evolution, and agents evolving without social learning. The evolution-free learning algorithm collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution. Egalitarian social learning combines both methods.}}{\thepage }}
+\newlabel{fig:social-neuro}{{3}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The effects of Darwinian and Lamarckian evolution. Lamarckian learning is more effective than Darwinian and converges more rapidly, possibly because knowledge obtained by individual agents is useful and unchanging from one generation to the next.}}{\thepage }}
 \newlabel{fig:darwin-lamarck}{{4}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces The results of agents learning from observations of the entire population compared to only agents in the same clique.}}{\thepage }}
-\newlabel{fig:population-social}{{5}{\thepage }}
 \citation{haasdijk2008social}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Velocity converges more quickly in the cultural model than in the population model.}}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures. Agents learning only from a subculture outperform agents learning from the entire population, converging to a much higher ultimate fitness. This effect may be related to the tendancy, discussed below, for subcultural learning to maintain diversity over time.}}{\thepage }}
+\newlabel{fig:population-social}{{5}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Change in the diversity of the velocity output by agents over time, for both monocultural and subcultural egalitarian learning. Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.}}{\thepage }}
 \newlabel{fig:velocity}{{6}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Change in the diversity of agent outputs for orientation over time, for both monocultural and subcultural egalitarian learning. There are many possible good responses for change in orientation for any given inputs - tradeoffs between close, small rewards and distant, large rewards mean that exploring large portions of the search space can be fruitful. Accordingly, diversity in response remains high for many evaluations.}}{\thepage }}
 \newlabel{fig:orientation}{{7}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces The results of our algorithm in a simple world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}}{\thepage }}
-\newlabel{fig:reward-studentteacher-simple}{{8}{\thepage }}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}}{\thepage }}
-\newlabel{fig:reward-studentteacher-complex}{{9}{\thepage }}
 \citation{denaro1996cultural}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Egalitarian learning, neuroevolution, and traditional student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations. The simplicity of the domain means that learning ends early.}}{\thepage }}
+\newlabel{fig:reward-studentteacher-simple}{{8}{\thepage }}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Egalitarian learning, neuroevolution, and traditional student-teacher learning in the complex world. In this more complex world characterized by higher dimensionality in agent input, egalitarian learning takes far fewer evaluations to arrive at a good solution, and converges to near-optimal solutions, while the other algorithms take longer to converge to weaker solutions.}}{\thepage }}
+\newlabel{fig:reward-studentteacher-complex}{{9}{\thepage }}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion and Future Work}{\thepage }}
+\newlabel{sec:future}{{6}{\thepage }}
 \citation{acerbi2007social}
 \citation{haasdijk2008social}
 \citation{denaro1996cultural}
@@ -69,27 +76,32 @@
 \bibdata{sigproc}
 \bibcite{gallese-98}{1}
 \bibcite{acerbi2007social}{2}
-\bibcite{dawkins2006selfish}{3}
-\bibcite{de2011incremental}{4}
-\bibcite{denaro1996cultural}{5}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion and Future Work}{\thepage }}
-\newlabel{sec:future}{{6}{\thepage }}
+\bibcite{acerbi2006cultural}{3}
+\bibcite{sep2009egalitarianism}{4}
+\bibcite{boehm2001hierarchy}{5}
+\bibcite{byrne1989machiavellian}{6}
+\bibcite{dawkins2006selfish}{7}
+\bibcite{de2011incremental}{8}
+\bibcite{denaro1996cultural}{9}
+\bibcite{erda1996egalitarianism}{10}
+\bibcite{fogel1966artificial}{11}
+\bibcite{haasdijk2008social}{12}
+\bibcite{herrmann2007humans}{13}
+\bibcite{holekamp2007questioning}{14}
+\bibcite{humphrey1976social}{15}
+\bibcite{kennedy1995particle}{16}
+\bibcite{ku2000study}{17}
+\bibcite{moscato1989evolution}{18}
+\bibcite{onwubolu2004new}{19}
+\bibcite{parisi1997cultural}{20}
+\bibcite{reynolds1994introduction}{21}
+\bibcite{rumelhart1986learning}{22}
+\bibcite{simpson1953baldwin}{23}
+\bibcite{stanley2002evolving}{24}
+\bibcite{vogt2010modeling}{25}
+\bibcite{watkins1992q}{26}
+\bibcite{werbos1990backpropagation}{27}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Conclusions}{\thepage }}
 \newlabel{sec:conclusions}{{7}{\thepage }}
 \@writefile{toc}{\contentsline {section}{\numberline {8}References}{\thepage }}
-\bibcite{fogel1966artificial}{6}
-\bibcite{haasdijk2008social}{7}
-\bibcite{herrmann2007humans}{8}
-\bibcite{holekamp2007questioning}{9}
-\bibcite{kennedy1995particle}{10}
-\bibcite{ku2000study}{11}
-\bibcite{moscato1989evolution}{12}
-\bibcite{onwubolu2004new}{13}
-\bibcite{reynolds1994introduction}{14}
-\bibcite{rumelhart1986learning}{15}
-\bibcite{simpson1953baldwin}{16}
-\bibcite{stanley2002evolving}{17}
-\bibcite{vogt2010modeling}{18}
-\bibcite{watkins1992q}{19}
-\bibcite{werbos1990backpropagation}{20}
-\bibcite{whiteson2006evolutionary}{21}
+\bibcite{whiteson2006evolutionary}{28}

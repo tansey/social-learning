@@ -11,6 +11,28 @@ A.~Acerbi and S.~Nolfi.
 \newblock In {\em Artificial Life, 2007. ALIFE'07. IEEE Symposium on}, pages
   333--340. IEEE, 2007.
 
+\bibitem{acerbi2006cultural}
+A.~Acerbi and D.~Parisi.
+\newblock Cultural transmission between and within generations.
+\newblock {\em Journal of Artificial Societies and Social Simulation}, 9(1),
+  2006.
+
+\bibitem{sep2009egalitarianism}
+R.~Arneson.
+\newblock Egalitarianism.
+\newblock 2009.
+
+\bibitem{boehm2001hierarchy}
+C.~Boehm.
+\newblock {\em Hierarchy in the forest: The evolution of egalitarian behavior}.
+\newblock Harvard Univ Pr, 2001.
+
+\bibitem{byrne1989machiavellian}
+R.~Byrne and A.~Whiten.
+\newblock Machiavellian intelligence: Social expertise and the evolution of
+  intellect in monkeys, apes, and humans.
+\newblock 1989.
+
 \bibitem{dawkins2006selfish}
 R.~Dawkins.
 \newblock {\em The selfish gene}.
@@ -27,6 +49,11 @@ D.~Denaro and D.~Parisi.
 \newblock Cultural evolution in a population of neural networks.
 \newblock {\em M. marinaro and r. tagliaferri (eds), neural nets wirn-96. new
   york: Springer}, pages 100--111, 1996.
+
+\bibitem{erda1996egalitarianism}
+L.~Erda, A.~Whiten, P.~Mellars, and K.~Gibson.
+\newblock Egalitarianism and machiavellian intelligence in human evolution.
+\newblock 1996.
 
 \bibitem{fogel1966artificial}
 L.~Fogel, A.~Owens, and M.~Walsh.
@@ -50,6 +77,11 @@ E.~Herrmann, J.~Call, M.~Hern{\'a}ndez-Lloreda, B.~Hare, and M.~Tomasello.
 K.~Holekamp.
 \newblock Questioning the social intelligence hypothesis.
 \newblock {\em Trends in cognitive sciences}, 11(2):65--69, 2007.
+
+\bibitem{humphrey1976social}
+N.~Humphrey.
+\newblock The social function of intellect.
+\newblock {\em Growing points in ethology}, pages 303--317, 1976.
 
 \bibitem{kennedy1995particle}
 J.~Kennedy and R.~Eberhart.
@@ -75,6 +107,11 @@ G.~Onwubolu and B.~Babu.
 \newblock {\em New optimization techniques in engineering}, volume 141.
 \newblock Springer Verlag, 2004.
 
+\bibitem{parisi1997cultural}
+D.~Parisi.
+\newblock Cultural evolution in neural networks.
+\newblock {\em IEEE Expert}, 12(4):9--14, 1997.
+
 \bibitem{reynolds1994introduction}
 R.~Reynolds.
 \newblock An introduction to cultural algorithms.
@@ -82,7 +119,7 @@ R.~Reynolds.
   Programming}, pages 131--139. World Scientific, 1994.
 
 \bibitem{rumelhart1986learning}
-D.~Rumelhart, G.~Hintont, and R.~Williams.
+D.~Rumelhart, G.~Hinton, and R.~Williams.
 \newblock Learning representations by back-propagating errors.
 \newblock {\em Nature}, 323(6088):533--536, 1986.
 

@@ -23,7 +23,7 @@ Wesley Tansey, Eliana Feasley, Risto Miikkulainen\\
 
 \maketitle
 \begin{abstract}
-Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Historically, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. This paper presents an egalitarian model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of reward-based social learning with simple neuroevolution and a variant of student-teacher social learning. The egalitarian algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. The results indicate that egalitarian social learning is a promising new paradigm for social learning in intelligent agents.
+Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Historically, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. This paper presents an egalitarian model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of egalitarian social learning with simple neuroevolution and a variant of student-teacher social learning. The egalitarian algorithm converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. The results indicate that egalitarian social learning is a promising new paradigm for social learning in intelligent agents.
 \end{abstract}
 
 \terms{Social Learning, Evolutionary Algorithms, Artificial Life, Cultural Algorithms, On-line Evolution}
@@ -32,7 +32,7 @@ Social learning is an extension to evolutionary algorithms that enables agents t
 
 Evolutionary Algorithms (EAs) \cite{fogel1966artificial} evaluate agents either in isolation or in direct competition with a subset of the other members of the population. Social and cultural learning algorithms \cite{reynolds1994introduction} extend EAs by enabling agents to leverage observations of other members of the population to improve their own performance during their lifetime. By learning from others without having to directly experience or acquire knowledge, social learning algorithms have been able to improve the learning rate of EAs in many challenging domains \cite{denaro1996cultural, haasdijk2008social, vogt2010modeling, acerbi2007social, de2011incremental, watkins1992q}.
 
-Traditionally in social learning algorithms, each agent is either a student or a teacher \cite{TODO}. All actions of the teacher agents are considered to be good examples from which to learn, as they are derived from a high-fitness strategy (i.e., the teacher's policy). However, an agent with high overall fitness may not always choose good actions and agents with low overall fitness may actually perform well in some limited scenarios. Filtering potential observations based on their own merit therefore may be more appropriate and lead to both improved learning rate and stronger final strategies.
+Traditionally in social learning algorithms, each agent is either a student or a teacher \cite{parisi1997cultural, acerbi2006cultural}. All actions of the teacher agents are considered to be good examples from which to learn, as they are derived from a high-fitness strategy (i.e., the teacher's policy). However, an agent with high overall fitness may not always choose good actions and agents with low overall fitness may actually perform well in some limited scenarios. Filtering potential observations based on their own merit therefore may be more appropriate and lead to both improved learning rate and stronger final strategies.
 
 In this paper, we present an Egalitarian Social Learning (ESL) as an alternative to the student-teacher paradigm. Agents in ESL are divided into subcultures at the start of each generation and can learn from any other agent in their subcultural group. The choice of learning examples is determined by a user-defined acceptability function that filters out examples leading to low rewards. When an acceptable action is observed, agents mimic that action in order to learn a policy similar to that of the observed agent. ESL differs from other social learning algorithms in that the quality of a training example is measured by the reward received rather than the fitness of the agent generating the example.
 
@@ -61,9 +61,13 @@ In this section, background information and motivation for social learning is pr
 
 \subsection*{Social Learning}
 
-One explanation for the evolution of large brains in primates is the social intelligence hypothesis\cite{TODO}, which states that the need to handle complex social behaviors was the primary selection pressure driving the increase in brain size. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and have been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
+One explanation for the evolution of large brains in primates is the social intelligence hypothesis\cite{byrne1989machiavellian, humphrey1976social}, which states that the need to handle complex social behaviors was the primary selection pressure driving the increase in brain size. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and have been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.  
 
 Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance EAs with a hierarchical structure (i.e., students and teachers) that makes it possible to discover suitable actions to use as training examples and target individuals to train. Typical cultural algorithms therefore capture the ability of humans to learn from formal instruction by an expert, but they do not fully model all forms of learning from observation in primates. For instance, human brains contain mirror neurons \cite{gallese-98} that activate when other humans are observed interacting with the world, in effect mirroring the observed human's action internally. Such processes enable humans to learn socially without concern for the status or expertise of the observed individual.
+
+\subsection*{Egalitarianism}
+
+Egalitarianism refers to any philosophy that advocates treating all individuals in a population as equals, regardless of such factors as background and status \cite{sep2009egalitarianism}. In hunter-gatherer societies, egalitarianism is a well-known technique for managing daily activities and organizing social structures\cite{boehm2001hierarchy}. It is hypothesized that this lack of hierarchy and strict maintenace of equality has been pivotal in the development of human society and in seperating humans from non-human animals\cite{erda1996egalitarianism}. 
 
 \subsection*{Related Work}
 
@@ -145,7 +149,7 @@ This section describes the evaluation domain, including the inputs and outputs t
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.31]{world.pdf}
-  \caption{Our domain: a foraging world in which agents gain fitness by consuming plants which they approach.  1) a piece of nutritious food which increases fitness, 2) is poison which decreases fitness, and 3) is one of our agents.}
+  \caption{The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  1) A piece of nutritious food which increases fitness. 2) A piece of poisonous food which decreases fitness. 3) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
   \label{fig:foraging-world}
 \end{figure}
 
@@ -154,8 +158,7 @@ The domain used to evaluate ESL is a foraging world in which agents move freely 
     
 \begin{figure}[t]
   \centering
-    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}
-  \caption{The architecture of foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
   \label{fig:agent-architecture}
 \end{figure}
 
@@ -184,7 +187,7 @@ Four main experiments were conducted: 1) determining the baseline performance of
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{social_learning_vs_neuroevolution.pdf}
-  \caption{Pure reward-based learning collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution.}
+  \caption{Agents learning from social information without evolution, and agents evolving without social learning.  The evolution-free learning algorithm collapses after several generations, while neuroevolution alone converges to a stable but suboptimal solution.  Egalitarian social learning combines both methods.}
   \label{fig:social-neuro}
 \end{figure}
 
@@ -203,7 +206,7 @@ Genetic inheritance paradigms in evolution fall into one of two main categories:
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{darwinian_vs_lamarckian_evolution.pdf}
-  \caption{Lamarckian learning is more effective than Darwinian and converges more rapidly.}
+  \caption{The effects of Darwinian and Lamarckian evolution. Lamarckian learning is more effective than Darwinian and converges more rapidly, possibly because knowledge obtained by individual agents is useful and unchanging from one generation to the next.}
   \label{fig:darwin-lamarck}
 \end{figure}
 
@@ -220,7 +223,7 @@ In order to address this problem, we introduce a subcultural version of egalitar
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{monocultural_vs_subcultural_learning.pdf}
-  \caption{The results of agents learning from observations of the entire population compared to only agents in the same clique.}
+  \caption{Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures.  Agents learning only from a subculture outperform agents learning from the entire population, converging to a much higher ultimate fitness. This effect may be related to the tendancy, discussed below, for subcultural learning to maintain diversity over time.}
   \label{fig:population-social}
 \end{figure}
 
@@ -229,20 +232,20 @@ Figure \ref{fig:population-social} shows the results comparing population-based 
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{velocity_diversity.pdf}
-  \caption{Velocity converges more quickly in the cultural model than in the population model.}
+  \caption{Change in the diversity of the velocity output by agents over time, for both monocultural and subcultural egalitarian learning.   Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.}
   \label{fig:velocity}
 \end{figure}
 
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{orientation_diversity.pdf}
-  \caption{In the cultural learning model, diversity in terms of orientation is maintained for longer than in population learning before behavior converges.}
-  \label{fig:orientation}
+  \caption{Change in the diversity of agent outputs for orientation over time, for both monocultural and subcultural egalitarian learning. There are many possible good responses for change in orientation for any given inputs - tradeoffs between close, small rewards and distant, large rewards mean that exploring large portions of the search space can be fruitful.  Accordingly, diversity in response remains high for many evaluations.}
+\label{fig:orientation}
 \end{figure}
 
 To better understand why the cultural version of our algorithm was able to prevent premature convergence, the behavioral diversity of the population was analyzed after every generation. After each evaluation, a new instance of the simple world was generated and a set of input states was created corresponding to random locations, orientations, and velocities. For every agent, its output response (i.e., the desired change in velocity and orientation) was observed for each of the input states. Figures \ref{fig:orientation} and \ref{fig:velocity} show the average variance of the population response to each of the 100 input states after every generation, effectively measuring the behavioral diversity of the population.  Velocity response converges for both models almost immediately, while orientation response remains more diverse in subcultural than in monocultural learning.
 
-Although the orientation and velocity results may seem contradictory, they actually reflect a desirable property of subcultural learning. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since even at full speed the agents can sense plants up to ten timesteps away, there is no clear benefit to slowing down in the current domain and one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
+Although the orientation and velocity resul,  withts may seem contradictory, they actually reflect a desirable property of subcultural learning. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since even at full speed the agents can sense plants up to ten timesteps away, there is no clear benefit to slowing down in the current domain and one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
 
 Thus the results of the diversity analysis suggest that the subcultural algorithm preserves diversity only when it is useful (e.g., orientation response), while not preventing convergence when diversity is unnecessary (e.g., velocity response).
 
@@ -251,13 +254,14 @@ The next experiment compares the ESL algorithm to a benchmark student-teacher mo
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_simple.pdf}
-  \caption{The results of our algorithm in a simple world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
+  \caption{Egalitarian learning, neuroevolution, and traditional student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations.  The simplicity of the domain means that learning ends early.}
   \label{fig:reward-studentteacher-simple}
 \end{figure}
+
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_complex.pdf}
-  \caption{The results of our algorithm in a complex world evaluated alongside a more traditional student-teacher model and baseline pure neuroevolution.}
+  \caption{Egalitarian learning, neuroevolution, and traditional student-teacher learning in the complex world.  In this more complex world characterized by higher dimensionality in agent input, egalitarian learning takes far fewer evaluations to arrive at a good solution, and converges to near-optimal solutions, while the other algorithms take longer to converge to weaker solutions.}
   \label{fig:reward-studentteacher-complex}
 \end{figure}
 
