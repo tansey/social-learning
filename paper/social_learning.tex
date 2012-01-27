@@ -11,14 +11,14 @@
     
 \title{Accelerating Evolution via Egalitarian Social Learning}
 
-\numberofauthors{1}
-\author{
-\alignauthor
-Wesley Tansey, Eliana Feasley, Risto Miikkulainen\\
-       \affaddr{Dept. of Computer Science, The University of Texas at Austin}\\
-       \affaddr{1 University Station C0500, Austin, TX, USA}\\
-       \email{\{tansey, elie, risto\}@cs.utexas.edu}
-}
+%\numberofauthors{1}
+%\author{
+%\alignauthor
+%Wesley Tansey, Eliana Feasley, Risto Miikkulainen\\
+%       \affaddr{Dept. of Computer Science, The University of Texas at Austin}\\
+%       \affaddr{1 University Station C0500, Austin, TX, USA}\\
+%       \email{\{tansey, elie, risto\}@cs.utexas.edu}
+%}
 \date{25 January 2012}
 
 \maketitle
@@ -26,7 +26,11 @@ Wesley Tansey, Eliana Feasley, Risto Miikkulainen\\
 Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Historically, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. This paper presents ESL, an egalitarian model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of egalitarian social learning with simple neuroevolution and a variant of student-teacher social learning. ESL converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. The results indicate that egalitarian social learning is a promising new paradigm for social learning in intelligent agents.
 \end{abstract}
 
-\terms{Social Learning, Evolutionary Algorithms, Artificial Life, Cultural Algorithms, On-line Evolution}
+\category{I.2.6}{Computing Methodologies}{Artificial Intelligence}[Learning, Problem Solving, Control Methods, and Search]
+
+%\terms{Algorithms}
+
+\keywords{Social Learning, Evolutionary Algorithms, Artificial Life, Cultural Algorithms, On-line Evolution}
 
 \section{Introduction}
 
@@ -88,12 +92,17 @@ In standard NEAT, the networks that are created do not change within one generat
 
 The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. This elaboration drives evolution in two alternate ways.  In Darwinian evolution, the changes that were made to the phenome only affect selection and are not saved; in Lamarckian, the genome itself is modified.
 
-\section{Egalitarian Social Learning}
-\label{sec:rbsl}
-
-Algorithm \ref{reward-algorithm} presents the on-line, generational learning algorithm for Egalitarian Social Learning. ESL is designed for domains where an agent receives multiple rewards throughout its lifetime. Agents maintain a sliding window of their most recent states, actions, and rewards that serve as training examples for observing agents. When an agent receives a reward, other agents observe the event and determine if it qualifies as an acceptable training example. The key insight in ESL is that the agents should focus on the event itself to determine if the observed actions should be emulated. The overall fitness of the acting agent is not considered, as it is possible that a low-fitness strategy may perform high-quality actions in certain circumstances.
-
-To promote diversity and prevent the population from prematurely converging to local optima, all agents are divided into observational groups called \textit{subcultures}. At each timestep, each agent observes its state, responds with a desired action, and receives a resulting reward. The memory of an individual agent is thus a tuple containing its most recent state, action, and reward. Each agent's memory is evaluated by all other members of its subculture using a user-defined acceptability function. The role of this function is to filter out low-quality examples and focus the agents on learning only from actions that will lead to strong strategies. When an agent's recent memory is judged as acceptable, it is then used as a teaching example for all other agents in its subculture.
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.333]{world.pdf}
+  \caption{The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
+  \label{fig:foraging-world}
+\end{figure}
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+  \label{fig:agent-architecture}
+\end{figure}
 
 \begin{algorithm}
 \caption{Egalitarian Social Learning}
@@ -131,6 +140,13 @@ To promote diversity and prevent the population from prematurely converging to l
 \end{algorithmic}
 \end{algorithm}
 
+\section{Egalitarian Social Learning}
+\label{sec:rbsl}
+
+Algorithm \ref{reward-algorithm} presents the on-line, generational learning algorithm for Egalitarian Social Learning. ESL is designed for domains where an agent receives multiple rewards throughout its lifetime. Agents maintain a sliding window of their most recent states, actions, and rewards that serve as training examples for observing agents. When an agent receives a reward, other agents observe the event and determine if it qualifies as an acceptable training example. The key insight in ESL is that the agents should focus on the event itself to determine if the observed actions should be emulated. The overall fitness of the acting agent is not considered, as it is possible that a low-fitness strategy may perform high-quality actions in certain circumstances.
+
+To promote diversity and prevent the population from prematurely converging to local optima, all agents are divided into observational groups called \textit{subcultures}. At each timestep, each agent observes its state, responds with a desired action, and receives a resulting reward. The memory of an individual agent is thus a tuple containing its most recent state, action, and reward. Each agent's memory is evaluated by all other members of its subculture using a user-defined acceptability function. The role of this function is to filter out low-quality examples and focus the agents on learning only from actions that will lead to strong strategies. When an agent's recent memory is judged as acceptable, it is then used as a teaching example for all other agents in its subculture.
+
 % \begin{figure}
 %   \centering
 %     \includegraphics[scale=.6]{flowchart.pdf}
@@ -146,21 +162,9 @@ The next section presents the experimental domain used to evaluate the efficacy 
 \label{sec:setup}
 This section describes the evaluation domain, including the inputs and outputs that agents receive, and the common parameters across all experiments.
 
-\begin{figure}[t]
-  \centering
-    \includegraphics[scale=.333]{world.pdf}
-  \caption{The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
-  \label{fig:foraging-world}
-\end{figure}
-
 \subsection*{The Foraging Domain}
 The domain used to evaluate ESL is a foraging world in which agents move freely on a continuous toroidal surface. The world is populated with various plants, some of which are nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. The foraging domain is non-competitive and non-cooperative; each agent acts independently of all other agents, with the exception of the teaching signals that pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plant layout and configuration. Every agent then has a fixed number time steps to move about the surface of the world eating plants--- which happens automatically when an agent draws sufficiently close to one--- before the evaluation is over. Figure \ref{fig:foraging-world} shows an example of a foraging world with two types of plants and eight agents.
     
-\begin{figure}[t]
-  \centering
-    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
-  \label{fig:agent-architecture}
-\end{figure}
 
 \subsection*{Sensors and Outputs}
 
@@ -187,7 +191,7 @@ Four main experiments were conducted: 1) determining the baseline performance of
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{social_learning_vs_neuroevolution.pdf}
-  \caption{A comparison of the two components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
+  \caption{A comparison of the two learning components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
   \label{fig:social-neuro}
 \end{figure}
 
@@ -239,7 +243,7 @@ Figure \ref{fig:population-social} shows results comparing monocultural and subc
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{orientation_diversity.pdf}
-  \caption{Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between close, small rewards and distant, large rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
+  \caption{Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between small, close rewards and large, distant rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
 \label{fig:orientation}
 \end{figure}
 
@@ -251,14 +255,14 @@ The results of the diversity analysis suggest that the subcultural algorithm pre
 
 The next experiment compares the ESL algorithm to a benchmark student-teacher model and plain neuroevolution.
 
-\begin{figure}
+\begin{figure}[t]
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_simple.pdf}
   \caption{ESL compared to simple neuroevolution, and student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations.}
   \label{fig:reward-studentteacher-simple}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[t]
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_complex.pdf}
   \caption{ESL compared to simple neuroevolution, and student-teacher learning in the complex world.  ESL is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either comparison method achieves by generation 500.}
