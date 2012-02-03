@@ -40,6 +40,11 @@ namespace social_learning
         public IList<Plant> Plants { get; set; }
 
         /// <summary>
+        /// nom nom nom
+        /// </summary>
+        public IList<Wall> Walls { get; set; }
+
+        /// <summary>
         /// The types of plants in the world.
         /// </summary>
         public IEnumerable<PlantSpecies> PlantTypes { get; set; }
@@ -98,9 +103,12 @@ namespace social_learning
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
+            Walls = new List<Wall>();
             foreach (var s in species)
                 for (int i = 0; i < s.Count; i++)
                     Plants.Add(new Plant(s));
+            for (int n = 0; n < 10; n++)
+                Walls.Add(new Wall());
         }
 
         /// <summary>
@@ -186,6 +194,7 @@ namespace social_learning
             }
 
             layoutPlants();
+            layoutWalls();
 
             _step = 0;
 
@@ -279,6 +288,24 @@ namespace social_learning
 
                 }
                 speciesIdx++;
+            }
+        }
+        #endregion
+
+        #region Walls Layouts
+        private void layoutWalls()
+        {
+            int counter = 0;
+            int numWalls = 0;
+            foreach (var plant in Plants)
+            {
+                if(counter%10 == 0 && counter < 10){
+                    float angle = _random.Next(2*Math.PI);
+                    wall.Reset();
+                    wall.X = plant.X;
+                    numWalls++;
+                }
+                counter++;
             }
         }
         #endregion
