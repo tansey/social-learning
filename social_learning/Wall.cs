@@ -10,8 +10,8 @@ namespace social_learning
         private readonly int _id;
         public float X { get; set; }
         public float Y { get; set; }
-        public float size{ get; set; }
-        public float Orientation { get; set; }
+		public float X2 { get; set; }
+		public float Y2 { get; set; }
         public int Id { get { return _id; } }
 
         public Wall(int id)
@@ -19,6 +19,11 @@ namespace social_learning
             _id = id;
         }
 
-        public abstract void Reset();
+        public abstract void Reset(){
+			this.X = 0;
+			this.Y = 0;
+			this.X2 = 0;
+			this.Y2 = 0;
+		}
     }
 }

@@ -13,6 +13,7 @@ namespace social_learning
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
+		private const int wallRadius = 10;
 
         #region Properties
         /// <summary>
@@ -295,17 +296,23 @@ namespace social_learning
         #region Walls Layouts
         private void layoutWalls()
         {
-            int counter = 0;
+            bool createWall = true;
             int numWalls = 0;
             foreach (var plant in Plants)
             {
-                if(counter%10 == 0 && counter < 10){
-                    float angle = _random.Next(2*Math.PI);
-                    wall.Reset();
-                    wall.X = plant.X;
-                    numWalls++;
-                }
-                counter++;
+	            if(createWall && numWalls < 10){
+					Wall wall = new Wall(numWalls);
+	                wall.Reset();
+					// theta1.x = r * Cos(angle) + plant.x;
+					// theta1.y = r * Sin(angle) + plant.y;
+	                wall.X = wallRadius * Math.Cos((90 * Math.PI) / 180) + plant.X;
+					wall.Y = wallRadius * Math.Sin((90 * Math.PI) / 180) + plant.Y;
+					wall.X2 = wallRadius * Math.Cos((150 * Math.PI) / 180) + plant.X;
+					wall.Y2 = wallRadius * Math.Sin((150 * Math.PI) / 180) + plant.Y;
+					Walls.add(wall);
+	                numWalls++;
+	            }
+	            createWall = !createWall;
             }
         }
         #endregion
