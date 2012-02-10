@@ -128,6 +128,14 @@ namespace VisualizeWorld
                 brush.Dispose();
             }
 
+			// Draw the walls
+			foreach (var wall in world.Walls)
+			{
+				Pen myPen = new Pen(Color.Black, 5);
+
+		    	g.DrawLine(myPen, wall.X, wall.Y, wall.X2, wall.Y2);
+			}
+
             // Draw the _agents
             int i = -1;
             foreach (var agent in agents)
