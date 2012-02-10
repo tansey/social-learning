@@ -19,7 +19,7 @@ namespace social_learning
             _id = id;
         }
 
-        public abstract void Reset(){
+        public void Reset(){
 			this.X = 0;
 			this.Y = 0;
 			this.X2 = 0;

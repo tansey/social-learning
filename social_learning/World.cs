@@ -108,8 +108,8 @@ namespace social_learning
             foreach (var s in species)
                 for (int i = 0; i < s.Count; i++)
                     Plants.Add(new Plant(s));
-            for (int n = 0; n < 10; n++)
-                Walls.Add(new Wall());
+            for (int n = 0; n < 50; n++)
+                Walls.Add(new Wall(n));
         }
 
         /// <summary>
@@ -300,16 +300,17 @@ namespace social_learning
             int numWalls = 0;
             foreach (var plant in Plants)
             {
-	            if(createWall && numWalls < 10){
-					Wall wall = new Wall(numWalls);
+	            if(createWall && numWalls < 50){
+					Wall wall = Walls[numWalls];
 	                wall.Reset();
 					// theta1.x = r * Cos(angle) + plant.x;
 					// theta1.y = r * Sin(angle) + plant.y;
-	                wall.X = wallRadius * Math.Cos((90 * Math.PI) / 180) + plant.X;
-					wall.Y = wallRadius * Math.Sin((90 * Math.PI) / 180) + plant.Y;
-					wall.X2 = wallRadius * Math.Cos((150 * Math.PI) / 180) + plant.X;
-					wall.Y2 = wallRadius * Math.Sin((150 * Math.PI) / 180) + plant.Y;
-					Walls.add(wall);
+                    double theta = 0.0;
+                    double theta2 = theta + 90;
+                    wall.X = (float)(wallRadius * Math.Cos(theta) + plant.X);
+                    wall.Y = (float)(wallRadius * Math.Sin(theta) + plant.Y);
+                    wall.X2 = (float)(wallRadius * Math.Cos(theta2) + plant.X);
+                    wall.Y2 = (float)(wallRadius * Math.Sin(theta2) + plant.Y);
 	                numWalls++;
 	            }
 	            createWall = !createWall;
