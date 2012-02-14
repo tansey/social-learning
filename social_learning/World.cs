@@ -137,6 +137,13 @@ namespace social_learning
                 if (agent.Y < 0)
                     agent.Y += Height;
 
+		foreach( var wall in Walls){
+			if(wall.checkCollision(agent.X,agent.Y){
+				agent.X -= agent.Velocity * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
+            			agent.Y -= agent.Velocity * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
+			}
+		}
+
             }
 
             // Make a separate pass over all the agents, now that they're in new locations
@@ -307,8 +314,8 @@ namespace social_learning
 					// theta1.y = r * Sin(angle) + plant.y;
                     double theta = 0.0;
                     double theta2 = theta + 90;
-                    wall.X = (float)(wallRadius * Math.Cos(theta) + plant.X);
-                    wall.Y = (float)(wallRadius * Math.Sin(theta) + plant.Y);
+                    wall.X1 = (float)(wallRadius * Math.Cos(theta) + plant.X);
+                    wall.Y1 = (float)(wallRadius * Math.Sin(theta) + plant.Y);
                     wall.X2 = (float)(wallRadius * Math.Cos(theta2) + plant.X);
                     wall.Y2 = (float)(wallRadius * Math.Sin(theta2) + plant.Y);
 	                numWalls++;
