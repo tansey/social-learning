@@ -133,7 +133,7 @@ namespace VisualizeWorld
 			{
 				Pen myPen = new Pen(Color.Black, 5);
 
-		    	g.DrawLine(myPen, (int)wall.X, (int)wall.Y, (int)wall.X2, (int)wall.Y2);
+		    	g.DrawLine(myPen, (int)wall.X1, (int)wall.Y1, (int)wall.X2, (int)wall.Y2);
 			}
 
             // Draw the _agents

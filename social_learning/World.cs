@@ -106,7 +106,8 @@ namespace social_learning
             Plants = new List<Plant>();
             Walls = new List<Wall>();
             foreach (var s in species)
-                for (int i = 0; i < s.Count; i++)
+                //for (int i = 0; i < s.Count; i++)
+                for (int i = 0; i < 1; i++)
                     Plants.Add(new Plant(s));
             for (int n = 0; n < 50; n++)
                 Walls.Add(new Wall(n));
@@ -127,6 +128,8 @@ namespace social_learning
             {
                 var sensors = calculateSensors(agent);
 
+                float prevX = agent.X;
+                float prevY = agent.Y;
                 agent.Step(sensors);
                 if (agent.X >= Width)
                     agent.X -= Width;
@@ -137,11 +140,13 @@ namespace social_learning
                 if (agent.Y < 0)
                     agent.Y += Height;
 
-		foreach( var wall in Walls){
-			if(wall.checkCollision(agent.X,agent.Y){
-				agent.X -= agent.Velocity * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
-            			agent.Y -= agent.Velocity * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
-			}
+		        foreach(var wall in Walls){
+			        if(wall.checkCollision(agent)){
+                        agent.X = prevX;
+                        agent.Y = prevY;
+                        //agent.X -= agent.Velocity * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
+            	        //agent.Y -= agent.Velocity * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
+			        }
 		}
 
             }
