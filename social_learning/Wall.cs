@@ -31,7 +31,7 @@ namespace social_learning
 	}
 
     /**
-     * Parameter: x,y coordinate of an agent. v is velocity of an agent.
+     * Check whether an agent collided with a wall.
      **/
 	public bool checkCollision(IAgent agent){
 		getFormula();
@@ -45,13 +45,9 @@ namespace social_learning
         float vY = V * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
 
         //region check
-        if ((X > X1 + vX && X > X2 + vX) || (X < X1 - vX && X < X2 - vX)
-            || (Y > Y1 + vY && Y > Y2 + vY) || (Y < Y1 - vY && Y < Y2 - vY))
-        {
-            return false;
-            
-        }
-    
+        if(!checkRegion(X,Y,vX,vY))
+    		return false;
+
         float collisionNum = (Y - (this.slope * X + this.b));
         float prevCollisionNum = ((Y-vY) - (this.slope * (X-vX) + this.b));
 
@@ -71,6 +67,22 @@ namespace social_learning
 			this.Y1 = 0;
 			this.X2 = 0;
 			this.Y2 = 0;
+			this.slope = 0;
+			this.b = 0;
 		}
     }
+
+    /**
+     * Check whether given X and Y is in the region of a wall
+	 * Parameter: X, Y, velocities of an agent
+     **/
+	public bool checkRegion(float X, float Y, float vX, float vY){
+		if ((X > X1 + vX && X > X2 + vX) || (X < X1 - vX && X < X2 - vX)
+            || (Y > Y1 + vY && Y > Y2 + vY) || (Y < Y1 - vY && Y < Y2 - vY))
+        {
+            return false;
+            
+        }
+		return true;
+	}
 }
