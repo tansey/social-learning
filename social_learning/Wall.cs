@@ -70,19 +70,20 @@ namespace social_learning
 			this.slope = 0;
 			this.b = 0;
 		}
-    }
 
-    /**
-     * Check whether given X and Y is in the region of a wall
-	 * Parameter: X, Y, velocities of an agent
-     **/
-	public bool checkRegion(float X, float Y, float vX, float vY){
-		if ((X > X1 + vX && X > X2 + vX) || (X < X1 - vX && X < X2 - vX)
-            || (Y > Y1 + vY && Y > Y2 + vY) || (Y < Y1 - vY && Y < Y2 - vY))
+        /**
+         * Check whether given X and Y is in the region of a wall
+         * Parameter: X, Y, velocities of an agent
+         **/
+        public bool checkRegion(float X, float Y, float vX, float vY)
         {
-            return false;
-            
+            if ((X > X1 + vX && X > X2 + vX) || (X < X1 - vX && X < X2 - vX)
+                || (Y > Y1 + vY && Y > Y2 + vY) || (Y < Y1 - vY && Y < Y2 - vY))
+            {
+                return false;
+
+            }
+            return true;
         }
-		return true;
-	}
+    }
 }

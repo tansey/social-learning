@@ -10,7 +10,7 @@ namespace social_learning
     {
         private Random _random = new Random();
         public const int SENSORS_PER_PLANT_TYPE = 8;
-        public const int SENSORS_PER_WALL_TYPE = 8;
+        public const int SENSORS_PER_WALL = 8;
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
@@ -335,7 +335,7 @@ namespace social_learning
         public double[] calculateSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
-            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1];
+            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + SENSORS_PER_WALL ];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
@@ -365,27 +365,18 @@ namespace social_learning
                 sensors[sIdx] += 1.0 - dist / AgentHorizon;
             }
 
-            return sensors;
-        }
+            foreach (var wall in Walls)
+            {
+                //get shortest point of a wall to the agent
+                float shortestX = 0;
+                float shortestY = 0;
+                getShortestDistance(agent, wall, ref shortestX, ref shortestY);
 
-		public double[] calculateWallSensors(IAgent agent)
-		{
-			//might need to delete this line and pass in the sensors.
-			double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_WALL_TYPE) + 1];
-			sensors[0] = agent.Velocity / agent.MaxVelocity;
-			
-			foreach(var wall in Walls)
-			{
-				//get shortest point of a wall to the agent
-				float shortestX = 0;
-				float shortestY = 0;
-				getShortestDistance(agent, wall, ref shortestX, ref shortestY);
-				
-				int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, shortestX, shorestY);
-		        int dist = distanceAndOrientation[0];
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)shortestX, (int)shortestY);
+                int dist = distanceAndOrientation[0];
                 int pos = distanceAndOrientation[1];
-				
-				// If it's too far away for the agent to see
+
+                // If it's too far away for the agent to see
                 if (dist > AgentHorizon)
                     continue;
 
@@ -395,12 +386,14 @@ namespace social_learning
                 if (sIdx == -1)
                     continue;
 
-                // Add the signal strength for this plant to the sensor
-                sensors[sIdx] += 1.0 - dist / AgentHorizon;
+                // Add the signal strength for this wall to the sensor
+                int indexShift = PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1;
+                sensors[sIdx+indexShift] += 1.0 - dist / AgentHorizon;
             }
 
+
             return sensors;
-		}
+        }
 
         private int getSensorIndex(IAgent agent, Plant plant, int pos)
         {
@@ -422,7 +415,7 @@ namespace social_learning
 
 		private int getWallSensorIndex(IAgent agent, Wall wall, int pos)
         {
-            double sensorWidth = 180.0 / (double)SENSORS_PER_WALL_TYPE;
+            double sensorWidth = 180.0 / (double)SENSORS_PER_WALL;
             double dtheta = pos - agent.Orientation;
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
@@ -435,7 +428,7 @@ namespace social_learning
             int idx = 1;
             for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
                 if (degrees > dtheta)
-                    return idx + wall.Id * SENSORS_PER_WALL_TYPE;
+                    return idx + wall.Id * SENSORS_PER_WALL;
             return -1;
         }
 
@@ -444,9 +437,9 @@ namespace social_learning
 			wall.getFormula();
 			shortestX = (wall.slope * agent.Y + agent.X - wall.slope * wall.b)/(wall.slope*wall.slope + 1);
 			shortestY = wall.slope * shortestX + wall.b;
-			if(!wall.checkRegion(shortestX, shortestY, 0.0, 0.0)){
-				int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, wall.X1, wall.Y1);	
-				int[] distanceAndOrientation2 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, wall.X2, wall.Y2);
+			if(!wall.checkRegion(shortestX, shortestY, 0, 0)){
+				int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X1, (int)wall.Y1);	
+				int[] distanceAndOrientation2 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X2, (int)wall.Y2);
 				int distanceXY1 = distanceAndOrientation[0];
 				int distanceXY2 = distanceAndOrientation2[0];
 				if(distanceXY1 > distanceXY2){
