@@ -14,7 +14,9 @@ namespace social_learning
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
-		private const int wallRadius = 10;
+		private const int wallRadius = 100;
+        private const int MAX_NUM_WALLS = 50;
+        private const bool isFlippingWalls = true;
 
         #region Properties
         /// <summary>
@@ -108,9 +110,9 @@ namespace social_learning
             Walls = new List<Wall>();
             foreach (var s in species)
                 //for (int i = 0; i < s.Count; i++)
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < 5; i++)
                     Plants.Add(new Plant(s));
-            for (int n = 0; n < 50; n++)
+            for (int n = 0; n < MAX_NUM_WALLS; n++)
                 Walls.Add(new Wall(n));
         }
 
@@ -313,7 +315,7 @@ namespace social_learning
             int numWalls = 0;
             foreach (var plant in Plants)
             {
-	            if(createWall && numWalls < 50){
+	            if(createWall && numWalls < MAX_NUM_WALLS){
 					Wall wall = Walls[numWalls];
 	                wall.Reset();
 					// theta1.x = r * Cos(angle) + plant.x;
@@ -326,7 +328,8 @@ namespace social_learning
                     wall.Y2 = (float)(wallRadius * Math.Sin(theta2) + plant.Y);
 	                numWalls++;
 	            }
-	            createWall = !createWall;
+                if(isFlippingWalls)
+	                createWall = !createWall;
             }
         }
         #endregion
@@ -387,8 +390,7 @@ namespace social_learning
                     continue;
 
                 // Add the signal strength for this wall to the sensor
-                int indexShift = PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1;
-                sensors[sIdx+indexShift] += 1.0 - dist / AgentHorizon;
+                sensors[sIdx] += 1.0 - dist / AgentHorizon;
             }
 
 
@@ -425,10 +427,10 @@ namespace social_learning
                 return -1;
 
 			//might need to change index to start from end of the index of plant sensors
-            int idx = 1;
+            int idx = PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1;
             for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
                 if (degrees > dtheta)
-                    return idx + wall.Id * SENSORS_PER_WALL;
+                    return idx;
             return -1;
         }
 

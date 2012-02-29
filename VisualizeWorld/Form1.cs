@@ -76,6 +76,7 @@ namespace VisualizeWorld
                 this.Invalidate();
             else
             {
+                //!!!!!Slow down
                 Thread.Sleep(10);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
@@ -94,6 +95,7 @@ namespace VisualizeWorld
             float scaleX = this.ClientRectangle.Width / (float)world.Width;
             float scaleY = this.ClientRectangle.Height / (float)world.Height;
 
+            //!!!!!agent number
             var agents = world.Agents.Take(15);
 
             // Draw the plants
@@ -133,7 +135,7 @@ namespace VisualizeWorld
 			{
 				Pen myPen = new Pen(Color.Black, 5);
 
-		    	g.DrawLine(myPen, (int)wall.X1, (int)wall.Y1, (int)wall.X2, (int)wall.Y2);
+		    	g.DrawLine(myPen, (float)wall.X1, (float)wall.Y1, (float)wall.X2, (float)wall.Y2);
 			}
 
             // Draw the _agents
@@ -162,6 +164,7 @@ namespace VisualizeWorld
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                             DefaultFont, Brushes.Black, 0, 30);
             g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
+
 
             // Draw the network inputs and outputs for the Q-Learning agent
             if (_debugOutputs)

@@ -8,7 +8,7 @@ namespace social_learning
 {
     public class SocialAgent : NeuralAgent
     {
-        public static int DEFAULT_MEMORY_SIZE = 1;
+        public static int DEFAULT_MEMORY_SIZE = 3;
         private const double DEFAULT_LEARNING_RATE = 0.1;
         private const double DEFAULT_MOMENTUM_RATE = 0.9;
 
