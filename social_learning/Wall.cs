@@ -49,10 +49,10 @@ namespace social_learning
     		return false;
 
         float collisionNum = (Y - (this.slope * X + this.b));
-        float prevCollisionNum = ((Y-vY) - (this.slope * (X-vX) + this.b));
+        float nextCollisionNum = ((Y+vY) - (this.slope * (X+vX) + this.b));
 
         //checking jumping over the wall 
-        if ((collisionNum <= 0 && prevCollisionNum >= 0) || (collisionNum >= 0 && prevCollisionNum <= 0))
+        if ((collisionNum <= 0 && nextCollisionNum >= 0) || (collisionNum >= 0 && nextCollisionNum <= 0))
         {
             return true;
         }

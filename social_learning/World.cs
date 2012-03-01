@@ -400,9 +400,7 @@ namespace social_learning
         private int getSensorIndex(IAgent agent, Plant plant, int pos)
         {
             double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
-            double dtheta = pos - agent.Orientation;
-            if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
-                dtheta = pos - (agent.Orientation + 360);
+            double dtheta =  getDtheta(agent, pos);
 
             // If the plant's behind us
             if(dtheta < -90 || dtheta > 90)
@@ -418,15 +416,13 @@ namespace social_learning
 		private int getWallSensorIndex(IAgent agent, Wall wall, int pos)
         {
             double sensorWidth = 180.0 / (double)SENSORS_PER_WALL;
-            double dtheta = pos - agent.Orientation;
-            if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
-                dtheta = pos - (agent.Orientation + 360);
+            double dtheta = getDtheta(agent, pos);
 
-            // If the plant's behind us
+            // If the wall is behind us
             if(dtheta < -90 || dtheta > 90)
                 return -1;
 
-			//might need to change index to start from end of the index of plant sensors
+			//Changing index to start from end of the index of plant sensors
             int idx = PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1;
             for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
                 if (degrees > dtheta)
@@ -434,16 +430,31 @@ namespace social_learning
             return -1;
         }
 
+		private double getDtheta(IAgent agent, int pos){
+			double dtheta = pos - agent.Orientation;
+            if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
+                dtheta = pos - (agent.Orientation + 360);
+			return dtheta;
+		}
+
 		private void getShortestDistance(IAgent agent, Wall wall, ref float shortestX, ref float shortestY)
 		{
+			//calculate slope and b
 			wall.getFormula();
+			int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X1, (int)wall.Y1);	
+			int[] distanceAndOrientation2 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X2, (int)wall.Y2);
+			int distanceXY1 = distanceAndOrientation[0];
+			int distanceXY2 = distanceAndOrientation2[0];
+			//int posXY1 = distanceAndOrientation[1];
+			//int posXY2 = distanceAndOrientation2[1];
+
+			//If agent is looking at the direction of the point of XY1
 			shortestX = (wall.slope * agent.Y + agent.X - wall.slope * wall.b)/(wall.slope*wall.slope + 1);
 			shortestY = wall.slope * shortestX + wall.b;
+
+			//If agent is not in the region of the wall, estimate the point to the either endpoint of the wall. 
 			if(!wall.checkRegion(shortestX, shortestY, 0, 0)){
-				int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X1, (int)wall.Y1);	
-				int[] distanceAndOrientation2 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X2, (int)wall.Y2);
-				int distanceXY1 = distanceAndOrientation[0];
-				int distanceXY2 = distanceAndOrientation2[0];
+
 				if(distanceXY1 > distanceXY2){
 					shortestX = wall.X1;
 					shortestY = wall.Y1;
@@ -453,6 +464,17 @@ namespace social_learning
 					shortestY = wall.Y2;
 				}
 			}
+
+			int[] distanceAndOrientation3 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)shortestX, (int)shortestY);
+			int posXYShortest = distanceAndOrientation3[1];
+			double dthetaXY1 = getDtheta(agent, posXYShortest);
+			
+			//shortest point is behind the vision
+			if(dthetaXYShortest < -90 || dthetaXYShortest > 90){
+				//calculate new shortest distance in agent's vision somehow
+				//maybe pi * r(circumference) + 2 * r = mx + b? 						
+			}
+
 		}
 
         #endregion
