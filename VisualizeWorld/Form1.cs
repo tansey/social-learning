@@ -77,7 +77,7 @@ namespace VisualizeWorld
             else
             {
                 //!!!!!Slow down
-                Thread.Sleep(10);
+                Thread.Sleep(20);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -96,7 +96,7 @@ namespace VisualizeWorld
             float scaleY = this.ClientRectangle.Height / (float)world.Height;
 
             //!!!!!agent number
-            var agents = world.Agents.Take(15);
+            var agents = world.Agents.Take(5);
 
             // Draw the plants
             foreach (var plant in world.Plants)
@@ -212,6 +212,15 @@ namespace VisualizeWorld
             }
         }
 
+        private void pause_Click(object sender, EventArgs e)
+        {
+            if (btnPause.Text == "Pause")
+            {
+                pauseEvolution();
+                return;
+            }
+        }
+
         private void startQLearning()
         {
             SocialExperiment.CreateNetwork(QLEARNING_FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
@@ -285,6 +294,12 @@ namespace VisualizeWorld
                 qLearningThread.Abort();
             btnEvolve.Text = "Evolve!";
             running = false;
+        }
+
+        // TODO
+        private void pauseEvolution()
+        {
+            
         }
 
         #region Change the plant layout strategy

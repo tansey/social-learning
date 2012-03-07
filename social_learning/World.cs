@@ -132,9 +132,25 @@ namespace social_learning
                 var sensors = calculateSensors(agent);
 				//calculateWallSensors(agent);
 
-                float prevX = agent.X;
-                float prevY = agent.Y;
+                bool collide = false;
+                foreach (var wall in Walls)
+                {
+                    if (wall.checkCollision(agent))
+                    {
+                        collide = true;
+                    }
+                }
+
+                if(collide){
+                    agent.X = agent.prevX;
+                    agent.Y = agent.prevY;
+                }
+
+                agent.prevX = agent.X;
+                agent.prevY = agent.Y;
+
                 agent.Step(sensors);
+                
                 if (agent.X >= Width)
                     agent.X -= Width;
                 if (agent.Y > Height)
@@ -144,14 +160,7 @@ namespace social_learning
                 if (agent.Y < 0)
                     agent.Y += Height;
 
-		        foreach(var wall in Walls){
-			        if(wall.checkCollision(agent)){
-                        agent.X = prevX;
-                        agent.Y = prevY;
-                        //agent.X -= agent.Velocity * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
-            	        //agent.Y -= agent.Velocity * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
-			        }
-		}
+		 
 
             }
 
@@ -467,7 +476,7 @@ namespace social_learning
 
 			int[] distanceAndOrientation3 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)shortestX, (int)shortestY);
 			int posXYShortest = distanceAndOrientation3[1];
-			double dthetaXY1 = getDtheta(agent, posXYShortest);
+			double dthetaXYShortest = getDtheta(agent, posXYShortest);
 			
 			//shortest point is behind the vision
 			if(dthetaXYShortest < -90 || dthetaXYShortest > 90){

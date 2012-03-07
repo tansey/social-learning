@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.btnEvolve = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadPopulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -63,6 +64,18 @@
             this.btnEvolve.Text = "Evolve!";
             this.btnEvolve.UseVisualStyleBackColor = false;
             this.btnEvolve.Click += new System.EventHandler(this.evolve_Click);
+            // 
+            // btnPause
+            // 
+            this.btnPause.BackColor = System.Drawing.Color.SkyBlue;
+            this.btnPause.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPause.Location = new System.Drawing.Point(377, 86);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(95, 48);
+            this.btnPause.TabIndex = 1;
+            this.btnPause.Text = "Pause";
+            this.btnPause.UseVisualStyleBackColor = false;
+            this.btnPause.Click += new System.EventHandler(this.pause_Click);
             // 
             // menuStrip1
             // 
@@ -237,6 +250,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(484, 462);
             this.Controls.Add(this.btnEvolve);
+            this.Controls.Add(this.btnPause);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -252,6 +266,7 @@
         #endregion
 
         private System.Windows.Forms.Button btnEvolve;
+        private System.Windows.Forms.Button btnPause;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadPopulationToolStripMenuItem;

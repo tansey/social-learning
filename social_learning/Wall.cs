@@ -38,15 +38,11 @@ namespace social_learning
         
         float X = agent.X;
         float Y = agent.Y;
-        float V = agent.Velocity;
+        float V = agent.MaxVelocity;
         
         //velocities of x and y
         float vX = V * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
         float vY = V * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
-
-        //region check
-        if(!checkRegion(X,Y,vX,vY))
-    		return false;
 
         float collisionNum = (Y - (this.slope * X + this.b));
         float nextCollisionNum = ((Y+vY) - (this.slope * (X+vX) + this.b));
@@ -57,6 +53,10 @@ namespace social_learning
             return true;
         }
 
+        //region check
+        if (!checkRegion(X, Y, vX, vY))
+            return false;
+        
         return false;
         //return (Y - (this.slope*X + this.b)) == 0;
 
