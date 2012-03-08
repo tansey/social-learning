@@ -44,18 +44,20 @@ namespace social_learning
         float vX = V * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
         float vY = V * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
 
+
         float collisionNum = (Y - (this.slope * X + this.b));
         float nextCollisionNum = ((Y+vY) - (this.slope * (X+vX) + this.b));
 
-        //checking jumping over the wall 
-        if ((collisionNum <= 0 && nextCollisionNum >= 0) || (collisionNum >= 0 && nextCollisionNum <= 0))
-        {
-            return true;
-        }
-
+ 
         //region check
-        if (!checkRegion(X, Y, vX, vY))
-            return false;
+	if (checkRegion(X, Y, vX, vY)){
+       		//checking jumping over the wall 
+        	if ((collisionNum <= 0 && nextCollisionNum >= 0) || (collisionNum >= 0 && nextCollisionNum <= 0))
+        	{
+            		return true;
+        	}
+	}
+
         
         return false;
         //return (Y - (this.slope*X + this.b)) == 0;
