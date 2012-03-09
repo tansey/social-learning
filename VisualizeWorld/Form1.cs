@@ -77,7 +77,7 @@ namespace VisualizeWorld
             else
             {
                 //!!!!!Slow down
-                Thread.Sleep(20);
+                Thread.Sleep(100);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -96,7 +96,7 @@ namespace VisualizeWorld
             float scaleY = this.ClientRectangle.Height / (float)world.Height;
 
             //!!!!!agent number
-            var agents = world.Agents.Take(5);
+            var agents = world.Agents.Take(1);
 
             // Draw the plants
             foreach (var plant in world.Plants)
@@ -161,7 +161,9 @@ namespace VisualizeWorld
 
             // Draw the fitness scores
             g.FillRectangle(Brushes.White, 0, 30, 150, 50);
-            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
+            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)), 
+                                            DefaultFont, Brushes.Black, 0, 30);
+            g.DrawString(string.Format("\r\nX: {0} Y: {1} prevX: {2} prevY: {3} collide: {4}", world.Agents.First().X, world.Agents.First().Y, world.Agents.First().prevX, world.Agents.First().prevY, world.collide),
                                             DefaultFont, Brushes.Black, 0, 30);
             g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 

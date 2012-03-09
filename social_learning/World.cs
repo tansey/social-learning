@@ -17,7 +17,7 @@ namespace social_learning
 		private const int wallRadius = 100;
         private const int MAX_NUM_WALLS = 50;
         private const bool isFlippingWalls = true;
-
+        public bool collide = false;
         #region Properties
         /// <summary>
         /// The cached lookup table that helps speed up the sensor calculations.
@@ -132,7 +132,7 @@ namespace social_learning
                 var sensors = calculateSensors(agent);
 				//calculateWallSensors(agent);
 
-                bool collide = false;
+                collide = false;
                 foreach (var wall in Walls)
                 {
                     if (wall.checkCollision(agent))
@@ -215,6 +215,8 @@ namespace social_learning
             {
                 agent.X = Width / 2;
                 agent.Y = Height / 2;
+                agent.prevX = Width / 2;
+                agent.prevY = Height / 2;
                 agent.Orientation = 0;
                 agent.Fitness = 0;
             }

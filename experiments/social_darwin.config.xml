@@ -23,7 +23,7 @@
  
     Fitness is the sum of the scores of the plants an individual ate.
   </Description>
-  <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
+  <TimeStepsPerGeneration>100</TimeStepsPerGeneration>
   <PlantSpecies>
     <Plant>
       <Name>Poison_1</Name>
