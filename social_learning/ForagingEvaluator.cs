@@ -28,11 +28,12 @@ namespace social_learning
         private List<int> _rewards;
         private double _rewardThreshold;
         private int[] _agentGroups;
-
+		private bool _learningEnabled = true;
+		
         public AgentTypes AgentType { get; set; }
         public int TrialId { get; set; }
         public string DiversityFile { get; set; }
-
+		
         /// <summary>
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
         /// The number of parallel threads defaults to Environment.ProcessorCount.
@@ -122,6 +123,7 @@ namespace social_learning
         public int MaxMemorySize { get; set; }
         public TeachingParadigm TeachParadigm { get; set; }
         public int UpdatesThisGeneration { get; set; }
+	    
 
 
         /// <summary>
@@ -159,30 +161,8 @@ namespace social_learning
                     Console.WriteLine("Couldn't decode genome {0}!", i);
                     _agents[i] = new SpinningAgent(i);
                 }
-                else
-                    switch (AgentType)
-                    {
-                        case AgentTypes.Neural:
-                            _agents[i] = new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
-                            break;
-                        case AgentTypes.Social:
-                            _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome)
-                            {
-                                MemorySize = CurrentMemorySize
-                            };
-                            var network = (FastCyclicNetwork)phenome;
-                            network.Momentum = ((SocialAgent)_agents[i]).Momentum;
-                            network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
-                            break;
-                        case AgentTypes.QLearning:
-                            _agents[i] = new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, 8, 4, _world);
-                            break;
-                        case AgentTypes.Spinning:
-                            _agents[i] = new SpinningAgent(i);
-                            break;
-                        default:
-                            break;
-                    }
+                else	
+					_agents[i] = getAgent(i, phenome);
             }
 
             #region Create random groups of proportional size
@@ -208,29 +188,9 @@ namespace social_learning
 			if(_agentGroups.GroupBy(g => g).Count() < 10)
 				throw new Exception("Improper initialization");
             #endregion
-
-            // Analyze diversity before
-            if (_generations > 0)
-            {
-                learningEnabled = false;
-                DiversityAnalyzer analyser = new DiversityAnalyzer(_world);
-                double[][] readings = analyser.getSensorReadings();
-                using (TextWriter writer = new StreamWriter(DiversityFile.Replace(".csv", "_before.csv"), true))
-                {
-                    List<double> orientationVariances = new List<double>();
-                    List<double> velocityVariances = new List<double>();
-                    foreach (double[] reading in readings)
-                    {
-                        var variances = analyser.getResponseVariance(reading);
-                        orientationVariances.Add(variances[0]);
-                        velocityVariances.Add(variances[1]);
-                    }
-                    writer.WriteLine("{0},{1},{2}", _generations, orientationVariances.Average(), velocityVariances.Average());
-                }
-                _world.Reset();
-                learningEnabled = true;
-            }
-
+			Boolean before = true;
+            writeDiversityStats(before);
+            
             if (TeachParadigm == TeachingParadigm.GenerationalChampionOfflineTraining)
                 trainPopulationUsingGenerationalChampion();
 
@@ -253,32 +213,9 @@ namespace social_learning
                 // This alternate fitness is purely for logging purposes, so we use the actual fitness
                 _genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
-
+			before = false;
             // Analyze diversity after
-            if (_generations > 0)
-            {
-                learningEnabled = false;
-                DiversityAnalyzer analyser = new DiversityAnalyzer(_world);
-                double[][] readings = analyser.getSensorReadings();
-                using (TextWriter writer = new StreamWriter(DiversityFile.Replace(".csv", "_after.csv"), true))
-                {
-                    List<double> orientationVariances = new List<double>();
-                    List<double> velocityVariances = new List<double>();
-                    foreach (double[] reading in readings)
-                    {
-                        var variances = analyser.getResponseVariance(reading);
-                        orientationVariances.Add(variances[0]);
-                        velocityVariances.Add(variances[1]);
-                    }
-                    writer.WriteLine("{0},{1},{2}", _generations, orientationVariances.Average(), velocityVariances.Average());
-                }
-                _world.Reset();
-                learningEnabled = true;
-            }
-
-            _evaluationCount += (ulong)_agents.Length;
-            _generations++;
-            _world.Reset();
+            writeDiversityStats(before);
 
             // Lamarkian Evolution
             if (EvoParadigm == EvolutionParadigm.Lamarkian)
@@ -309,13 +246,11 @@ namespace social_learning
 
         void trainPopulationUsingGenerationalChampion()
         {
-            if (TeachParadigm != TeachingParadigm.GenerationalChampionOfflineTraining)
-                return;
 
             if (_generations == 0)
                 return;
-
-            var teacherIdx = getTeacherIndexes();
+			int num_teachers = 1;
+            var teacherIdx = getTeacherIndexes(num_teachers);
             var teachers = new List<IAgent>();
             foreach(var i in teacherIdx)
                 teachers.Add(_agents[i]);
@@ -343,15 +278,38 @@ namespace social_learning
                 TeachAgent(teacher, student, 0.05);
             }
         }
-
-        const int NUM_TEACHERS = 1;
-        List<int> getTeacherIndexes()
+		
+		private Agent getAgent(int i, IBlackBox phenome){
+			Agent a;
+			switch (AgentType)
+                    {
+                        case AgentTypes.Neural:
+                            return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
+                        case AgentTypes.Social:
+                            a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome)
+                            {
+                                MemorySize = CurrentMemorySize
+                            };
+                            var network = (FastCyclicNetwork)phenome;
+                            network.Momentum = ((SocialAgent) a).Momentum;
+                            network.BackpropLearningRate = ((SocialAgent) a).LearningRate;
+                            return a ;
+                        case AgentTypes.QLearning:
+                            return new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, 8, 4, _world);
+                        case AgentTypes.Spinning:
+                            return new SpinningAgent(i);
+                        default:
+                            return null;
+                    }
+		}
+		
+        List<int> getTeacherIndexes(int num_teachers)
         {
             List<int> champIndexes = new List<int>();
-            for (int i = 0; i < NUM_TEACHERS; i++)
+            for (int i = 0; i < num_teachers; i++)
                 champIndexes.Add(i);
 
-            for (int i = NUM_TEACHERS; i < _genomeList.Count; i++)
+            for (int i = num_teachers; i < _genomeList.Count; i++)
                 if (_genomeList[i].EvaluationInfo.Fitness > champIndexes.Max(t => _genomeList[t].EvaluationInfo.Fitness))
                 {
                     champIndexes.Add(i);
@@ -359,18 +317,7 @@ namespace social_learning
                 }
             return champIndexes;
         }
-
-        private int argMin(List<int> champs)
-        {
-            int min = 0;
-            for (int i = 1; i < champs.Count; i++)
-            {
-                if (_genomeList[i].EvaluationInfo.Fitness < _genomeList[min].EvaluationInfo.Fitness)
-                    min = i;
-            }
-            return min;
-        }
-
+		
         private void TeachAgent(IAgent teacher, IAgent student, double gaussianNoiseStdev)
         {
             UpdatesThisGeneration++;
@@ -392,30 +339,11 @@ namespace social_learning
                     network.Train(example.Inputs, outputs);
                 }
         }
-
-        private double gaussianMutation(double mean, double stddev)
-        {
-            double x1 = 1 - _random.NextDouble();
-            double x2 = 1 - _random.NextDouble();
-
-            double y1 = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
-            return y1 * stddev + mean;
-        }
-
-        private double clamp(double val, double min, double max)
-        {
-            if (val >= max)
-                return max;
-            if (val <= min)
-                return min;
-            return val;
-        }
-
-        bool learningEnabled = true;
+		
         // Handle the reward-based teaching paradigms whenever a plant is eaten.
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
         {
-            if (!learningEnabled)
+            if (!_learningEnabled)
                 return;
             // if we're not dealing with a social agent, then skip this notification.
             if (!(eater is SocialAgent))
@@ -486,9 +414,6 @@ namespace social_learning
             if (TeachParadigm != TeachingParadigm.SpeciesChampionOnlineTraining)
                 return;
 
-            //if (_world.CurrentStep > 500)
-            //    return;
-
             var allSpecies = _agents.GroupBy(g => _agentGroups[g.Id]);
             foreach (var species in allSpecies)
             {
@@ -499,6 +424,7 @@ namespace social_learning
                 TeachAgent(best, worst);
             }
             
+			#region eiben
             // Mimic the Eiben paper with probabilistic, distance-based teaching
             //const double MAX_DISTANCE = 100;
             //foreach (var agent in _agents)
@@ -545,8 +471,39 @@ namespace social_learning
             //                TeachAgent(teacher, student);
             //    });
             //}
+			#endregion
         }
-
+		
+		void writeDiversityStats(Boolean before){
+			if (_generations > 0)
+            {
+				TextWriter writer;
+                _learningEnabled = false;
+                DiversityAnalyzer analyser = new DiversityAnalyzer(_world);
+                double[][] readings = analyser.getSensorReadings();
+				if (before)
+					writer = new StreamWriter(DiversityFile.Replace(".csv", "_before.csv"), true);
+				else
+					writer = new StreamWriter(DiversityFile.Replace(".csv", "_after.csv"), true);
+				
+						
+                using (writer)
+                {
+                    List<double> orientationVariances = new List<double>();
+                    List<double> velocityVariances = new List<double>();
+                    foreach (double[] reading in readings)
+                    {
+                        var variances = analyser.getResponseVariance(reading);
+                        orientationVariances.Add(variances[0]);
+                        velocityVariances.Add(variances[1]);
+                    }
+                    writer.WriteLine("{0},{1},{2}", _generations, orientationVariances.Average(), velocityVariances.Average());
+                }
+                _world.Reset();
+                _learningEnabled = true;
+            }
+		}
+		
         private void TeachAgent(IAgent teacher, IAgent student)
         {
             UpdatesThisGeneration++;
@@ -562,6 +519,39 @@ namespace social_learning
                 foreach (var example in memory)
                     network.Train(example.Inputs, example.Outputs);
         }
+		
+		#region mathutils
+		        private double gaussianMutation(double mean, double stddev)
+        {
+            double x1 = 1 - _random.NextDouble();
+            double x2 = 1 - _random.NextDouble();
+
+            double y1 = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+            return y1 * stddev + mean;
+        }
+
+        private double clamp(double val, double min, double max)
+        {
+            if (val >= max)
+                return max;
+            if (val <= min)
+                return min;
+            return val;
+        }
+		
+		     private int argMin(List<int> champs)
+        {
+            int min = 0;
+            for (int i = 1; i < champs.Count; i++)
+            {
+                if (_genomeList[i].EvaluationInfo.Fitness < _genomeList[min].EvaluationInfo.Fitness)
+                    min = i;
+            }
+            return min;
+        }
+
+
+		#endregion
 
     }
 }
