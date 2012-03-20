@@ -1,0 +1,29 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="social_learning/ForagingEvaluator.cs">
+    <Files>
+      <File FileName="social_learning/ForagingEvaluator.cs" Line="186" Column="14" />
+      <File FileName="social_learning/SensorDictionary.cs" Line="42" Column="65" />
+      <File FileName="social_learning/SocialExperiment.cs" Line="138" Column="49" />
+      <File FileName="BatchExperiment/Program.cs" Line="27" Column="56" />
+      <File FileName="experiments/same_species_lamark.config.xml" Line="18" Column="39" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Solution Items" expanded="True" />
+          <Node name="BatchExperiment" expanded="True" />
+          <Node name="QLearningExperiment" expanded="True" />
+          <Node name="social_learning" expanded="True">
+            <Node name="ForagingEvaluator.cs" selected="True" />
+          </Node>
+          <Node name="VisualizeWorld" expanded="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

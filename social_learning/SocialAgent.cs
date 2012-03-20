@@ -32,7 +32,7 @@ namespace social_learning
         /// </summary>
         public double Momentum { get; set; }
 
-        public SocialAgent(int id, IBlackBox brain) : base(id, brain)
+        public SocialAgent(int id, int speciesId, IBlackBox brain) : base(id, speciesId, brain)
         {
             MemorySize = DEFAULT_MEMORY_SIZE;
             Memory = new LinkedList<InputOutputPair>();
@@ -40,7 +40,7 @@ namespace social_learning
             Momentum = DEFAULT_MOMENTUM_RATE;
         }
 
-        protected override ISignalArray activateNetwork(double[] sensors)
+        public override ISignalArray activateNetwork(double[] sensors)
         {
             var results = base.activateNetwork(sensors);
             double[] outputs = new double[results.Length];

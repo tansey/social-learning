@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Config>
+  <PopulationSize>100</PopulationSize>
+  <SpecieCount>10</SpecieCount>
+  <Activation>
+    <Scheme>CyclicFixedIters</Scheme>
+    <Iters>4</Iters>
+  </Activation>
+  <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
+  <ComplexityThreshold>50</ComplexityThreshold>
+  <AgentType>Social</AgentType>
+  <Memory>
+    <Paradigm>Fixed</Paradigm>
+    <GrowthGenerations>20</GrowthGenerations>
+    <Size>1</Size>
+    <MaxSize>10</MaxSize>
+  </Memory>
+  <TeachingParadigm>SameSpeciesRewards</TeachingParadigm>
+  <PlantLayout>Uniform</PlantLayout>
+  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <Description>
+    Foraging Evolution
+ 
+    Fitness is the sum of the scores of the plants an individual ate.
+  </Description>
+  <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
+  <PlantSpecies>
+    <Plant>
+      <Name>Nutritious_1</Name>
+      <Radius>5</Radius>
+      <Reward>100</Reward>
+      <Count>100</Count>
+    </Plant>
+  </PlantSpecies>
+  <WorldWidth>2000</WorldWidth>
+  <WorldHeight>2000</WorldHeight>
+  <AgentHorizon>100</AgentHorizon>
+</Config>

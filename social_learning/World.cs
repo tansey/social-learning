@@ -67,13 +67,13 @@ namespace social_learning
 
         #region Events and Delegates
         /// <summary>
-        /// Event called when the stateActionPair of the world is changed.
+        /// Event called when the state of the world is changed.
         /// </summary>
         public event ChangedEventHandler Changed;
         public delegate void ChangedEventHandler(object sender, EventArgs e);
 
         /// <summary>
-        /// Event called when the stateActionPair of the world is advanced one step.
+        /// Event called when the state of the world is advanced one step.
         /// </summary>
         public event StepEventHandler Stepped;
         public delegate void StepEventHandler(object sender, EventArgs e);

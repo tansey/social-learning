@@ -58,8 +58,8 @@ namespace social_learning
         /// <param name="numOrientationActions">The number of buckets to discretize the orientation action spacer into.</param>
         /// <param name="numVelocityActions">The number of buckets to discretize the velocity action spacer into.</param>
         /// <param name="world">The world this agent will be evaluated in.</param>
-        public QLearningAgent(int id, IBlackBox brain, int numOrientationActions, int numVelocityActions, World world)
-            : base(id, brain)
+        public QLearningAgent(int id, int speciesId, IBlackBox brain, int numOrientationActions, int numVelocityActions, World world)
+            : base(id, speciesId, brain)
         {
             Debug.Assert(brain.OutputCount == 1, "Incorrect number of outputs in neural network!");
 
@@ -92,7 +92,7 @@ namespace social_learning
         /// Called at every step in the world. Given the sensor input, returns the change in orientation and velocity
         /// in the range [0,1].
         /// </summary>
-        protected override ISignalArray activateNetwork(double[] sensors)
+        public override ISignalArray activateNetwork(double[] sensors)
         {
             // Update the value function for the previously-chosen actions
             updateValueFunction(sensors);
