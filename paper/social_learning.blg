@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.7)
+The top-level auxiliary file: social_learning.aux
+The style file: abbrv.bst
+Database file #1: sigproc.bib
+I was expecting a `,' or a `}'---line 168 of file sigproc.bib
+ :   
+ :   location={Oxford}
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in gallese-98
+Warning--empty author in gallese-98
+Warning--empty journal in sep2009egalitarianism
+Warning--empty journal in byrne1989machiavellian
+Warning--empty journal in erda1996egalitarianism
+Warning--empty journal in fogel1966artificial
+You've used 29 entries,
+            2118 wiz_defined-function locations,
+            680 strings with 7953 characters,
+and the built_in function-call counts, 9444 in all, are:
+= -- 965
+> -- 354
+< -- 8
++ -- 147
+- -- 112
+* -- 621
+:= -- 1529
+add.period$ -- 90
+call.type$ -- 29
+change.case$ -- 139
+chr.to.int$ -- 0
+cite$ -- 35
+duplicate$ -- 388
+empty$ -- 776
+format.name$ -- 112
+if$ -- 2005
+int.to.chr$ -- 0
+int.to.str$ -- 29
+missing$ -- 33
+newline$ -- 147
+num.names$ -- 56
+pop$ -- 148
+preamble$ -- 1
+purify$ -- 114
+quote$ -- 0
+skip$ -- 285
+stack$ -- 0
+substring$ -- 667
+swap$ -- 89
+text.length$ -- 8
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 108
+warning$ -- 6
+while$ -- 99
+width$ -- 31
+write$ -- 313
+(There was 1 error message)

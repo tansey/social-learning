@@ -1,0 +1,298 @@
+% THIS IS SIGPROC-SP.TEX - VERSION 3.1
+% WORKS WITH V3.2SP OF ACM_PROC_ARTICLE-SP.CLS
+% APRIL 2009
+%
+% It is an example file showing how to use the 'acm_proc_article-sp.cls' V3.2SP
+% LaTeX2e document class file for Conference Proceedings submissions.
+% ----------------------------------------------------------------------------------------------------------------
+% This .tex file (and associated .cls V3.2SP) *DOES NOT* produce:
+%       1) The Permission Statement
+%       2) The Conference (location) Info information
+%       3) The Copyright Line with ACM data
+%       4) Page numbering
+% ---------------------------------------------------------------------------------------------------------------
+% It is an example which *does* use the .bib file (from which the .bbl file
+% is produced).
+% REMEMBER HOWEVER: After having produced the .bbl file,
+% and prior to final submission,
+% you need to 'insert'  your .bbl file into your source .tex file so as to provide
+% ONE 'self-contained' source file.
+%
+% Questions regarding SIGS should be sent to
+% Adrienne Griscti ---> griscti@acm.org
+%
+% Questions/suggestions regarding the guidelines, .tex and .cls files, etc. to
+% Gerald Murray ---> murray@hq.acm.org
+%
+% For tracking purposes - this is V3.1SP - APRIL 2009
+
+\documentclass{acm_proc_article-sp}
+
+\begin{document}
+
+\title{Non-hierarchical Social Learning via Reward-Based Update Filtering}
+%
+% You need the command \numberofauthors to handle the 'placement
+% and alignment' of the authors beneath the title.
+%
+% For aesthetic reasons, we recommend 'three authors at a time'
+% i.e. three 'name/affiliation blocks' be placed beneath the title.
+%
+% NOTE: You are NOT restricted in how many 'rows' of
+% "name/affiliations" may appear. We just ask that you restrict
+% the number of 'columns' to three.
+%
+% Because of the available 'opening page real-estate'
+% we ask you to refrain from putting more than six authors
+% (two rows with three columns) beneath the article title.
+% More than six makes the first-page appear very cluttered indeed.
+%
+% Use the \alignauthor commands to handle the names
+% and affiliations for an 'aesthetic maximum' of six authors.
+% Add names, affiliations, addresses for
+% the seventh etc. author(s) as the argument for the
+% \additionalauthors command.
+% These 'additional authors' will be output/set for you
+% without further effort on your part as the last section in
+% the body of your article BEFORE References or any Appendices.
+
+\numberofauthors{2} %  in this sample file, there are a *total*
+% of EIGHT authors. SIX appear on the 'first-page' (for formatting
+% reasons) and the remaining two appear in the \additionalauthors section.
+%
+\author{
+% You can go ahead and credit any number of authors here,
+% e.g. one 'row of three' or two rows (consisting of one row of three
+% and a second row of one, two or three).
+%
+% The command \alignauthor (no curly braces needed) should
+% precede each author name, affiliation/snail-mail address and
+% e-mail address. Additionally, tag each line of
+% affiliation/address with \affaddr, and tag the
+% e-mail address with \email.
+%
+% 1st. author
+\alignauthor
+Wesley Tansey\\
+       \affaddr{Dept. of Computer Science,\\ The University of Texas at Austin}\\
+       \affaddr{1 University Station C0500, Austin, TX, USA}\\
+       \email{tansey@cs.utexas.edu}
+\alignauthor
+Eli Feasley\\
+       \affaddr{Dept. of Computer Science, \\The University of Texas at Austin}\\
+       \affaddr{1 University Station C0500, Austin, TX, USA}\\
+       \email{elie@cs.utexas.edu}
+}
+\date{12 December 2011}
+% Just remember to make sure that the TOTAL number of authors
+% is the number that will appear on the first page PLUS the
+% number that will appear in the \additionalauthors section.
+
+\maketitle
+\begin{abstract}
+Social learning is an extension to Evolutionary Algorithms that enables individuals to learn from observations of others in the population.
+ Traditionally, social learning algorithms have employed a student-teacher model where the behavior of one group of individuals is used to train the remaining individuals in the population.  
+ We present a non-hierarchical model of social learning in which we do not label each agent, instead allowing any individual which experiences positive reward to teach the rest of the agents on its recent behavior. 
+ We validate our approach in a foraging domain, comparing social learning in both Darwinian and Lamarkian paradigms to a standard Darwinian evolution with no learning. 
+ We show that our non-hierarchical form facilitates rapid discovery of near-optimal solutions.  We further develop a hybrid algorithm that leverages social learning to bootstrap a highly efficient solution to the foraging problem.
+\end{abstract}
+
+% A category with the (minimum) three required fields
+%\category{D.4.6}{Security and Protection}{Authorization}
+%A category including the fourth, optional field follows...
+%\category{K.6.5}{Security and Protection}{Authorization}
+%\category{E.3}{Data Encryption}{Code breaking}
+
+\terms{Social Learning, Evolutionary Algorithms, Artificial Life}
+
+\section{Introduction} 
+One explanation for the evolution of large brains in primates is the social intelligence hypothesis, which states that the selection pressure driving the increase in brain size was the need to handle complex social behaviors. The cultural intelligence hypothesis extends this concept solely to humans, stating that our brains evolved to handle the specific challenge of culture creation and social learning. These hypotheses are currently the most widely accepted explanations for the evolution of the human brain among evolutionary biologists and cognitive scientists \cite{holekamp2007questioning}, and has been supported by strong empirical evidence in recent years \cite{herrmann2007humans}.
+
+Cultural and social learning algorithms \cite{reynolds1994introduction} model this biological mechanism in multi-agent systems by designating teacher agents that propagate knowledge and train other agents in the population. These techniques effectively enhance Evolutionary Algorithms (EAs) with a hierarchical structure (i.e., students and teachers) that facilitates the automatic discovery of suitable actions to use as training examples and target individuals to train. Thus, while cultural algorithms capture the ability of humans to learn from formal instruction, they do not fully model all forms of learning from observation in primates.
+
+We present a non-hierarchical approach to social learning, inspired by mirror neurons \cite{gallese-98}, where agents learn by observing the actions of other individuals. Primate brains contain mirror neurons that activate when other primates are observed, in effect mirroring the observed primate's action internally. Analogously, agents in our algorithm observe the population and, when a positive reward is received, mimic that action in order to learn a policy similar to that of the observed agent. This algorithm separates itself from other social learning algorithms in that the quality of a training example is measured by the reward received rather than the hierarchical role of the agent generating the example.
+
+We validate our algorithm in a well-known foraging domain in which agents must discriminate between poisonous and nutritious food. Through our experiments in this domain, we evaluate our non-hierarchical social learning approach in both a Darwinian and Lamarkian evolutionary paradigm. By using social learning, the individuals in our population were able to achieve near-optimal performance in far fewer generations than agents that did not learn during a lifetime. Our results further indicate that a social Lamarkian bootstrapping phase not only drastically speeds up learning but also increases the maximum fitness of the champion individuals.
+
+This paper makes the following novel contributions:
+ 
+\begin{itemize}
+\item A non-hierarchical approach to social learning, in which individuals are not classified into roles.
+\item A hybrid algorithm that uses social learning as a bootstrapping phase for neuroevolution.
+\item An analysis of the differences in performance between Darwinian and Lamarkian evolution in the presence of social learning.
+\end{itemize}
+ 
+The remainder of the paper is structured as follows.
+In Section \ref{sec:nhsl} we detail the workings of our non-hierarchical social learning algorithm.
+In Section \ref{sec:setup} we describe our experimental setup and the foraging domain.
+Section \ref{sec:results} presents the results of our experiments.
+Related work is discussed in Section \ref{sec:related}. Planned extensions to our work are described in Section \ref{sec:future}. Finally, in Section \ref{sec:conclusions} we present our conclusions.
+
+\section{Non-Hierarchical Social Learning}
+\label{sec:nhsl}
+In this section, we elaborate on our approach and its justification and applications. First, we discuss some of the advantages of non-hierarchical social learning and the domains in which it provides promising functionality.  Next, we describe the algorithm at the core of our model.  Finally, we go into some detail about the particulars of our implementation.
+
+Social learning is valuable in expensive domains; when computing time is limited or individuals have limited experiential training data, leveraging the experiences of multiple individuals is a valuable way to use the information that is available. As video games and real-life applications of intelligent agents become more pervasive, these expensive-to-simulate, easy-to-record domains are becoming more and more common. Every agent can benefit from the experiences of every other without the expense of rerunning the training environment.  
+
+Another important area for social learning is dynamic domains.  In multiagent systems, changing conditions can negatively impact all agents if they cannot learn from one another's experience - but if they can, one agent's experience of a novel stimulus can alert other agents so they can adjust their behavior. If a social learning system is on-line, sharing updates and information about reward at every timestep, adaptation can occur rapidly.
+
+Our approach, detailed in Figure \ref{fig:flowchart} is an on-line learning algorithm that operates continuously as an agent moves in the world.  At every timestep, each agent perceives the state of the world around it, and activates an internal neural network according to that state.  The output of this network represents the agent's motor commands. Both the input and the output of the network are saved and stored in memory. Upon moving, an agent encountering a positive reward will retreive its recent inputs and associated outputs from memory and train other individuals on these input-output pairs using backpropagation.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.6]{flowchart.pdf}
+  \caption{Individuals remember their most recent inputs and the associated actions taken, and when rewarded will train other individuals on their recent actions.}
+  \label{fig:flowchart}
+\end{figure}
+
+
+As a result of using only positive rewards to identify those actions on which we want to train agents, social learning can begin immediately in the first generation of the evolutionary algorithm. In contrast, previous approaches \cite{denaro1996cultural} instead chose strong individuals as teachers to train weaker individuals in appropriate behavior, thereby requiring at least one generation in which to identify strong individuals. Additionally, by allowing any individual to train any other, we leverage a diversity of different behaviors in problem solving.
+
+\subsection*{Evolutionary Framework}
+In this section, we discuss the framework on which we base our social learning and our modifications and extensions to this framework.
+
+NeuroEvolution of Augmented Topologies (NEAT)\cite{stanley2002evolving} is an evolutionary algorithm that generates recurrent neural networks.  Through a process of adding and removing nodes and changing weights, NEAT evolves genomes that unfold into networks.  In every generation, those networks with the highest fitness reproduce, and those that have low fitness are less likely to do so.  NEAT maintains genetic diversity through speciation and encourages innovation through explicit fitness sharing.
+
+In our domain, NEAT is used to generate a population of individual neural networks that control agents in the world.  The input to each network is the agent's sensors, and the outputs control the agent's velocity and orientation.  The fitness of each network is determined by the success of the agent it controls - over the course of a generation, networks controlling agents who eat a good deal of rewarding food and very little poison will have high fitnesses and those which control agents with less wise dietary habits will have low fitness.
+
+In standard NEAT, the networks that are created do not change within one generation, but in non-hierarchical social learning, we do backpropagation\cite{rumelhart1986learning} on the networks that NEAT creates. (Because these networks are recurrent, we use backpropagation through time to do our social learning \cite{werbos1990backpropagation}.)  The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. In Darwinian evolution, the changes that were made to the phenome over the course of a generation are not saved; in Lamarkian, the genome itself is modified.
+
+\section{Experimental Setup}
+\label{sec:setup}
+In this section we first describe the domain in which we test our model, the inputs and outputs that our agents receive, and the common parameters across all our experiments.
+
+\subsection*{The Foraging Domain} 
+    Our domain is a foraging world in which agents move freely on a continuous toroidal surface.  We populate our world with various plants, some of which are considered nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. This foraging domain is non-competitive and non-cooperative - each agent acts independently of all other agents, with the exception of the training signals which pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plants. Every agent then has some time steps to move about the surface of the world eating plants - which happens automatically when an individual draws close - before the generation is over and a new population is evolved. 
+    
+\subsection*{Sensors and Outputs} 
+
+  Agents ``see'' plants within a certian horizon via a collection of sensors - they have eight sensors for each type of plant, each of which detects plants in a different 12.5 degree sector of the 180 degrees ahead of the agent.  Agents cannot see other individuals, or plants they have already eaten- all they can see is edible food.  The strength of the signal generated by each plant is proportional to its proximity to the agent. Agents also have a sensor by which they can detect their current velocity. These sensors constitute the inputs to the neural network, and thusly the individual's state.
+
+
+\subsection*{Common Parameters} 
+For all of our experiments, the world is 500 by 500 units, with five different types of plants with rewards of -100, -50, 0, 50, and 100.  We create twenty instances of each plant type, and randomly distribute them across the world at the start of every generation. We use a population of 100 individuals divided into ten species. An agent automatically eats any plant within five units. Each generation lasts 1000 timesteps, and each experiment was averaged over 30 runs.
+
+\section{Results}
+\label{sec:results}
+We next present the results of our three experiments that validate our non-hierarchical model. We begin by measuring the performance of social learning in both Darwinian and Lamarkian evolutionary paradigms. Following this, we determine whether social learning is effective when updates are performed only among the same species, with the goal of reducing the overall runtime cost of adding social learning. Finally, we leverage insights gained from the first two experiments and use Lamarkian social learning as a bootstrapping phase for Darwinian neuroevolution with no learning.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{darwin_lamark.pdf}
+  \caption{A comparison of the results for our non-hierarchical social learning algorithm in Darwinian and Lamarkian evolutionary paradigms.}
+  \label{fig:darwin-lamark}
+\end{figure}
+
+\subsection*{Darwinian vs. Lamarkian}
+Genetic inheritance paradigms in evolution fall into one of two main categories: Darwinian and Lamarkian. In Darwinian evolution, individual genomes are fixed and any knowledge or abilities gained during their lifetimes are not passed on to their offspring at birth. By contrast, in Lamarkian evolution an individual's genome changes as it learns throughout its life, and these changes are passed on to each of its offspring. In the context of our experiments, this corresponds to whether the changes in each individual's neural network weights are propagated to their genome at the end of the generation.
+
+Figure \ref{fig:darwin-lamark} shows the results of applying our non-hierarchical social learning algorithm to the foraging domain for both the Lamarkian and Darwinian paradigms. These results indicate that Lamarkian evolution is able to quickly reach a near-optimal score but then proceeds to degrade slowly over time. In  \textit{on-line} evolutionary learning algorithms, it has been shown \cite{whiteson2006evolutionary} that Darwinian evolution is preferable to Lamarkian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. As adaptation is not necessary for our agents (i.e., the rewards of each plant type are the same in every generation), it is not exceedingly surprising that Lamarkian evolution initially outperforms Darwinian evolution.
+
+It is, however, suprising that the Lamarkian fitness degrades after generation 10. We believe this is likely due to a ``regression to the mean'' effect where once the population reaches a sufficiently high fitness, more learning is derived from the average individuals and less from the best individual. Thus, rather than the best individual pulling the other individuals' fitness up, the average individuals actually begin to pull the population as a whole down. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{population_species.pdf}
+  \caption{The results of agents learning from observations of the entire population compared to only agents in the same species.}
+  \label{fig:population-species}
+\end{figure}
+
+\subsection*{Population vs. Species Learning}
+While Lamarkian social learning is clearly able to find results quickly, it suffers from two main issues. As discussed above, the population begins to regress towards the mean after reaching its initial peak fitness. Also, while in many environments the simulation time required for running thousands of backprop iterations on each individual may be negligible, to maximize practical utiliy it is important that our algorithm minimizes its overall impact on total runtime. To address these issues, we next consider a cultural variant of our social learning approach in which individuals only learn from observations of other individuals in their own species. In practice, this significantly speeds up the application as it performs an order of magnitude less work for a population of 100 agents divided into 10 species.
+
+Figure \ref{fig:population-species} shows the results comparing population-based and species-based social learning. Interestingly, the species-based social learning not only reaches a higher peak than the population based method, but is also able to sustain its peak level of fitness for longer. Unfortunately, both approaches still suffer from the degradation of fitness characteristic of Lamarkian social evolution.
+
+\begin{figure}
+  \centering
+    \includegraphics[scale=.35]{learning_bootstrapping.pdf}
+  \caption{The results of our hybrid algorithm that uses social Lamarkian evolution to bootstrap the population for five generations, then switches to traditional non-social Darwinian evolution.}
+  \label{fig:learning-bootstrapping}
+\end{figure}
+
+\subsection*{Bootstrapping}
+The ability to find a near-optimal fitness combined with the subsequent degradation of individuals in later generations suggests that social Lamarkian evolution may be best applied only in the initial generations. Figure \ref{fig:learning-bootstrapping} presents the results of a hybrid approach that uses social Lamarkian evolution for the first five generations to bootstrap the population, then transitions to the tradition non-social Darwinian evolution. This hybrid version is able to achieve a slightly (though not statistically significantly) higher fitness than either component method and does not suffer from the degradation present in the pure social Lamarkian setup.
+
+In the next section we present a brief discussion of related work on social learning in EAs.
+
+
+\section{Related Work}
+\label{sec:related}
+
+Enhancing EAs with social and cultural learning is a flourishing area of research with a long and successful track record. We next highlight relevant prior work and explain how our approach differs from previous efforts.
+
+Cultural algorithms \cite{reynolds1994introduction} have been used frequently in Particle Swarm Optimization (PSO) \cite{kennedy1995particle}. These algorithms maintain a ``belief space'' representing different categories of knowledge that the population has learned. New individuals are trained using this belief space in a student-teacher paradigm. In contrast, our agents maintain no separate repository of formal knowledge, but rather they learn from observations of others during their lifetime.
+
+The ability of social learning to improve agents in a foraging domain has been explored by several researchers in recent years. Denaro et. al. \cite{denaro1996cultural} used a student-teacher model of cultural evolution without genetic inheritance and demonstrated that the population will continue to improve if Gaussian noise is added to the training examples. The NEW TIES system \cite{haasdijk2008social, vogt2010modeling} simulates a steady state evolution of decision tree agents where at each step the teacher agents probabilistically transmit their decisions and students probabilistically incorporate this knowledge. Acerbi et. al. \cite{acerbi2007social} use social learning to train embodied agents to mimic the behaviors of more experienced agents. Finally, de Oca et. al. \cite{de2011incremental} propose a methodology for incremental social learning in PSO to update Q-learning \cite{watkins1992q} value functions by randomly selecting two individuals from the population and combining their values for a given update. While all of these works are closely related and motivated by similar biological processes as our approach, they fundamentally all rely on the concept of students and teachers, and perform either no filtering or a reward-agnostic filtering of state-action pairs to be used in updating the population.
+
+\section{Future Work}
+\label{sec:future}
+
+In this section we discuss potential future work that could be done to exploit non-hierarchical social learning and improve it as both a model of artificial life and a machine learning algorithm. Future work may involve investigating the relationship between this and other forms of social learning and Q-learning.  Additionally, one strength of non-hierarchical social learning is its ability to transmit information about novel situations to all agents without those agents having to experience those situations themselves.  As such, investigating the impact of non-hierarchical social learning in dynamic domains with changing rewards is a promising and practical avenue for new research.  Finally, our current model teaches agents about the previous timestep with one iteration of backprop whenever there is a reward.  Extending the model to account for the magnitude of the reward, and to store and train on information about previous timesteps may lead to new insights.  
+
+
+\section{Conclusions}
+\label{sec:conclusions}
+We have presented a non-hierarchical approach to apply social learning in evolutionary algorithms. Traditionally, social learning in evolutionary algorithms has followed a student-teacher model that assigns roles to each agent. Our approach removes this hierarchy and instead updates individuals based on actions taken by \textit{any} agent that lead to a positive reward. Experiments in a complex robot foraging domain demonstrate that this approach is highly effective at quickly learning a near-optimal policy with Lamarkian evolution. Further results from our hybrid algorithm suggest that bootstrapping a traditional Darwinian EA with a brief period of non-hierarchical Lamarkian social learning can substantially improve performance of the baseline EA and reaches higher fitness than either approach in isolation.
+%
+% The following two commands are all you need in the
+% initial runs of your .tex file to
+% produce the bibliography for the citations in your paper.
+\bibliographystyle{abbrv}
+\bibliography{sigproc}  % sigproc.bib is the name of the Bibliography in this case
+% You must have a proper ".bib" file
+%  and remember to run:
+% latex bibtex latex latex
+% to resolve all references
+%
+% ACM needs 'a single self-contained file'!
+%
+%APPENDICES are optional
+%\balancecolumns
+%\appendix
+%Appendix A
+%\section{Headings in Appendices}
+%The rules about hierarchical headings discussed above for
+%the body of the article are different in the appendices.
+%In the \textbf{appendix} environment, the command
+%\textbf{section} is used to
+%indicate the start of each Appendix, with alphabetic order
+%designation (i.e. the first is A, the second B, etc.) and
+%a title (if you include one).  So, if you need
+%hierarchical structure
+%\textit{within} an Appendix, start with \textbf{subsection} as the
+%highest level. Here is an outline of the body of this
+%document in Appendix-appropriate form:
+%\subsection{Introduction}
+%\subsection{The Body of the Paper}
+%\subsubsection{Type Changes and  Special Characters}
+%\subsubsection{Math Equations}
+%\paragraph{Inline (In-text) Equations}
+%\paragraph{Display Equations}
+%\subsubsection{Citations}
+%\subsubsection{Tables}
+%\subsubsection{Figures}
+%\subsubsection{Theorem-like Constructs}
+%\subsubsection*{A Caveat for the \TeX\ Expert}
+%\subsection{Conclusions}
+%\subsection{Acknowledgments}
+%\subsection{Additional Authors}
+%This section is inserted by \LaTeX; you do not insert it.
+%You just add the names and information in the
+%\texttt{{\char'134}additionalauthors} command at the start
+%of the document.
+%\subsection{References}
+%Generated by bibtex from your ~.bib file.  Run latex,
+%then bibtex, then latex twice (to resolve references)
+%to create the ~.bbl file.  Insert that ~.bbl file into
+%the .tex source file and comment out
+%the command \texttt{{\char'134}thebibliography}.
+%% This next section command marks the start of
+%% Appendix B, and does not continue the present hierarchy
+%\section{More Help for the Hardy}
+%The acm\_proc\_article-sp document class file itself is chock-full of succinct
+%and helpful comments.  If you consider yourself a moderately
+%experienced to expert user of \LaTeX, you may find reading
+%it useful but please remember not to change it.
+%\balancecolumns
+% That's all folks!
+\end{document}
