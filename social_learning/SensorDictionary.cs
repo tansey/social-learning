@@ -30,9 +30,9 @@ namespace social_learning
                         }
         }
 
-        public int[] getDistanceAndOrientation(int agentX, int agentY, int plantX, int plantY)
+        public int[] getDistanceAndOrientation(int agentX, int agentY, int objectX, int objectY)
         {
-            int key = (plantX - agentX) * _agentHorizon * 100 + (plantY - agentY);
+            int key = (objectX - agentX) * _agentHorizon * 100 + (objectY - agentY);
             int[] p;
             if (!_dictionary.TryGetValue(key, out p))
                 return _defaultDistanceAndOrientation;

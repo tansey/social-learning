@@ -69,6 +69,7 @@
     <Compile Include="SocialExperiment.cs" />
     <Compile Include="SpinningAgent.cs" />
     <Compile Include="TeachingParadigm.cs" />
+    <Compile Include="Wall.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

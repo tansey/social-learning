@@ -1,0 +1,8 @@
+World.cs: change Reset method (Add wall after plants)(make wall perpendicular to radius of plant and randomly)
+Create Wall.cs (based on plant.cs and agent.cs)
+turnon IncrementalGrowth in xml
+make GUI
+Wallproject
+check if agent is going to skip the wall and stop it. rather than moving him back reset his X and Y to previous location.
+get sensors working.(there are multiple sensors for each pair of angles for an agent.)
+when testing reduce number of plants to small number (e.g. 1 or 5)
