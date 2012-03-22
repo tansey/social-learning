@@ -139,7 +139,9 @@ namespace social_learning
                     {
                         // Eat the plant
                         plant.EatenBy(agent, _step);
-                        agent.Fitness += plant.Species.Reward;
+
+                        // Notify the agent that it received a reward
+                        agent.ReceiveReward(plant.Species.Reward);
 
                         // Notify listeners that someone has eaten a plant.
                         onPlantEaten(agent, plant);

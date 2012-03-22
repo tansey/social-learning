@@ -18,5 +18,9 @@ namespace social_learning
         {
             
         }
+        protected override void ProcessReward(double r)
+        {
+            
+        }
     }
 }

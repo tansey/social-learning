@@ -17,5 +17,6 @@ namespace social_learning
 
         void Step(double[] sensors);
         void Reset();
+        void ReceiveReward(double r);
     }
 }

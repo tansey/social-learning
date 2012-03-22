@@ -19,5 +19,9 @@ namespace social_learning
         public override void Reset()
         {
         }
+        protected override void ProcessReward(double r)
+        {
+            
+        }
     }
 }

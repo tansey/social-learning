@@ -56,5 +56,8 @@ namespace social_learning
             Brain.ResetState();
         }
 
+        protected override void ProcessReward(double r)
+        {
+        }
     }
 }

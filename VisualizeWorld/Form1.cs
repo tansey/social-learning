@@ -153,7 +153,7 @@ namespace VisualizeWorld
             g.FillRectangle(Brushes.White, 0, 30, 150, 50);
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)),
                                             DefaultFont, Brushes.Black, 0, 30);
-            g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
+            //g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 
             // Draw the network inputs and outputs for the Q-Learning agent
             if (_debugOutputs)
@@ -215,7 +215,8 @@ namespace VisualizeWorld
             _experiment.Evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _experiment.World, AgentTypes.QLearning)
             {
                 MaxTimeSteps = 50000000UL,
-                BackpropEpochsPerExample = 1
+                BackpropEpochsPerExample = 1,
+                LogDiversity = false
             };
 
             // Add the world reset
@@ -240,6 +241,7 @@ namespace VisualizeWorld
             // Create evolution algorithm and attach update event.
             _ea = _experiment.CreateEvolutionAlgorithm();
             _ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
+            _experiment.Evaluator.LogDiversity = false;
 
             // Start algorithm (it will run on a background thread).
             _ea.StartContinue();

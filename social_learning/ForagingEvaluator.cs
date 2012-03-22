@@ -51,6 +51,7 @@ namespace social_learning
             MemParadigm = MemoryParadigm.Fixed;
             CurrentMemorySize = 1;
             GenerationsPerMemorySize = 20;
+            LogDiversity = true;
             _random = new FastRandom();
         }
 
@@ -123,7 +124,7 @@ namespace social_learning
         public int MaxMemorySize { get; set; }
         public TeachingParadigm TeachParadigm { get; set; }
         public int UpdatesThisGeneration { get; set; }
-	    
+        public bool LogDiversity { get; set; }
 
 
         /// <summary>
@@ -131,78 +132,36 @@ namespace social_learning
         /// </summary>
         public void Evaluate(IList<TGenome> genomeList)
         {
-            //var groups = genomeList.GroupBy(g => g.SpecieIdx);
-            //foreach (var g in groups)
-            //    Console.WriteLine("{0}: {1}", g.First().SpecieIdx, g.Count());
-            //var champSpeci = genomeList.First(t => t.EvaluationInfo.Fitness == genomeList.Max(b => b.EvaluationInfo.Fitness));
-            //Console.WriteLine("Best: {0} -> {1}", champSpeci.Id, champSpeci.SpecieIdx);
-            //Console.WriteLine("Biggest: {0}", groups.First(x => x.Count() == groups.Max(y => y.Count())).First().SpecieIdx);
             _genomeList = (IList<NeatGenome>)genomeList;
             _agents = new IAgent[genomeList.Count];
             UpdatesThisGeneration = 0;
-            if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
-            {
-                _minReward = _world.PlantTypes.Min(p => p.Reward);
-            }
-            else if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
+
+            if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
             {
                 _rewards = new List<int>();
                 _rewardThreshold = 0;
             }
 
-            for(int i = 0; i < _agents.Length; i++)
-            {
-                // Decode the genome.
-                IBlackBox phenome = _genomeDecoder.Decode(genomeList[i]);
+            // Creates policy networks from each genome
+            GenomesToPolicies(genomeList);
 
-                // Check that the genome is valid.
-                if (phenome == null)
-                {
-                    Console.WriteLine("Couldn't decode genome {0}!", i);
-                    _agents[i] = new SpinningAgent(i);
-                }
-                else	
-					_agents[i] = getAgent(i, phenome);
-            }
+            // Divides the population into subcultures
+            CreateSubcultures();
 
-            #region Create random groups of proportional size
-            _agentGroups = new int[_agents.Length];
-            //var allSpecies = _agents.GroupBy(g => ((NeuralAgent)g).SpeciesId);
-            List<int> agentIds = new List<int>();
-            for (int i = 0; i < _agentGroups.Length; i++)
-            {
-                _agentGroups[i] = -1;
-                agentIds.Add(i);
-            }
+            // Logs the diversity of the population before evaluation
+            if(LogDiversity)
+                writeDiversityStats(true);
             
-            const int NUM_GROUPS = 10;
-            for (int i = 0; i < _agentGroups.Length; i++)
-			{
-				int temp = _random.Next(agentIds.Count);
-				int idx = agentIds[temp];
-				_agentGroups[idx] = i % NUM_GROUPS;
-				agentIds.RemoveAt(temp);
-			}
-			if(_agentGroups.GroupBy(g => g).Min(ag => ag.Count()) < 10)
-				throw new Exception("Improper initialization");
-			if(_agentGroups.GroupBy(g => g).Count() < 10)
-				throw new Exception("Improper initialization");
-            #endregion
-			Boolean before = true;
-            writeDiversityStats(before);
-            
+            // If we're in a student-teacher model, pre-train the agents
             if (TeachParadigm == TeachingParadigm.GenerationalChampionOfflineTraining)
                 trainPopulationUsingGenerationalChampion();
-
 
             _world.Agents = _agents;
             _world.Reset();
 
             for (CurrentTimeStep = 0; CurrentTimeStep < MaxTimeSteps; CurrentTimeStep++)
-            {
                 // Move the world forward one step
                 _world.Step();
-            }
 
             // Set the fitness of each genome to the fitness its phenome earned in the world.
             for(int i = 0; i < _agents.Length; i++)
@@ -213,29 +172,14 @@ namespace social_learning
                 // This alternate fitness is purely for logging purposes, so we use the actual fitness
                 _genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
-			before = false;
-            // Analyze diversity after
-            writeDiversityStats(before);
+
+            // Analyze diversity after evaluation
+            if(LogDiversity)
+                writeDiversityStats(false);
 
             // Lamarkian Evolution
             if (EvoParadigm == EvolutionParadigm.Lamarkian)
-                for (int i = 0; i < _agents.Length; i++)
-                {
-                    var agent = _agents[i];
-
-                    // Get the network for this agent
-                    var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
-
-                    // Get the genome for this agent
-                    var genome = (NeatGenome)genomeList[i];
-
-                    // Update the genome to match the phenome weights
-                    foreach (var conn in network.ConnectionArray)
-                    {
-                        var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
-                        genomeConn.Weight = conn._weight;
-                    }
-                }
+                PerformLamarkianEvolution(genomeList);
 
             // If enabled and it's time, grow the size of the agents' memory window.
             if (MemParadigm == MemoryParadigm.IncrementalGrowth 
@@ -244,9 +188,83 @@ namespace social_learning
                 CurrentMemorySize++;
         }
 
+        private void GenomesToPolicies(IList<TGenome> genomeList)
+        {
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                // Decode the genome.
+                IBlackBox phenome = _genomeDecoder.Decode(genomeList[i]);
+
+                // Check that the genome is valid.
+                if (phenome == null)
+                {
+                    Console.WriteLine("Couldn't decode genome {0}!", i);
+                    _agents[i] = new SpinningAgent(i);
+                }
+                else
+                    _agents[i] = getAgent(i, phenome);
+            }
+        }
+
+        /// <summary>
+        /// Saves all phenotypic progress back to the genomes.
+        /// </summary>
+        private void PerformLamarkianEvolution(IList<TGenome> genomeList)
+        {
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                var agent = _agents[i];
+
+                // Get the network for this agent
+                var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+
+                // Get the genome for this agent
+                var genome = (NeatGenome)genomeList[i];
+
+                // Update the genome to match the phenome weights
+                foreach (var conn in network.ConnectionArray)
+                {
+                    var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
+                    genomeConn.Weight = conn._weight;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Puts the agents into equal-sized subcultural groups.
+        /// 
+        /// <param name="numGroups">The number of groups to divide the population into</param>
+        /// </summary>
+        private void CreateSubcultures(int numGroups = 10)
+        {
+            int minGroupSize = _agents.Length / numGroups;
+
+            _agentGroups = new int[_agents.Length];
+
+            // Create a list of all the agent IDs
+            List<int> agentIds = new List<int>();
+            for (int i = 0; i < _agentGroups.Length; i++)
+            {
+                _agentGroups[i] = -1;
+                agentIds.Add(i);
+            }
+
+            // Select each ID for each subculture randomly
+            for (int i = 0; i < _agentGroups.Length; i++)
+            {
+                int temp = _random.Next(agentIds.Count);
+                int idx = agentIds[temp];
+                _agentGroups[idx] = i % numGroups;
+                agentIds.RemoveAt(temp);
+            }
+
+            Debug.Assert(_agentGroups.GroupBy(g => g).Min(ag => ag.Count()) >= minGroupSize);
+            Debug.Assert(_agentGroups.GroupBy(g => g).Max(ag => ag.Count()) <= minGroupSize+1);
+            Debug.Assert(_agentGroups.GroupBy(g => g).Count() == numGroups);
+        }
+
         void trainPopulationUsingGenerationalChampion()
         {
-
             if (_generations == 0)
                 return;
 			int num_teachers = 1;
@@ -280,13 +298,12 @@ namespace social_learning
         }
 		
 		private Agent getAgent(int i, IBlackBox phenome){
-			Agent a;
 			switch (AgentType)
                     {
                         case AgentTypes.Neural:
                             return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
                         case AgentTypes.Social:
-                            a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome)
+                            Agent a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome, sar => sar.Last.Value.Reward > 0)
                             {
                                 MemorySize = CurrentMemorySize
                             };
@@ -332,22 +349,24 @@ namespace social_learning
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)
                 {
-                    double[] outputs = new double[example.Outputs.Length];
-                    example.Outputs.CopyTo(outputs, 0);
+                    double[] outputs = new double[example.Action.Length];
+                    example.Action.CopyTo(outputs, 0);
                     for (int i = 0; i < outputs.Length; i++)
                         outputs[i] = clamp(gaussianMutation(outputs[i], gaussianNoiseStdev), 0, 1);
-                    network.Train(example.Inputs, outputs);
+                    network.Train(example.State, outputs);
                 }
         }
 		
         // Handle the reward-based teaching paradigms whenever a plant is eaten.
-        void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
+        void _world_PlantEaten(object sender, IAgent eaterAgent, Plant eaten)
         {
             if (!_learningEnabled)
                 return;
             // if we're not dealing with a social agent, then skip this notification.
-            if (!(eater is SocialAgent))
+            if (!(eaterAgent is SocialAgent))
                 return;
+            SocialAgent eater = (SocialAgent)eaterAgent;
+            
 
             // Only learn from rewards if we're using a reward-based social learning paradigm
             if (TeachParadigm != TeachingParadigm.EveryoneRewards 
@@ -357,43 +376,34 @@ namespace social_learning
                 return;
 
             // Only learn from positive rewards.
-            if (eaten.Species.Reward > 0)
-            {
+            //if (eaten.Species.Reward > 0)
+            //{
                 // Train all the agents in parallel
-                //Parallel.For(0, _agents.Length, i =>
 				for(int i = 0; i < _agents.Length; i++)
                 {
-                    var agent = _agents[i];
+                    SocialAgent agent = (SocialAgent)_agents[i];
 
                     // Do not try to teach yourself
                     if (agent == eater)
-                        //return;
 					    continue;
                     
-                    // Only update individuals in your species
+                    // Only update individuals in your subculture
                     if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
                         || TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional
                         || TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
-                        && _agentGroups[eater.Id] != _agentGroups[i])// ******* TEMPORARY *******
-                        //&& _genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
-                        //return;
+                        && _agentGroups[eater.Id] != _agentGroups[i])
 						continue;
                     
-
                     // Only learn from high-valued actions
-                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
-                        && eaten.Species.Reward < _rewardThreshold
-                        && _rewards.Count > 20)
-                        //return;
-						continue;
-
-                    // Only learn from better agens
-                    //if (_agents[i].Fitness > _agents[eater.Id].Fitness)
-                    //    return;
-
+                    //if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
+                    //    && eaten.Species.Reward < _rewardThreshold
+                    //    && _rewards.Count > 20)
+                    //    //return;
+                    //    continue;
 
                     // Teach the agent to act like the eater
-                    TeachAgent(eater, agent);
+                    if(agent.AcceptabilityFn.Accept(eater.Memory))
+                        TeachAgent(eater, agent);
 
                     // If we're using reward-proportional updating, update the appropriate number of times
                     if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
@@ -402,9 +412,8 @@ namespace social_learning
                         for (int update = 1; update < updates; update++)
                             TeachAgent(eater, agent);
                     }
-                //});
 				}
-            }
+            //}
         }
 
         // Handle the Student/Teacher teaching paradigm at each step.
@@ -474,7 +483,7 @@ namespace social_learning
 			#endregion
         }
 		
-		void writeDiversityStats(Boolean before){
+		void writeDiversityStats(bool before){
 			if (_generations > 0)
             {
 				TextWriter writer;
@@ -517,11 +526,11 @@ namespace social_learning
             // Perform a fixed number of backprop epochs to train this agent
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)
-                    network.Train(example.Inputs, example.Outputs);
+                    network.Train(example.State, example.Action);
         }
 		
 		#region mathutils
-		        private double gaussianMutation(double mean, double stddev)
+		private double gaussianMutation(double mean, double stddev)
         {
             double x1 = 1 - _random.NextDouble();
             double x2 = 1 - _random.NextDouble();
@@ -539,7 +548,7 @@ namespace social_learning
             return val;
         }
 		
-		     private int argMin(List<int> champs)
+		private int argMin(List<int> champs)
         {
             int min = 0;
             for (int i = 1; i < champs.Count; i++)

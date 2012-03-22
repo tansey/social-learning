@@ -30,5 +30,8 @@ namespace TestWorld
         public override void Reset()
         {
         }
+        protected override void ProcessReward(double r)
+        {
+        }
     }
 }

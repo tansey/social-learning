@@ -39,5 +39,12 @@ namespace social_learning
         }
 
         public abstract void Reset();
+        public virtual void ReceiveReward(double r)
+        {
+            Fitness += r;
+            ProcessReward(r);
+        }
+
+        protected abstract void ProcessReward(double r);
     }
 }
