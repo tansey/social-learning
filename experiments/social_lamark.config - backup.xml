@@ -2,8 +2,6 @@
 <Config>
   <PopulationSize>100</PopulationSize>
   <SpecieCount>10</SpecieCount>
-  <Inputs>1</Inputs>
-  <Outputs>1</Outputs>
   <Activation>
     <Scheme>CyclicFixedIters</Scheme>
     <Iters>4</Iters>
@@ -17,7 +15,7 @@
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <TeachingParadigm>EgalitarianEvolvedAcceptability</TeachingParadigm>
+  <TeachingParadigm>EveryoneRewards</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
@@ -28,13 +26,37 @@
   <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
   <PlantSpecies>
     <Plant>
+      <Name>Poison_1</Name>
+      <Radius>5</Radius>
+      <Reward>-100</Reward>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Poison_2</Name>
+      <Radius>5</Radius>
+      <Reward>-50</Reward>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Neutral_1</Name>
+      <Radius>5</Radius>
+      <Reward>0</Reward>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
       <Name>Nutritious_1</Name>
       <Radius>5</Radius>
       <Reward>100</Reward>
-      <Count>1000</Count>
+      <Count>20</Count>
+    </Plant>
+    <Plant>
+      <Name>Nutritious_2</Name>
+      <Radius>5</Radius>
+      <Reward>50</Reward>
+      <Count>20</Count>
     </Plant>
   </PlantSpecies>
-  <WorldWidth>2000</WorldWidth>
-  <WorldHeight>2000</WorldHeight>
+  <WorldWidth>500</WorldWidth>
+  <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>
 </Config>

@@ -60,6 +60,7 @@ namespace social_learning
 
         public override ISignalArray activateNetwork(double[] sensors)
         {
+            AcceptabilityFn.Reset();
             var results = base.activateNetwork(sensors);
             double[] outputs = new double[results.Length];
             results.CopyTo(outputs, 0);

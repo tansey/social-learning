@@ -32,6 +32,11 @@ namespace social_learning
         /// <summary>
         /// At each step, the current species member with highest fitness teaches the current species member with lowest fitness.
         /// </summary>
-        SpeciesChampionOnlineTraining
+        SpeciesChampionOnlineTraining,
+        /// <summary>
+        /// Uses the ESL algorithm but evolves a neural network for the acceptability function and uses a randomly connected NN
+        /// as the controller network.
+        /// </summary>
+        EgalitarianEvolvedAcceptability
     }
 }

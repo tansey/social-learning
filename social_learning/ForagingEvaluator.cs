@@ -11,6 +11,9 @@ using System.Diagnostics;
 using System.Threading;
 using SharpNeat.Utility;
 using System.Threading.Tasks;
+using SharpNeat.Network;
+using System.Xml;
+using social_learning.Acceptability;
 
 namespace social_learning
 {
@@ -142,8 +145,12 @@ namespace social_learning
                 _rewardThreshold = 0;
             }
 
-            // Creates policy networks from each genome
-            GenomesToPolicies(genomeList);
+            if (TeachParadigm == TeachingParadigm.EgalitarianEvolvedAcceptability)
+                // Creates acceptability functions from each genome
+                GenomesToAcceptability(genomeList);
+            else
+                // Creates policy networks from each genome
+                GenomesToPolicies(genomeList);
 
             // Divides the population into subcultures
             CreateSubcultures();
@@ -178,7 +185,9 @@ namespace social_learning
                 writeDiversityStats(false);
 
             // Lamarkian Evolution
-            if (EvoParadigm == EvolutionParadigm.Lamarkian)
+            if (TeachParadigm == TeachingParadigm.EgalitarianEvolvedAcceptability)
+                PerformLamarkianEvolution(genomeList, a => (FastCyclicNetwork)((RecurrentNeuralAcceptability)((SocialAgent)a).AcceptabilityFn).Brain);
+            else if (EvoParadigm == EvolutionParadigm.Lamarkian)
                 PerformLamarkianEvolution(genomeList);
 
             // If enabled and it's time, grow the size of the agents' memory window.
@@ -186,6 +195,47 @@ namespace social_learning
                 && _generations % GenerationsPerMemorySize == 0
                 && CurrentMemorySize < MaxMemorySize)
                 CurrentMemorySize++;
+        }
+
+        private void GenomesToAcceptability(IList<TGenome> genomeList)
+        {
+            const string TEMP_NETWORK_FILE = "____temp____network.xml";
+
+            var neatGenomeParams = new NeatGenomeParameters()
+            {
+                ActivationFn = PlainSigmoid.__DefaultInstance,
+                InitialInterconnectionsProportion = 1
+            };
+
+            int inputs = _world.PlantTypes.Count() * World.SENSORS_PER_PLANT_TYPE + 1;
+            int outputs = 2;
+
+            var factory = new NeatGenomeFactory(inputs, outputs, neatGenomeParams);
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                // Decode the genome.
+                IBlackBox phenome = _genomeDecoder.Decode(genomeList[i]);
+                IAcceptabilityFunction accept = new RecurrentNeuralAcceptability(phenome);
+
+                // Check that the genome is valid.
+                if (phenome == null)
+                {
+                    Console.WriteLine("Couldn't decode genome {0}!", i);
+                    _agents[i] = new SpinningAgent(i);
+                    continue;
+                }
+
+                // Create a feed forward network with 10 hidden nodes and random weights
+                SocialExperiment.CreateNetwork(TEMP_NETWORK_FILE, inputs, outputs);
+                using (var xr = XmlReader.Create(TEMP_NETWORK_FILE))
+                {
+                    var controllerGenome = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, factory)[0];
+                    var controllerPhenome = _genomeDecoder.Decode((TGenome)controllerGenome);
+                    _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, controllerPhenome, accept);
+                }
+            }
+
+            File.Delete(TEMP_NETWORK_FILE);
         }
 
         private void GenomesToPolicies(IList<TGenome> genomeList)
@@ -211,12 +261,20 @@ namespace social_learning
         /// </summary>
         private void PerformLamarkianEvolution(IList<TGenome> genomeList)
         {
+            PerformLamarkianEvolution(genomeList, a => ((FastCyclicNetwork)((NeuralAgent)a).Brain));
+        }
+
+        /// <summary>
+        /// Saves all phenotypic progress back to the genomes.
+        /// </summary>
+        private void PerformLamarkianEvolution(IList<TGenome> genomeList, Func<IAgent, FastCyclicNetwork> networkSelector)
+        {
             for (int i = 0; i < _agents.Length; i++)
             {
                 var agent = _agents[i];
 
                 // Get the network for this agent
-                var network = ((FastCyclicNetwork)((NeuralAgent)agent).Brain);
+                var network = networkSelector(agent);
 
                 // Get the genome for this agent
                 var genome = (NeatGenome)genomeList[i];
@@ -369,11 +427,12 @@ namespace social_learning
             
 
             // Only learn from rewards if we're using a reward-based social learning paradigm
-            if (TeachParadigm != TeachingParadigm.EveryoneRewards 
+            if (TeachParadigm != TeachingParadigm.EveryoneRewards
                 && TeachParadigm != TeachingParadigm.SameSpeciesRewards
                 && TeachParadigm != TeachingParadigm.SameSpeciesRewardProportional
-                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
-                return;
+                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering
+                && TeachParadigm != TeachingParadigm.EgalitarianEvolvedAcceptability)
+                throw new Exception("Add your method type here!");
 
             // Only learn from positive rewards.
             //if (eaten.Species.Reward > 0)
@@ -388,12 +447,12 @@ namespace social_learning
 					    continue;
                     
                     // Only update individuals in your subculture
-                    if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
+                    /**if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
                         || TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional
                         || TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
                         && _agentGroups[eater.Id] != _agentGroups[i])
 						continue;
-                    
+                    **/
                     // Only learn from high-valued actions
                     //if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
                     //    && eaten.Species.Reward < _rewardThreshold
@@ -402,8 +461,11 @@ namespace social_learning
                     //    continue;
 
                     // Teach the agent to act like the eater
-                    if(agent.AcceptabilityFn.Accept(eater.Memory))
-                        TeachAgent(eater, agent);
+                    if (agent.AcceptabilityFn.Accept(eater.Memory))
+                    {
+                        for (int j = 0; j < 20; j++)
+                            TeachAgent(eater, agent);
+                    }
 
                     // If we're using reward-proportional updating, update the appropriate number of times
                     if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
@@ -522,7 +584,7 @@ namespace social_learning
 
             // Get the neural network controlling this agent
             var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
-
+            
             // Perform a fixed number of backprop epochs to train this agent
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)
