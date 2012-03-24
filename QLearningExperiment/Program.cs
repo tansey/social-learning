@@ -38,7 +38,7 @@ namespace QLearningExperiment
             // Record the changes at each step
             _experiment.World.Stepped += new social_learning.World.StepEventHandler(World_Stepped);
 
-            // Read in the agent genome from file.
+            // Read in the teacher genome from file.
             var agentGenome = _experiment.LoadPopulation(XmlReader.Create(FEED_FORWARD_NETWORK_FILE));
 
             // Create genome decoder.
@@ -63,9 +63,9 @@ namespace QLearningExperiment
             var step = _evaluator.CurrentTimeStep;
             //if (step == 0)
             //{
-            //    var agent = (QLearningAgent)_experiment.World.Agents.First();
-            //    agent.LearningRate = 0.7;
-            //    agent.DiscountFactor = 0.2;
+            //    var teacher = (QLearningAgent)_experiment.World.Agents.First();
+            //    teacher.LearningRate = 0.7;
+            //    teacher.DiscountFactor = 0.2;
             //}
             if (step > 0 && step % _experiment.TimeStepsPerGeneration == 0)
             {
@@ -81,10 +81,10 @@ namespace QLearningExperiment
                                                     _experiment.World.Agents.First().Fitness);
                 _experiment.World.Reset();
 
-                //if (agent.LearningRate > 0.1)
-                //    agent.LearningRate = Math.Max(0.1, agent.LearningRate - 0.1);
-                //if (agent.DiscountFactor < 0.9)
-                //    agent.DiscountFactor = Math.Min(0.9, agent.DiscountFactor + 0.1);
+                //if (teacher.LearningRate > 0.1)
+                //    teacher.LearningRate = Math.Max(0.1, teacher.LearningRate - 0.1);
+                //if (teacher.DiscountFactor < 0.9)
+                //    teacher.DiscountFactor = Math.Min(0.9, teacher.DiscountFactor + 0.1);
                 
             }
         }

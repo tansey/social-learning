@@ -50,6 +50,7 @@ namespace social_learning
             _world.Stepped += new World.StepEventHandler(_world_Stepped);
             _world.PlantEaten += new World.PlantEatenHandler(addRewardToStatisticsList);
             _world.Stepped += new World.StepEventHandler(updateRewardStatistics);
+            _world.Stepped += new World.StepEventHandler(esl_step);
             BackpropEpochsPerExample = 1;
             MemParadigm = MemoryParadigm.Fixed;
             CurrentMemorySize = 1;
@@ -57,6 +58,8 @@ namespace social_learning
             LogDiversity = true;
             _random = new FastRandom();
         }
+
+        
 
         void addRewardToStatisticsList(object sender, IAgent eater, Plant eaten)
         {
@@ -173,7 +176,7 @@ namespace social_learning
             // Set the fitness of each genome to the fitness its phenome earned in the world.
             for(int i = 0; i < _agents.Length; i++)
             {
-                // NEAT requires fitness to be >= 0, so if the agent had negative fitness, we cap it at 0.
+                // NEAT requires fitness to be >= 0, so if the teacher had negative fitness, we cap it at 0.
                 _genomeList[i].EvaluationInfo.SetFitness(Math.Max(0, _agents[i].Fitness));
 
                 // This alternate fitness is purely for logging purposes, so we use the actual fitness
@@ -231,7 +234,10 @@ namespace social_learning
                 {
                     var controllerGenome = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, factory)[0];
                     var controllerPhenome = _genomeDecoder.Decode((TGenome)controllerGenome);
-                    _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, controllerPhenome, accept);
+                    _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, controllerPhenome, accept) { MemorySize = CurrentMemorySize };
+                    var network = (FastCyclicNetwork)controllerPhenome;
+                    network.Momentum = ((SocialAgent)_agents[i]).Momentum;
+                    network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
                 }
             }
 
@@ -273,10 +279,10 @@ namespace social_learning
             {
                 var agent = _agents[i];
 
-                // Get the network for this agent
+                // Get the network for this teacher
                 var network = networkSelector(agent);
 
-                // Get the genome for this agent
+                // Get the genome for this teacher
                 var genome = (NeatGenome)genomeList[i];
 
                 // Update the genome to match the phenome weights
@@ -299,7 +305,7 @@ namespace social_learning
 
             _agentGroups = new int[_agents.Length];
 
-            // Create a list of all the agent IDs
+            // Create a list of all the teacher IDs
             List<int> agentIds = new List<int>();
             for (int i = 0; i < _agentGroups.Length; i++)
             {
@@ -400,10 +406,10 @@ namespace social_learning
             // Get the trajectory to learn from
             var memory = ((SocialAgent)teacher).Memory;
 
-            // Get the neural network controlling this agent
+            // Get the neural network controlling this teacher
             var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
 
-            // Perform a fixed number of backprop epochs to train this agent
+            // Perform a fixed number of backprop epochs to train this teacher
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)
                 {
@@ -420,19 +426,19 @@ namespace social_learning
         {
             if (!_learningEnabled)
                 return;
-            // if we're not dealing with a social agent, then skip this notification.
+            // if we're not dealing with a social teacher, then skip this notification.
             if (!(eaterAgent is SocialAgent))
                 return;
-            SocialAgent eater = (SocialAgent)eaterAgent;
-            
 
             // Only learn from rewards if we're using a reward-based social learning paradigm
             if (TeachParadigm != TeachingParadigm.EveryoneRewards
                 && TeachParadigm != TeachingParadigm.SameSpeciesRewards
-                && TeachParadigm != TeachingParadigm.SameSpeciesRewardProportional
-                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering
-                && TeachParadigm != TeachingParadigm.EgalitarianEvolvedAcceptability)
-                throw new Exception("Add your method type here!");
+                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+                return;
+
+            SocialAgent eater = (SocialAgent)eaterAgent;
+            
+
 
             // Only learn from positive rewards.
             //if (eaten.Species.Reward > 0)
@@ -447,12 +453,11 @@ namespace social_learning
 					    continue;
                     
                     // Only update individuals in your subculture
-                    /**if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
-                        || TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional
+                    if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
                         || TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
                         && _agentGroups[eater.Id] != _agentGroups[i])
 						continue;
-                    **/
+                    
                     // Only learn from high-valued actions
                     //if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
                     //    && eaten.Species.Reward < _rewardThreshold
@@ -460,22 +465,35 @@ namespace social_learning
                     //    //return;
                     //    continue;
 
-                    // Teach the agent to act like the eater
+                    // Teach the teacher to act like the eater
                     if (agent.AcceptabilityFn.Accept(eater.Memory))
-                    {
-                        for (int j = 0; j < 20; j++)
                             TeachAgent(eater, agent);
-                    }
 
-                    // If we're using reward-proportional updating, update the appropriate number of times
-                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
-                    {
-                        int updates = Math.Min(20, eaten.Species.Reward / _minReward);
-                        for (int update = 1; update < updates; update++)
-                            TeachAgent(eater, agent);
-                    }
 				}
             //}
+        }
+
+        // The social learning step for ESL
+        void esl_step(object sender, EventArgs e)
+        {
+            if (!_learningEnabled)
+                return;
+
+            // if we're not dealing with evolved acceptability functions, then skip this notification.
+            if (TeachParadigm != TeachingParadigm.EgalitarianEvolvedAcceptability)
+                return;
+
+            for(int i = 0; i < _agents.Length; i++)
+            {
+                var teacher = (SocialAgent)_agents[i];
+
+                var subculture = _agents.Where((a, idx) => i != idx && _agentGroups[idx] == _agentGroups[i]).Select(s => (SocialAgent)s);
+
+                foreach (var observer in subculture)
+                    if (observer.AcceptabilityFn.Accept(teacher.Memory))
+                        TeachAgent(teacher, observer);
+            }
+            
         }
 
         // Handle the Student/Teacher teaching paradigm at each step.
@@ -498,15 +516,15 @@ namespace social_learning
 			#region eiben
             // Mimic the Eiben paper with probabilistic, distance-based teaching
             //const double MAX_DISTANCE = 100;
-            //foreach (var agent in _agents)
+            //foreach (var teacher in _agents)
             //{
             //    if (_random.NextDouble() > 0.2)
             //        continue;
             //    var student = _agents.Where(a => 
-            //        Math.Sqrt((a.X - agent.X) * (a.X - agent.X) + (a.Y - agent.Y) * (a.Y - agent.Y)) <= MAX_DISTANCE)
+            //        Math.Sqrt((a.X - teacher.X) * (a.X - teacher.X) + (a.Y - teacher.Y) * (a.Y - teacher.Y)) <= MAX_DISTANCE)
             //        .OrderBy(a => a.Fitness)
             //        .First();
-            //    TeachAgent(agent, student);
+            //    TeachAgent(teacher, student);
             //}
 
             //var orderedAgents = _agents.OrderByDescending(a => a.Fitness);
@@ -582,10 +600,10 @@ namespace social_learning
             // Get the trajectory to learn from
             var memory = ((SocialAgent)teacher).Memory;
 
-            // Get the neural network controlling this agent
+            // Get the neural network controlling this teacher
             var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
             
-            // Perform a fixed number of backprop epochs to train this agent
+            // Perform a fixed number of backprop epochs to train this teacher
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)
                     network.Train(example.State, example.Action);

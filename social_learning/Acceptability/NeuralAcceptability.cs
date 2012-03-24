@@ -29,21 +29,17 @@ namespace social_learning.Acceptability
         public bool Accept(LinkedList<StateActionReward> memory)
         {
             var last = memory.Last.Value;
-            //Debug.Assert(last.State.Length + last.Action.Length + 1 == Brain.InputCount);
-            Debug.Assert(Brain.InputCount == 1);
+            Debug.Assert(last.State.Length + last.Action.Length + 1 == Brain.InputCount);
 
-            //for (int i = 0; i < last.State.Length; i++)
-            //    Brain.InputSignalArray[i] = last.State[i];
+            for (int i = 0; i < last.State.Length; i++)
+                Brain.InputSignalArray[i] = last.State[i];
 
-            //for (int i = 0; i < last.Action.Length; i++)
-            //    Brain.InputSignalArray[i + last.State.Length] = last.Action[i];
+            for (int i = 0; i < last.Action.Length; i++)
+                Brain.InputSignalArray[i + last.State.Length] = last.Action[i];
 
-            //Brain.InputSignalArray[last.State.Length + last.Action.Length] = last.Reward;
-            var input = Math.Min(1,Math.Max(0,(RewardNormalizer + last.Reward) / (2*RewardNormalizer)));
-            Brain.InputSignalArray[0] = input;
-            if (input != 1)
-                throw new Exception("Input is " + input);
-
+            Brain.InputSignalArray[last.State.Length + last.Action.Length] = 
+                                        Math.Min(1,Math.Max(0,(RewardNormalizer + last.Reward) / (2*RewardNormalizer)));
+            
             // Activate the network
             Brain.Activate();
 

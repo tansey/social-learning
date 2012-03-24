@@ -79,7 +79,7 @@ namespace social_learning
         public delegate void StepEventHandler(object sender, EventArgs e);
 
         /// <summary>
-        /// Event called when an agent eats a piece of food.
+        /// Event called when an teacher eats a piece of food.
         /// </summary>
         public event PlantEatenHandler PlantEaten;
         public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
@@ -113,7 +113,7 @@ namespace social_learning
             if (_sensorDictionary == null)
                 _sensorDictionary = new SensorDictionary((int)AgentHorizon, Height, Width);
 
-            // Advance each agent by one step
+            // Advance each teacher by one step
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
@@ -140,7 +140,7 @@ namespace social_learning
                         // Eat the plant
                         plant.EatenBy(agent, _step);
 
-                        // Notify the agent that it received a reward
+                        // Notify the teacher that it received a reward
                         agent.ReceiveReward(plant.Species.Reward);
 
                         // Notify listeners that someone has eaten a plant.
@@ -300,12 +300,12 @@ namespace social_learning
                 if (!plant.AvailableForEating(agent))
                     continue;
 
-                // Calculate the distance to the object from the agent
+                // Calculate the distance to the object from the teacher
                 int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y);
                 int dist = distanceAndOrientation[0];
                 int pos = distanceAndOrientation[1];
 
-                // If it's too far away for the agent to see
+                // If it's too far away for the teacher to see
                 if (dist > AgentHorizon)
                     continue;
 

@@ -11,7 +11,7 @@ using System.Threading;
 namespace social_learning
 {
     /// <summary>
-    /// A Q-Learning agent. The agent learns via the Q-Learning Temporal Difference Algorithm.
+    /// A Q-Learning teacher. The teacher learns via the Q-Learning Temporal Difference Algorithm.
     /// </summary>
     public class QLearningAgent : NeuralAgent
     {
@@ -51,13 +51,13 @@ namespace social_learning
         public double Epsilon { get; set; }
 
         /// <summary>
-        /// Creates a new Q-Learning agent.
+        /// Creates a new Q-Learning teacher.
         /// </summary>
-        /// <param name="id">The unique ID of this agent.</param>
-        /// <param name="brain">The neural network value function for this agent. It should have (2 + # of sensors) input nodes and 1 output node.</param>
+        /// <param name="id">The unique ID of this teacher.</param>
+        /// <param name="brain">The neural network value function for this teacher. It should have (2 + # of sensors) input nodes and 1 output node.</param>
         /// <param name="numOrientationActions">The number of buckets to discretize the orientation action spacer into.</param>
         /// <param name="numVelocityActions">The number of buckets to discretize the velocity action spacer into.</param>
-        /// <param name="world">The world this agent will be evaluated in.</param>
+        /// <param name="world">The world this teacher will be evaluated in.</param>
         public QLearningAgent(int id, int speciesId, IBlackBox brain, int numOrientationActions, int numVelocityActions, World world)
             : base(id, speciesId, brain)
         {

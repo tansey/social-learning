@@ -19,7 +19,7 @@ namespace social_learning
         public int MemorySize { get; set; }
 
         /// <summary>
-        /// A sliding window of stateActionPair-action pairs for this agent.
+        /// A sliding window of stateActionPair-action pairs for this teacher.
         /// </summary>
         public LinkedList<StateActionReward> Memory { get; set; }
 
@@ -29,17 +29,17 @@ namespace social_learning
         public IAcceptabilityFunction AcceptabilityFn { get; set; }
 
         /// <summary>
-        /// The learning rate for backpropping on this agent.
+        /// The learning rate for backpropping on this teacher.
         /// </summary>
         public double LearningRate { get; set; }
 
         /// <summary>
-        /// The momentum rate for backpropping on this agent.
+        /// The momentum rate for backpropping on this teacher.
         /// </summary>
         public double Momentum { get; set; }
 
         /// <summary>
-        /// Constructs a social learning agent controlled by the brain and using the give acceptability function.
+        /// Constructs a social learning teacher controlled by the brain and using the give acceptability function.
         /// </summary>
         public SocialAgent(int id, int speciesId, IBlackBox brain, IAcceptabilityFunction accept) : base(id, speciesId, brain)
         {
@@ -51,7 +51,7 @@ namespace social_learning
         }
 
         /// <summary>
-        /// Constructs a social agent using a lambda function for the acceptability function.
+        /// Constructs a social teacher using a lambda function for the acceptability function.
         /// </summary>
         public SocialAgent(int id, int speciesId, IBlackBox brain, Predicate<LinkedList<StateActionReward>> accept)
             : this(id, speciesId, brain, new DynamicAcceptability(accept))

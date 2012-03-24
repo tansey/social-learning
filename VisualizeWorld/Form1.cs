@@ -136,7 +136,7 @@ namespace VisualizeWorld
                 //if (i % 10 != 0)
                 //    continue;
 
-                //var agent = world.Agents.First();
+                //var teacher = world.Agents.First();
                 g.FillPie(new SolidBrush(agentColors[i]), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
                                                     (int)((agent.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
@@ -155,7 +155,7 @@ namespace VisualizeWorld
                                             DefaultFont, Brushes.Black, 0, 30);
             //g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 
-            // Draw the network inputs and outputs for the Q-Learning agent
+            // Draw the network inputs and outputs for the Q-Learning teacher
             if (_debugOutputs)
             {
                 g.FillRectangle(Brushes.White, 0, 50, 100, 150);
@@ -205,7 +205,7 @@ namespace VisualizeWorld
         {
             SocialExperiment.CreateNetwork(QLEARNING_FEED_FORWARD_NETWORK_FILE, _experiment.InputCount, 20, _experiment.OutputCount);
 
-            // Read in the agent genome from file.
+            // Read in the teacher genome from file.
             var agentGenome = _experiment.LoadPopulation(XmlReader.Create(QLEARNING_FEED_FORWARD_NETWORK_FILE));
 
             // Create genome decoder.

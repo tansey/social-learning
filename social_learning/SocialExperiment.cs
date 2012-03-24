@@ -176,7 +176,7 @@ namespace social_learning
             _neatGenomeParams = new NeatGenomeParameters()
             {
                 ActivationFn = PlainSigmoid.__DefaultInstance,
-                InitialInterconnectionsProportion = 1
+                //InitialInterconnectionsProportion = 1
             };
         }
 
