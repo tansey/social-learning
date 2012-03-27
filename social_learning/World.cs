@@ -15,7 +15,7 @@ namespace social_learning
         private int _step;
         SensorDictionary _sensorDictionary;
 		private const int wallRadius = 100;
-        private const int MAX_NUM_WALLS = 50;
+        private const int MAX_NUM_WALLS = 1;
         private const bool isFlippingWalls = true;
         public bool collide = false;
         #region Properties
@@ -322,8 +322,8 @@ namespace social_learning
         #region Walls Layouts
         private void layoutWalls()
         {
-            bool createWall = true;
-            int numWalls = 0;
+            /*bool createWall = true;
+            //int numWalls = 0;
             foreach (var plant in Plants)
             {
 	            if(createWall && numWalls < MAX_NUM_WALLS){
@@ -341,7 +341,31 @@ namespace social_learning
 	            }
                 if(isFlippingWalls)
 	                createWall = !createWall;
-            }
+            }*/
+            Wall wall1 = Walls[0];
+            wall1.Reset();
+            wall1.X1 = 400;
+            wall1.Y1 = 150;
+            wall1.X2 = 150;
+            wall1.Y2 = 400;
+            /*Wall wall2 = Walls[1];
+            wall2.Reset();
+            wall2.X1 = 100;
+            wall2.Y1 = 250;
+            wall2.X2 = 250;
+            wall2.Y2 = 100;
+            Wall wall3 = Walls[2];
+            wall3.Reset();
+            wall3.X1 = 400;
+            wall3.Y1 = 250;
+            wall3.X2 = 250;
+            wall3.Y2 = 100;
+            Wall wall4 = Walls[3];
+            wall4.Reset();
+            wall4.X1 = 100;
+            wall4.Y1 = 250;
+            wall4.X2 = 250;
+            wall4.Y2 = 400;*/
         }
         #endregion
 

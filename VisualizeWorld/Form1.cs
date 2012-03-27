@@ -161,9 +161,9 @@ namespace VisualizeWorld
 
             // Draw the fitness scores
             g.FillRectangle(Brushes.White, 0, 30, 150, 50);
-            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness)), 
+            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3} MaxVel: {4}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness), world.Agents.First().MaxVelocity), 
                                             DefaultFont, Brushes.Black, 0, 30);
-            g.DrawString(string.Format("\r\nX: {0} Y: {1} prevX: {2} prevY: {3} collide: {4}", world.Agents.First().X, world.Agents.First().Y, world.Agents.First().prevX, world.Agents.First().prevY, world.collide),
+            g.DrawString(string.Format("\r\nX: {0} Y: {1} colNum: {2} prevNum: {3} collide: {4}", Math.Ceiling(world.Agents.First().X), Math.Ceiling(world.Agents.First().Y), Math.Ceiling(world.Walls.First().nextCollisionNum), Math.Ceiling(world.Walls.First().collisionNum), world.collide),
                                             DefaultFont, Brushes.Black, 0, 30);
             g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 

@@ -15,7 +15,8 @@ namespace social_learning
         public float slope { get; set; }
         public float b { get; set; }
         public int Id { get { return _id; } }
-
+        public float collisionNum { get; set; }
+        public float nextCollisionNum { get; set; }
         public Wall(int id)
         {
             _id = id;
@@ -45,18 +46,19 @@ namespace social_learning
         float vY = V * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
 
         
-        float collisionNum = (agent.prevY - (this.slope * agent.prevX + this.b));
-        float nextCollisionNum = ((Y) - (this.slope * (X) + this.b));
+        this.collisionNum = ((Y) - (this.slope * (X) + this.b));
+        this.nextCollisionNum = ((Y+vY) - (this.slope * (X+vX) + this.b));
 
  
         //region check
-    	if (checkRegion(X, Y, vX, vY)){
-       		//checking jumping over the wall 
-        	if ((collisionNum <= 0 && nextCollisionNum >= 0) || (collisionNum >= 0 && nextCollisionNum <= 0))
-        	{
-            		return true;
-        	}
-	    }
+        if (checkRegion(X, Y, vX, vY))
+        {
+           
+                if ((this.collisionNum <= 0 && this.nextCollisionNum >= 0) || (this.collisionNum >= 0 && this.nextCollisionNum <= 0))
+                {
+                    return true;
+                }
+        }
 
         
         return false;
@@ -79,13 +81,13 @@ namespace social_learning
          **/
         public bool checkRegion(float X, float Y, float vX, float vY)
         {
-            if ((X > X1 + vX && X > X2 + vX) || (X < X1 - vX && X < X2 - vX)
-                || (Y > Y1 + vY && Y > Y2 + vY) || (Y < Y1 - vY && Y < Y2 - vY))
+            if (((X <= this.X1 + Math.Abs(vX) && X >= this.X2 - Math.Abs(vX)) || (X >= this.X1 - Math.Abs(vX) && X <= this.X2 + Math.Abs(vX)))
+                && ((Y <= this.Y1 + Math.Abs(vY) && Y >= this.Y2 - Math.Abs(vY)) || (Y >= this.Y1 - Math.Abs(vY) && Y <= this.Y2 + Math.Abs(vY))))
             {
-                return false;
+                return true;
 
             }
-            return true;
+            return false;
         }
     }
 }
