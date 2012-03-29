@@ -298,6 +298,8 @@ namespace social_learning
                             return new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, 8, 4, _world);
                         case AgentTypes.Spinning:
                             return new SpinningAgent(i);
+                        case AgentTypes.Controlled:
+                            return new ControlledAgent(i);
                         default:
                             return null;
                     }

@@ -17,6 +17,8 @@ namespace social_learning
         public int Id { get { return _id; } }
         public float collisionNum { get; set; }
         public float nextCollisionNum { get; set; }
+        public bool inRegion { get; set; }
+
         public Wall(int id)
         {
             _id = id;
@@ -35,15 +37,15 @@ namespace social_learning
      * Check whether an agent collided with a wall.
      **/
 	public bool checkCollision(IAgent agent){
-		getFormula();
+		this.getFormula();
         
         float X = agent.X;
         float Y = agent.Y;
         float V = agent.MaxVelocity;
         
         //velocities of x and y
-        float vX = V * (float)(Math.Cos(agent.Orientation * Math.PI / 180.0));
-        float vY = V * (float)(Math.Sin(agent.Orientation * Math.PI / 180.0));
+        float vX = V * (float)(Math.Cos(agent.Orientation * (Math.PI / 180.0)));
+        float vY = V * (float)(Math.Sin(agent.Orientation * (Math.PI / 180.0)));
 
         
         this.collisionNum = ((Y) - (this.slope * (X) + this.b));
@@ -51,13 +53,13 @@ namespace social_learning
 
  
         //region check
-        if (checkRegion(X, Y, vX, vY))
+        inRegion = checkRegion(X,Y,vX,vY);
+        if (inRegion)
         {
-           
-                if ((this.collisionNum <= 0 && this.nextCollisionNum >= 0) || (this.collisionNum >= 0 && this.nextCollisionNum <= 0))
-                {
+           if ((this.collisionNum <= 0 && this.nextCollisionNum >= 0) || (this.collisionNum >= 0 && this.nextCollisionNum <= 0))
+             {
                     return true;
-                }
+            }
         }
 
         

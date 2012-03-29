@@ -7,6 +7,6 @@ namespace social_learning
 {
     public enum AgentTypes
     {
-        Neural, Social, QLearning, Spinning
+        Neural, Social, QLearning, Spinning, Controlled
     }
 }

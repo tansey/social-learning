@@ -31,6 +31,7 @@ namespace VisualizeWorld
         const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
         const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
         const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_lamark.config.xml";
+        const string CONTROLLED_CONFIG_FILE = @"..\..\..\experiments\controlled.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
         bool running = false;
@@ -77,7 +78,7 @@ namespace VisualizeWorld
             else
             {
                 //!!!!!Slow down
-                Thread.Sleep(100);
+                Thread.Sleep(200);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -135,7 +136,7 @@ namespace VisualizeWorld
 			{
 				Pen myPen = new Pen(Color.Black, 5);
 
-		    	g.DrawLine(myPen, (float)wall.X1, (float)wall.Y1, (float)wall.X2, (float)wall.Y2);
+		    	g.DrawLine(myPen, (float)wall.X1 * scaleX, (float)wall.Y1 * scaleY, (float)wall.X2 * scaleX, (float)wall.Y2 * scaleY);
 			}
 
             // Draw the _agents
@@ -161,9 +162,9 @@ namespace VisualizeWorld
 
             // Draw the fitness scores
             g.FillRectangle(Brushes.White, 0, 30, 150, 50);
-            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3} MaxVel: {4}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness), world.Agents.First().MaxVelocity), 
+            g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3} Orien: {4}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness), world.Agents.First().Orientation), 
                                             DefaultFont, Brushes.Black, 0, 30);
-            g.DrawString(string.Format("\r\nX: {0} Y: {1} colNum: {2} prevNum: {3} collide: {4}", Math.Ceiling(world.Agents.First().X), Math.Ceiling(world.Agents.First().Y), Math.Ceiling(world.Walls.First().nextCollisionNum), Math.Ceiling(world.Walls.First().collisionNum), world.collide),
+            g.DrawString(string.Format("\r\nX: {0} Y: {1} colNum: {2} prevNum: {3} collide: {4} inRegion: {5}", Math.Ceiling(world.Agents.First().X), Math.Ceiling(world.Agents.First().Y), Math.Ceiling(world.Walls.First().nextCollisionNum), Math.Ceiling(world.Walls.First().collisionNum), world.collide, world.Walls.First().inRegion),
                                             DefaultFont, Brushes.Black, 0, 30);
             g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 
@@ -371,6 +372,13 @@ namespace VisualizeWorld
             socialLearningLamarkianToolStripMenuItem.Checked = true;
         }
 
+        private void Controlled_Click(object sender, EventArgs e)
+        {
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = CONTROLLED_CONFIG_FILE;
+            Controlled.Checked = true;
+        }
+
         private void uncheckAllExperimentMenusAndStopEvolution()
         {
             stopEvolution();
@@ -379,6 +387,7 @@ namespace VisualizeWorld
             qLearningToolStripMenuItem.Checked = false;
             socialLearningDarwinianToolStripMenuItem.Checked = false;
             socialLearningLamarkianToolStripMenuItem.Checked = false;
+            Controlled.Checked = false;
         }
         #endregion
 
