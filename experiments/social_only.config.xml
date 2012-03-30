@@ -7,16 +7,17 @@
     <Iters>4</Iters>
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
-  <ComplexityThreshold>50</ComplexityThreshold>
+  <ComplexityThreshold>1000</ComplexityThreshold>
   <AgentType>Social</AgentType>
   <Memory>
-    <Paradigm>IncrementalGrowth</Paradigm>
+    <Paradigm>Fixed</Paradigm>
     <GrowthGenerations>20</GrowthGenerations>
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <PlantLayout>Spiral</PlantLayout>
-  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <TeachingParadigm>EveryoneRewards</TeachingParadigm>
+  <PlantLayout>Uniform</PlantLayout>
+  <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
     Foraging Evolution
  

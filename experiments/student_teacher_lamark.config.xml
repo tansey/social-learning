@@ -15,7 +15,7 @@
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <TeachingParadigm>StudentTeacherActions</TeachingParadigm>
+  <TeachingParadigm>SpeciesChampionOnlineTraining</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>

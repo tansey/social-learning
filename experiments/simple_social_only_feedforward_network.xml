@@ -1,0 +1,48 @@
+<Root>
+  <ActivationFunctions>
+    <Fn id="0" name="PlainSigmoid" prob="1" />
+  </ActivationFunctions>
+  <Networks>
+    <Network id="32" birthGen="0" fitness="0">
+      <Nodes>
+        <Node type="bias" id="0" />
+        <Node type="in" id="1" />
+        <Node type="in" id="2" />
+        <Node type="in" id="3" />
+        <Node type="in" id="4" />
+        <Node type="in" id="5" />
+        <Node type="in" id="6" />
+        <Node type="in" id="7" />
+        <Node type="in" id="8" />
+        <Node type="in" id="9" />
+        <Node type="out" id="10" />
+        <Node type="out" id="11" />
+
+      </Nodes>
+      <Connections>
+        <Con id="12" src="0" tgt="10" wght="-1.52081052772701" />
+        <Con id="13" src="0" tgt="11" wght="-1.6845598211512" />
+        <Con id="14" src="1" tgt="10" wght="-1.69620118569583" />
+        <Con id="15" src="2" tgt="10" wght="-3.96916921250522" />
+        <Con id="16" src="3" tgt="10" wght="2.93344056699425" />
+        <Con id="17" src="4" tgt="10" wght="1.17676534224302" />
+        <Con id="18" src="5" tgt="10" wght="-1.70708711724728" />
+        <Con id="19" src="6" tgt="10" wght="-1.7943993024528" />
+        <Con id="20" src="7" tgt="10" wght="-1.37641483917832" />
+        <Con id="21" src="8" tgt="10" wght="2.62097671162337" />
+        <Con id="22" src="9" tgt="10" wght="4.53539293259382" />
+        <Con id="23" src="1" tgt="11" wght="-3.51246013771743" />
+        <Con id="24" src="2" tgt="11" wght="-0.988918920047581" />
+        <Con id="25" src="3" tgt="11" wght="-1.1676612123847" />
+        <Con id="26" src="4" tgt="11" wght="-1.94942845962942" />
+        <Con id="27" src="5" tgt="11" wght="3.02267516031861" />
+        <Con id="28" src="6" tgt="11" wght="3.24128057342023" />
+        <Con id="29" src="7" tgt="11" wght="-0.714741507545114" />
+        <Con id="30" src="8" tgt="11" wght="3.86384775396436" />
+        <Con id="31" src="9" tgt="11" wght="-3.53660716675222" />
+
+      </Connections>
+    </Network>
+  </Networks>
+</Root>
+

@@ -21,14 +21,19 @@ namespace social_learning
         private ulong _evaluationCount;
         private World _world;
         private IAgent[] _agents;
-        private IList<TGenome> _genomeList;
+        private IList<NeatGenome> _genomeList;
         private int _generations;
-        private HashSet<IAgent> _teachers;
-        private IList<IAgent> _students;
         private FastRandom _random;
-
+        private int _minReward;
+        private List<int> _rewards;
+        private double _rewardThreshold;
+        private int[] _agentGroups;
+		private bool _learningEnabled = true;
+		
         public AgentTypes AgentType { get; set; }
-
+        public int TrialId { get; set; }
+        public string DiversityFile { get; set; }
+		
         /// <summary>
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
         /// The number of parallel threads defaults to Environment.ProcessorCount.
@@ -40,11 +45,32 @@ namespace social_learning
             _world = environment;
             _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
             _world.Stepped += new World.StepEventHandler(_world_Stepped);
+            _world.PlantEaten += new World.PlantEatenHandler(addRewardToStatisticsList);
+            _world.Stepped += new World.StepEventHandler(updateRewardStatistics);
             BackpropEpochsPerExample = 1;
             MemParadigm = MemoryParadigm.Fixed;
             CurrentMemorySize = 1;
             GenerationsPerMemorySize = 20;
             _random = new FastRandom();
+        }
+
+        void addRewardToStatisticsList(object sender, IAgent eater, Plant eaten)
+        {
+            if (TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+                return;
+            _rewards.Add(eaten.Species.Reward);
+        }
+
+
+        void updateRewardStatistics(object sender, EventArgs e)
+        {
+            if (TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+                return;
+
+            if (_rewards.Count == 0)
+                return;
+
+            _rewardThreshold = _rewards.Average() + _rewards.Stdev();
         }
 
         public int BackpropEpochsPerExample { get; set; }
@@ -96,19 +122,34 @@ namespace social_learning
         public int CurrentMemorySize { get; set; }
         public int MaxMemorySize { get; set; }
         public TeachingParadigm TeachParadigm { get; set; }
+        public int UpdatesThisGeneration { get; set; }
+	    
+
 
         /// <summary>
         /// Main genome evaluation loop with no phenome caching (decode on each evaluation).
         /// </summary>
         public void Evaluate(IList<TGenome> genomeList)
         {
-            _genomeList = genomeList;
+            //var groups = genomeList.GroupBy(g => g.SpecieIdx);
+            //foreach (var g in groups)
+            //    Console.WriteLine("{0}: {1}", g.First().SpecieIdx, g.Count());
+            //var champSpeci = genomeList.First(t => t.EvaluationInfo.Fitness == genomeList.Max(b => b.EvaluationInfo.Fitness));
+            //Console.WriteLine("Best: {0} -> {1}", champSpeci.Id, champSpeci.SpecieIdx);
+            //Console.WriteLine("Biggest: {0}", groups.First(x => x.Count() == groups.Max(y => y.Count())).First().SpecieIdx);
+            _genomeList = (IList<NeatGenome>)genomeList;
             _agents = new IAgent[genomeList.Count];
-            if (TeachParadigm == TeachingParadigm.StudentTeacherActions)
+            UpdatesThisGeneration = 0;
+            if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
             {
-                _teachers = new HashSet<IAgent>();
-                _students = new List<IAgent>();
+                _minReward = _world.PlantTypes.Min(p => p.Reward);
             }
+            else if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
+            {
+                _rewards = new List<int>();
+                _rewardThreshold = 0;
+            }
+
             for(int i = 0; i < _agents.Length; i++)
             {
                 // Decode the genome.
@@ -120,42 +161,39 @@ namespace social_learning
                     Console.WriteLine("Couldn't decode genome {0}!", i);
                     _agents[i] = new SpinningAgent(i);
                 }
-                else
-                    switch (AgentType)
-                    {
-                        case AgentTypes.Neural:
-                            _agents[i] = new NeuralAgent(i, phenome);
-                            break;
-                        case AgentTypes.Social:
-                            _agents[i] = new SocialAgent(i, phenome)
-                            {
-                                MemorySize = CurrentMemorySize
-                            };
-                            var network = (FastCyclicNetwork)phenome;
-                            network.Momentum = ((SocialAgent)_agents[i]).Momentum;
-                            network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
-
-                            // In the Student/Teacher paradigm, each agent either teachers or learns.
-                            // We assume that the survivors from the previous generation act as teachers
-                            // and children are students.
-                            if (TeachParadigm == TeachingParadigm.StudentTeacherActions)
-                            {
-                                if (_genomeList[i].BirthGeneration != _generations)
-                                    _teachers.Add(_agents[i]);
-                                else
-                                    _students.Add(_agents[i]);
-                            }
-                            break;
-                        case AgentTypes.QLearning:
-                            _agents[i] = new QLearningAgent(i, phenome, 8, 4, _world);
-                            break;
-                        case AgentTypes.Spinning:
-                            _agents[i] = new SpinningAgent(i);
-                            break;
-                        default:
-                            break;
-                    }
+                else	
+					_agents[i] = getAgent(i, phenome);
             }
+
+            #region Create random groups of proportional size
+            _agentGroups = new int[_agents.Length];
+            //var allSpecies = _agents.GroupBy(g => ((NeuralAgent)g).SpeciesId);
+            List<int> agentIds = new List<int>();
+            for (int i = 0; i < _agentGroups.Length; i++)
+            {
+                _agentGroups[i] = -1;
+                agentIds.Add(i);
+            }
+            
+            const int NUM_GROUPS = 10;
+            for (int i = 0; i < _agentGroups.Length; i++)
+			{
+				int temp = _random.Next(agentIds.Count);
+				int idx = agentIds[temp];
+				_agentGroups[idx] = i % NUM_GROUPS;
+				agentIds.RemoveAt(temp);
+			}
+			if(_agentGroups.GroupBy(g => g).Min(ag => ag.Count()) < 10)
+				throw new Exception("Improper initialization");
+			if(_agentGroups.GroupBy(g => g).Count() < 10)
+				throw new Exception("Improper initialization");
+            #endregion
+			Boolean before = true;
+            writeDiversityStats(before);
+            
+            if (TeachParadigm == TeachingParadigm.GenerationalChampionOfflineTraining)
+                trainPopulationUsingGenerationalChampion();
+
 
             _world.Agents = _agents;
             _world.Reset();
@@ -170,15 +208,14 @@ namespace social_learning
             for(int i = 0; i < _agents.Length; i++)
             {
                 // NEAT requires fitness to be >= 0, so if the agent had negative fitness, we cap it at 0.
-                genomeList[i].EvaluationInfo.SetFitness(Math.Max(0, _agents[i].Fitness));
+                _genomeList[i].EvaluationInfo.SetFitness(Math.Max(0, _agents[i].Fitness));
 
                 // This alternate fitness is purely for logging purposes, so we use the actual fitness
-                genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
+                _genomeList[i].EvaluationInfo.AlternativeFitness = _agents[i].Fitness;
             }
-
-            _evaluationCount += (ulong)_agents.Length;
-            _generations++;
-            _world.Reset();
+			before = false;
+            // Analyze diversity after
+            writeDiversityStats(before);
 
             // Lamarkian Evolution
             if (EvoParadigm == EvolutionParadigm.Lamarkian)
@@ -207,37 +244,168 @@ namespace social_learning
                 CurrentMemorySize++;
         }
 
+        void trainPopulationUsingGenerationalChampion()
+        {
+
+            if (_generations == 0)
+                return;
+			int num_teachers = 1;
+            var teacherIdx = getTeacherIndexes(num_teachers);
+            var teachers = new List<IAgent>();
+            foreach(var i in teacherIdx)
+                teachers.Add(_agents[i]);
+            
+            var updateFn = new World.StepEventHandler(generationalChampionTrain);
+            _world.Stepped += updateFn;
+            _world.Agents = teachers;
+            _world.Reset();
+
+            for (int trainingTimestep = 0; trainingTimestep < 200; trainingTimestep++)
+                _world.Step();
+
+            _world.Stepped -= updateFn;
+        }
+
+        void generationalChampionTrain(object sender, EventArgs e)
+        {
+            foreach (var student in _agents)
+            {
+                if (_world.Agents.Contains(student))
+                    continue;
+
+                var teacher = _world.Agents.ElementAt(_random.NextInt() % _world.Agents.Count());
+
+                TeachAgent(teacher, student, 0.05);
+            }
+        }
+		
+		private Agent getAgent(int i, IBlackBox phenome){
+			Agent a;
+			switch (AgentType)
+                    {
+                        case AgentTypes.Neural:
+                            return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
+                        case AgentTypes.Social:
+                            a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome)
+                            {
+                                MemorySize = CurrentMemorySize
+                            };
+                            var network = (FastCyclicNetwork)phenome;
+                            network.Momentum = ((SocialAgent) a).Momentum;
+                            network.BackpropLearningRate = ((SocialAgent) a).LearningRate;
+                            return a ;
+                        case AgentTypes.QLearning:
+                            return new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, 8, 4, _world);
+                        case AgentTypes.Spinning:
+                            return new SpinningAgent(i);
+                        case AgentTypes.Controlled:
+                            return new ControlledAgent(i);
+                        default:
+                            return null;
+                    }
+		}
+		
+        List<int> getTeacherIndexes(int num_teachers)
+        {
+            List<int> champIndexes = new List<int>();
+            for (int i = 0; i < num_teachers; i++)
+                champIndexes.Add(i);
+
+            for (int i = num_teachers; i < _genomeList.Count; i++)
+                if (_genomeList[i].EvaluationInfo.Fitness > champIndexes.Max(t => _genomeList[t].EvaluationInfo.Fitness))
+                {
+                    champIndexes.Add(i);
+                    champIndexes.RemoveAt(argMin(champIndexes));
+                }
+            return champIndexes;
+        }
+		
+        private void TeachAgent(IAgent teacher, IAgent student, double gaussianNoiseStdev)
+        {
+            UpdatesThisGeneration++;
+
+            // Get the trajectory to learn from
+            var memory = ((SocialAgent)teacher).Memory;
+
+            // Get the neural network controlling this agent
+            var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
+
+            // Perform a fixed number of backprop epochs to train this agent
+            for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
+                foreach (var example in memory)
+                {
+                    double[] outputs = new double[example.Outputs.Length];
+                    example.Outputs.CopyTo(outputs, 0);
+                    for (int i = 0; i < outputs.Length; i++)
+                        outputs[i] = clamp(gaussianMutation(outputs[i], gaussianNoiseStdev), 0, 1);
+                    network.Train(example.Inputs, outputs);
+                }
+        }
+		
         // Handle the reward-based teaching paradigms whenever a plant is eaten.
         void _world_PlantEaten(object sender, IAgent eater, Plant eaten)
         {
+            if (!_learningEnabled)
+                return;
             // if we're not dealing with a social agent, then skip this notification.
             if (!(eater is SocialAgent))
                 return;
 
             // Only learn from rewards if we're using a reward-based social learning paradigm
-            if (TeachParadigm != TeachingParadigm.EveryoneRewards && TeachParadigm != TeachingParadigm.SameSpeciesRewards)
+            if (TeachParadigm != TeachingParadigm.EveryoneRewards 
+                && TeachParadigm != TeachingParadigm.SameSpeciesRewards
+                && TeachParadigm != TeachingParadigm.SameSpeciesRewardProportional
+                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
                 return;
 
             // Only learn from positive rewards.
             if (eaten.Species.Reward > 0)
             {
                 // Train all the agents in parallel
-                Parallel.For(0, _agents.Length, i =>
+                //Parallel.For(0, _agents.Length, i =>
+				for(int i = 0; i < _agents.Length; i++)
                 {
                     var agent = _agents[i];
 
                     // Do not try to teach yourself
                     if (agent == eater)
-                        return;//continue;
-
+                        //return;
+					    continue;
+                    
                     // Only update individuals in your species
-                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewards
-                        && _genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
-                        return;//continue;
+                    if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
+                        || TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional
+                        || TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
+                        && _agentGroups[eater.Id] != _agentGroups[i])// ******* TEMPORARY *******
+                        //&& _genomeList[i].SpecieIdx != _genomeList[eater.Id].SpecieIdx)
+                        //return;
+						continue;
+                    
+
+                    // Only learn from high-valued actions
+                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
+                        && eaten.Species.Reward < _rewardThreshold
+                        && _rewards.Count > 20)
+                        //return;
+						continue;
+
+                    // Only learn from better agens
+                    //if (_agents[i].Fitness > _agents[eater.Id].Fitness)
+                    //    return;
+
 
                     // Teach the agent to act like the eater
                     TeachAgent(eater, agent);
-                });
+
+                    // If we're using reward-proportional updating, update the appropriate number of times
+                    if (TeachParadigm == TeachingParadigm.SameSpeciesRewardProportional)
+                    {
+                        int updates = Math.Min(20, eaten.Species.Reward / _minReward);
+                        for (int update = 1; update < updates; update++)
+                            TeachAgent(eater, agent);
+                    }
+                //});
+				}
             }
         }
 
@@ -245,25 +413,103 @@ namespace social_learning
         void _world_Stepped(object sender, EventArgs e)
         {
             // Only learn from every step if we're using a student/teacher paradigm
-            if (TeachParadigm != TeachingParadigm.StudentTeacherActions)
+            if (TeachParadigm != TeachingParadigm.SpeciesChampionOnlineTraining)
                 return;
 
-            // Probabilistically teach and probabilistically learn.
-            foreach (var teacher in _teachers)
+            var allSpecies = _agents.GroupBy(g => _agentGroups[g.Id]);
+            foreach (var species in allSpecies)
             {
-                if (_random.NextDouble() > 0.2)
-                    continue;
+                var ordered = species.OrderByDescending(a => a.Fitness);
+                var best = ordered.First();
+                var worst = ordered.Last();
 
-                Parallel.ForEach(_students, student =>
-                {
-                    if (_random.NextDouble() < 0.2)
-                        TeachAgent(teacher, student);
-                });
+                TeachAgent(best, worst);
             }
-        }
+            
+			#region eiben
+            // Mimic the Eiben paper with probabilistic, distance-based teaching
+            //const double MAX_DISTANCE = 100;
+            //foreach (var agent in _agents)
+            //{
+            //    if (_random.NextDouble() > 0.2)
+            //        continue;
+            //    var student = _agents.Where(a => 
+            //        Math.Sqrt((a.X - agent.X) * (a.X - agent.X) + (a.Y - agent.Y) * (a.Y - agent.Y)) <= MAX_DISTANCE)
+            //        .OrderBy(a => a.Fitness)
+            //        .First();
+            //    TeachAgent(agent, student);
+            //}
 
+            //var orderedAgents = _agents.OrderByDescending(a => a.Fitness);
+
+            //// Take the top 10 agents and label them as teachers
+            //var teachers = orderedAgents.Take(1);
+            
+            //// Take the remaining agents and label them as students
+            //var students = orderedAgents.Skip(1);
+
+            //// Students probabilistically learn from teachers
+            //foreach (var teacher in teachers)
+            //{
+            //    if (teacher.Fitness <= 0)
+            //        continue;
+
+            //    Parallel.ForEach(students, student =>
+            //    {
+            //        TeachAgent(teacher, student);
+            //    });
+            //}
+
+            // Probabilistically teach and probabilistically learn.
+            //foreach (var teacher in _teachers)
+            //{
+            //    //if (_random.NextDouble() > 0.2)
+            //        //continue;
+
+            //    Parallel.ForEach(_students, student =>
+            //    {
+            //        lock(_random)
+            //            if (_random.NextDouble() < 0.2)
+            //                TeachAgent(teacher, student);
+            //    });
+            //}
+			#endregion
+        }
+		
+		void writeDiversityStats(Boolean before){
+			if (_generations > 0)
+            {
+				TextWriter writer;
+                _learningEnabled = false;
+                DiversityAnalyzer analyser = new DiversityAnalyzer(_world);
+                double[][] readings = analyser.getSensorReadings();
+				if (before)
+					writer = new StreamWriter(DiversityFile.Replace(".csv", "_before.csv"), true);
+				else
+					writer = new StreamWriter(DiversityFile.Replace(".csv", "_after.csv"), true);
+				
+						
+                using (writer)
+                {
+                    List<double> orientationVariances = new List<double>();
+                    List<double> velocityVariances = new List<double>();
+                    foreach (double[] reading in readings)
+                    {
+                        var variances = analyser.getResponseVariance(reading);
+                        orientationVariances.Add(variances[0]);
+                        velocityVariances.Add(variances[1]);
+                    }
+                    writer.WriteLine("{0},{1},{2}", _generations, orientationVariances.Average(), velocityVariances.Average());
+                }
+                _world.Reset();
+                _learningEnabled = true;
+            }
+		}
+		
         private void TeachAgent(IAgent teacher, IAgent student)
         {
+            UpdatesThisGeneration++;
+
             // Get the trajectory to learn from
             var memory = ((SocialAgent)teacher).Memory;
 
@@ -275,6 +521,39 @@ namespace social_learning
                 foreach (var example in memory)
                     network.Train(example.Inputs, example.Outputs);
         }
+		
+		#region mathutils
+		        private double gaussianMutation(double mean, double stddev)
+        {
+            double x1 = 1 - _random.NextDouble();
+            double x2 = 1 - _random.NextDouble();
+
+            double y1 = Math.Sqrt(-2.0 * Math.Log(x1)) * Math.Cos(2.0 * Math.PI * x2);
+            return y1 * stddev + mean;
+        }
+
+        private double clamp(double val, double min, double max)
+        {
+            if (val >= max)
+                return max;
+            if (val <= min)
+                return min;
+            return val;
+        }
+		
+		     private int argMin(List<int> champs)
+        {
+            int min = 0;
+            for (int i = 1; i < champs.Count; i++)
+            {
+                if (_genomeList[i].EvaluationInfo.Fitness < _genomeList[min].EvaluationInfo.Fitness)
+                    min = i;
+            }
+            return min;
+        }
+
+
+		#endregion
 
     }
 }

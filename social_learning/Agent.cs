@@ -28,14 +28,15 @@ namespace social_learning
         public void Step(double[] sensors)
         {
             var output = getRotationAndVelocity(sensors);
-
             Orientation += output[0];
             Orientation += 360;
             Orientation %= 360;
 
             Velocity += output[1];
             Velocity = Math.Min(MaxVelocity, Math.Max(0, Velocity));
-
+            
+            //Orientation = 348;
+            //Velocity = MaxVelocity;
             X += Velocity * (float)(Math.Cos(Orientation * Math.PI / 180.0));
             Y += Velocity * (float)(Math.Sin(Orientation * Math.PI / 180.0));
         }

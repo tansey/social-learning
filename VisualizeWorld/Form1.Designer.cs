@@ -39,6 +39,7 @@
             this.qLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningDarwinianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.socialLearningLamarkianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Controlled = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
             this.basicNEATnoLearningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,6 +113,7 @@
             this.qLearningToolStripMenuItem,
             this.socialLearningDarwinianToolStripMenuItem,
             this.socialLearningLamarkianToolStripMenuItem,
+            this.Controlled,
             this.toolStripSeparator1,
             this.toolStripTextBox2,
             this.basicNEATnoLearningToolStripMenuItem,
@@ -162,6 +164,12 @@
             this.socialLearningLamarkianToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.socialLearningLamarkianToolStripMenuItem.Text = "Social Learning (Lamarkian)";
             this.socialLearningLamarkianToolStripMenuItem.Click += new System.EventHandler(this.socialLearningLamarkianToolStripMenuItem_Click);
+            // 
+            // Controlled
+            // 
+            this.Controlled.Name = "Controlled";
+            this.Controlled.Size = new System.Drawing.Size(220, 22);
+            this.Controlled.Text = "Controlled";
             // 
             // toolStripSeparator1
             // 
@@ -287,6 +295,7 @@
         private System.Windows.Forms.ToolStripMenuItem socialPredatorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem socialPreyAndPredatorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
+        private System.Windows.Forms.ToolStripMenuItem Controlled;
     }
 }
 

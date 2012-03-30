@@ -12,10 +12,12 @@ namespace social_learning
         const float MAX_TURNING_RADIUS = 30f;
         const float MAX_SPEED_CHANGE = 1f;
         public IBlackBox Brain { get; set; }
+        public int SpeciesId { get; set; }
         
-        public NeuralAgent(int id, IBlackBox brain) : base(id)
+        public NeuralAgent(int id, int speciesId, IBlackBox brain) : base(id)
         {
             Brain = brain;
+            SpeciesId = speciesId;
         }
 
         protected override float[] getRotationAndVelocity(double[] sensors)
@@ -35,7 +37,7 @@ namespace social_learning
             return new float[] { orientation, velocityDelta };
         }
 
-        protected virtual ISignalArray activateNetwork(double[] sensors)
+        public virtual ISignalArray activateNetwork(double[] sensors)
         {
             Brain.ResetState();
 
