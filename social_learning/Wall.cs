@@ -36,16 +36,19 @@ namespace social_learning
     /**
      * Check whether an agent collided with a wall.
      **/
-	public bool checkCollision(IAgent agent){
+	public bool checkCollision(IAgent agent, float[] rotandVel){
 		this.getFormula();
         
         float X = agent.X;
         float Y = agent.Y;
-        float V = agent.MaxVelocity;
+        float V = Math.Min(agent.MaxVelocity, Math.Max(0, agent.Velocity + rotandVel[1]));
+	float Orient = agent.Orientation + rotandVel[0];
+        Orient += 360;
+        Orient %= 360;
         
         //velocities of x and y
-        float vX = V * (float)(Math.Cos(agent.Orientation * (Math.PI / 180.0)));
-        float vY = V * (float)(Math.Sin(agent.Orientation * (Math.PI / 180.0)));
+        float vX = V * (float)(Math.Cos(Orient * (Math.PI / 180.0)));
+        float vY = V * (float)(Math.Sin(Orient * (Math.PI / 180.0)));
 
         
         this.collisionNum = ((Y) - (this.slope * (X) + this.b));

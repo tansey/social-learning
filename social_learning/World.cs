@@ -135,7 +135,7 @@ namespace social_learning
                 collide = false;
                 foreach (var wall in Walls)
                 {
-                    if (wall.checkCollision(agent))
+                    if (wall.checkCollision(agent, agent.getRotationAndVelocity(sensors)))
                     {
                         collide = true;
                     }
