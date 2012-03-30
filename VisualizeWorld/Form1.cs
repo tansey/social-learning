@@ -77,8 +77,8 @@ namespace VisualizeWorld
                 this.Invalidate();
             else
             {
-                //!!!!!Slow down
-                Thread.Sleep(200);
+                //!!!!!SPEED: Slow down
+                Thread.Sleep(100);
                 this.BeginInvoke(new worldChangedDelegate(world_Changed), new object[] { sender, e });
             }
         }
@@ -164,7 +164,7 @@ namespace VisualizeWorld
             g.FillRectangle(Brushes.White, 0, 30, 150, 50);
             g.DrawString(string.Format("Gen: {0} Best: {1} Agent1: {2} Average: {3} Orien: {4}", gens, world.Agents.Max(a => a.Fitness), world.Agents.First().Fitness, world.Agents.Average(a => a.Fitness), world.Agents.First().Orientation), 
                                             DefaultFont, Brushes.Black, 0, 30);
-            g.DrawString(string.Format("\r\nX: {0} Y: {1} colNum: {2} prevNum: {3} collide: {4} inRegion: {5}", Math.Ceiling(world.Agents.First().X), Math.Ceiling(world.Agents.First().Y), Math.Ceiling(world.Walls.First().nextCollisionNum), Math.Ceiling(world.Walls.First().collisionNum), world.collide, world.Walls.First().inRegion),
+            g.DrawString(string.Format("\r\nX: {0} Y: {1} colNum: {2} prevNum: {3} collide: {4} inRegion: {5}", Math.Ceiling(world.Agents.First().X), Math.Ceiling(world.Agents.First().Y), Math.Ceiling(world.Walls.First().collisionNum), Math.Ceiling(world.Walls.First().prevCollisionNum), world.collide, world.Walls.First().inRegion),
                                             DefaultFont, Brushes.Black, 0, 30);
             g.DrawString(_ea == null ? "" : _ea.ComplexityRegulationMode.ToString(), DefaultFont, Brushes.Black, 0, 50);
 

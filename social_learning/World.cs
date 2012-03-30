@@ -130,12 +130,16 @@ namespace social_learning
             foreach (var agent in Agents)
             {
                 var sensors = calculateSensors(agent);
-				//calculateWallSensors(agent);
 
+                agent.prevX = agent.X;
+                agent.prevY = agent.Y;
+
+                agent.Step(sensors);
+                
                 collide = false;
                 foreach (var wall in Walls)
                 {
-                    if (wall.checkCollision(agent, agent.getRotationAndVelocity(sensors)))
+                    if (wall.checkCollision(agent))
                     {
                         collide = true;
                     }
@@ -146,11 +150,6 @@ namespace social_learning
                     agent.Y = agent.prevY;
                 }
 
-                agent.prevX = agent.X;
-                agent.prevY = agent.Y;
-
-                agent.Step(sensors);
-                
                 if (agent.X >= Width)
                     agent.X -= Width;
                 if (agent.Y > Height)

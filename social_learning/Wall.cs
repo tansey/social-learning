@@ -16,7 +16,7 @@ namespace social_learning
         public float b { get; set; }
         public int Id { get { return _id; } }
         public float collisionNum { get; set; }
-        public float nextCollisionNum { get; set; }
+        public float prevCollisionNum { get; set; }
         public bool inRegion { get; set; }
 
         public Wall(int id)
@@ -36,36 +36,33 @@ namespace social_learning
     /**
      * Check whether an agent collided with a wall.
      **/
-	public bool checkCollision(IAgent agent, float[] rotandVel){
+	public bool checkCollision(IAgent agent){
 		this.getFormula();
         
         float X = agent.X;
         float Y = agent.Y;
-        float V = Math.Min(agent.MaxVelocity, Math.Max(0, agent.Velocity + rotandVel[1]));
-	float Orient = agent.Orientation + rotandVel[0];
+        float V = Math.Min(agent.MaxVelocity, Math.Max(0, agent.Velocity));
+	    float Orient = agent.Orientation;
         Orient += 360;
         Orient %= 360;
         
         //velocities of x and y
         float vX = V * (float)(Math.Cos(Orient * (Math.PI / 180.0)));
         float vY = V * (float)(Math.Sin(Orient * (Math.PI / 180.0)));
-
-        
-        this.collisionNum = ((Y) - (this.slope * (X) + this.b));
-        this.nextCollisionNum = ((Y+vY) - (this.slope * (X+vX) + this.b));
-
  
+        this.prevCollisionNum = collisionNum;
+        this.collisionNum = ((Y) - (this.slope * (X) + this.b));
+        
         //region check
         inRegion = checkRegion(X,Y,vX,vY);
         if (inRegion)
         {
-           if ((this.collisionNum <= 0 && this.nextCollisionNum >= 0) || (this.collisionNum >= 0 && this.nextCollisionNum <= 0))
+           if ((this.collisionNum <= 0 && this.prevCollisionNum >= 0) || (this.collisionNum >= 0 && this.prevCollisionNum <= 0))
              {
                     return true;
             }
         }
 
-        
         return false;
         //return (Y - (this.slope*X + this.b)) == 0;
 
@@ -78,6 +75,9 @@ namespace social_learning
 			this.Y2 = 0;
 			this.slope = 0;
 			this.b = 0;
+            this.collisionNum = 0;
+            this.prevCollisionNum = 0;
+            this.inRegion = false;
 		}
 
         /**
