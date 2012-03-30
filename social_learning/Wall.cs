@@ -50,7 +50,7 @@ namespace social_learning
 
  
         //region check
-	if (checkRegion(X, Y, vX, vY)){
+	if (checkRegion(X, Y, V, V)){
        		//checking jumping over the wall 
         	if ((collisionNum <= 0 && nextCollisionNum >= 0) || (collisionNum >= 0 && nextCollisionNum <= 0))
         	{
