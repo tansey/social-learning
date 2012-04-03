@@ -14,7 +14,7 @@ namespace social_learning
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
-		private const int wallRadius = 100;
+		private const int wallRadius = 200;
         private const int MAX_NUM_WALLS = 1;
         private const bool isFlippingWalls = true;
         public bool collide = false;
@@ -142,12 +142,15 @@ namespace social_learning
                     if (wall.checkCollision(agent))
                     {
                         collide = true;
+                        float[] XYintersect = new float[2];
+                        XYintersect = wall.getXYinteresect(agent);
+                        float Xintersect = XYintersect[0];
+                        float Yintersect = XYintersect[1];
+                        agent.X = agent.prevX;
+                        agent.Y = agent.prevY;
+                        //agent.X = (agent.prevX + Xintersect) / 2;
+                        //agent.Y = (agent.prevY + Yintersect) / 2;
                     }
-                }
-
-                if(collide){
-                    agent.X = agent.prevX;
-                    agent.Y = agent.prevY;
                 }
 
                 if (agent.X >= Width)
@@ -158,9 +161,6 @@ namespace social_learning
                     agent.X += Width;
                 if (agent.Y < 0)
                     agent.Y += Height;
-
-		 
-
             }
 
             // Make a separate pass over all the agents, now that they're in new locations
@@ -321,8 +321,9 @@ namespace social_learning
         #region Walls Layouts
         private void layoutWalls()
         {
-            /*bool createWall = true;
-            //int numWalls = 0;
+            /*
+            bool createWall = true;
+            int numWalls = 0;
             foreach (var plant in Plants)
             {
 	            if(createWall && numWalls < MAX_NUM_WALLS){
@@ -330,8 +331,9 @@ namespace social_learning
 	                wall.Reset();
 					// theta1.x = r * Cos(angle) + plant.x;
 					// theta1.y = r * Sin(angle) + plant.y;
-                    double theta = 0.0;
-                    double theta2 = theta + 90;
+                    Random r = new Random();
+                    double theta = r.NextDouble() * 360;
+                    double theta2 = (theta + 90) % 360;
                     wall.X1 = (float)(wallRadius * Math.Cos(theta) + plant.X);
                     wall.Y1 = (float)(wallRadius * Math.Sin(theta) + plant.Y);
                     wall.X2 = (float)(wallRadius * Math.Cos(theta2) + plant.X);
@@ -341,6 +343,7 @@ namespace social_learning
                 if(isFlippingWalls)
 	                createWall = !createWall;
             }*/
+            
             Wall wall1 = Walls[0];
             wall1.Reset();
             wall1.X1 = 400;
@@ -474,7 +477,8 @@ namespace social_learning
 		private void getShortestDistance(IAgent agent, Wall wall, ref float shortestX, ref float shortestY)
 		{
 			//calculate slope and b
-			wall.getFormula();
+            float[] wallLine = new float[2];
+			wallLine = wall.getFormula(wall.X1,wall.Y1,wall.X2,wall.Y2);
 			int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X1, (int)wall.Y1);	
 			int[] distanceAndOrientation2 = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)wall.X2, (int)wall.Y2);
 			int distanceXY1 = distanceAndOrientation[0];
@@ -483,8 +487,8 @@ namespace social_learning
 			//int posXY2 = distanceAndOrientation2[1];
 
 			//If agent is looking at the direction of the point of XY1
-			shortestX = (wall.slope * agent.Y + agent.X - wall.slope * wall.b)/(wall.slope*wall.slope + 1);
-			shortestY = wall.slope * shortestX + wall.b;
+			shortestX = (wallLine[0] * agent.Y + agent.X - wallLine[0] * wallLine[1])/(wallLine[0]*wallLine[0] + 1);
+			shortestY = wallLine[0] * shortestX + wallLine[1];
 
 			//If agent is not in the region of the wall, estimate the point to the either endpoint of the wall. 
 			if(!wall.checkRegion(shortestX, shortestY, 0, 0)){
