@@ -202,7 +202,7 @@ namespace social_learning
 
         private void GenomesToAcceptability(IList<TGenome> genomeList)
         {
-            const string TEMP_NETWORK_FILE = "____temp____network.xml";
+            string TEMP_NETWORK_FILE = string.Format("____temp{0}____network.xml", TrialId);
 
             var neatGenomeParams = new NeatGenomeParameters()
             {

@@ -64,6 +64,7 @@ namespace CondorApp
             xmlConfig.Load(XMLFile);
             _experiment.Initialize("EgalitarianSocialLearning", xmlConfig.DocumentElement);
             _experiment.World.SensorLookup = sensorDict;
+            _experiment.TrialId = _trialNum;
 
             // Create the evolution algorithm and attach the update event.
             _ea = _experiment.CreateEvolutionAlgorithm();

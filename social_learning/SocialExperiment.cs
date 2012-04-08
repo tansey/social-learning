@@ -101,6 +101,7 @@ namespace social_learning
         public TeachingParadigm TeachParadigm { get; set; }
         public ForagingEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
+        public int TrialId { get; set; }
         
         public SocialExperiment()
         {
@@ -175,9 +176,10 @@ namespace social_learning
             _eaParams.SpecieCount = _specieCount;
             _neatGenomeParams = new NeatGenomeParameters()
             {
-                ActivationFn = PlainSigmoid.__DefaultInstance,
-                //InitialInterconnectionsProportion = 1
+                ActivationFn = PlainSigmoid.__DefaultInstance
             };
+            if (_teaching != TeachingParadigm.EgalitarianEvolvedAcceptability)
+                _neatGenomeParams.InitialInterconnectionsProportion = 1;
         }
 
         /// <summary>
@@ -265,7 +267,8 @@ namespace social_learning
                 MemParadigm = _memory,
                 GenerationsPerMemorySize = _memGens,
                 MaxMemorySize = _maxMemorySize,
-                TeachParadigm = _teaching
+                TeachParadigm = _teaching,
+                TrialId = TrialId
             };
             
             // Initialize the evolution algorithm.
