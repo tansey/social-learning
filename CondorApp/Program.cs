@@ -88,6 +88,10 @@ namespace CondorApp
             if (finished)
                 return;
 
+            Console.WriteLine(_experiment.Evaluator.TeachParadigm);
+            Console.WriteLine(_experiment.Evaluator.EvoParadigm);
+            Console.WriteLine(_experiment.Evaluator.AgentType);
+
             // The average fitness of each genome.
             double averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);
 

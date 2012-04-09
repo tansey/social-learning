@@ -198,6 +198,9 @@ namespace social_learning
                 && _generations % GenerationsPerMemorySize == 0
                 && CurrentMemorySize < MaxMemorySize)
                 CurrentMemorySize++;
+
+            _generations++;
+            _evaluationCount += (ulong) genomeList.Count;
         }
 
         private void GenomesToAcceptability(IList<TGenome> genomeList)
@@ -566,17 +569,13 @@ namespace social_learning
 		void writeDiversityStats(bool before){
 			if (_generations > 0)
             {
-				TextWriter writer;
+				
                 _learningEnabled = false;
                 DiversityAnalyzer analyser = new DiversityAnalyzer(_world);
                 double[][] readings = analyser.getSensorReadings();
-				if (before)
-					writer = new StreamWriter(DiversityFile.Replace(".csv", "_before.csv"), true);
-				else
-					writer = new StreamWriter(DiversityFile.Replace(".csv", "_after.csv"), true);
-				
+                string diverseFile = before ? DiversityFile.Replace(".csv", "_before.csv") : DiversityFile.Replace(".csv", "_after.csv");
 						
-                using (writer)
+                using (TextWriter writer = new StreamWriter(diverseFile, true))
                 {
                     List<double> orientationVariances = new List<double>();
                     List<double> velocityVariances = new List<double>();

@@ -71,7 +71,7 @@ namespace BatchExperiment
             Console.Write("Run student/teacher lamarkian? ");
             bool runStudentTeacherLamark = GetCommandLineArg(false);
 
-            sensorDict = new SensorDictionary(100, 500, 500);
+            //sensorDict = new SensorDictionary(100, 2000, 2000);
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("*** Settings ***");
@@ -265,7 +265,6 @@ namespace BatchExperiment
             // time when the algorithm is stopped.
             if (finished)
                 return;
-
 
             // The average fitness of each genome.
             double averageFitness = _ea.GenomeList.Average(x => x.EvaluationInfo.Fitness);

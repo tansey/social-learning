@@ -45,6 +45,7 @@ namespace social_learning
         static FastRandom _random = new FastRandom();
         int _outputs;
         int _inputs;
+        bool _logDiversity;
 
         const int PLANT_TYPES = 5;
 
@@ -124,6 +125,9 @@ namespace social_learning
             _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"));
             _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
+            bool? diverse = XmlUtils.TryGetValueAsBool(xmlConfig, "LogDiversity");
+            if (diverse.HasValue && diverse.Value)
+                _logDiversity = true;
             if (_agentType == AgentTypes.Social)
             {
                 var memSection = xmlConfig.GetElementsByTagName("Memory")[0] as XmlElement;
