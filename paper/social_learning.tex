@@ -95,12 +95,12 @@ The final fitness of each phenome, then, reflects the performance of the individ
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.333]{world.pdf}
-  \caption{The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
+  \caption{\textbf{The foraging domain.} This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
   \label{fig:foraging-world}
 \end{figure}
 \begin{figure}[t]
   \centering
-    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{\textbf{The architecture of our foraging agents.} A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
   \label{fig:agent-architecture}
 \end{figure}
 
@@ -191,7 +191,7 @@ Four main experiments were conducted: 1) determining the baseline performance of
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{social_learning_vs_neuroevolution.pdf}
-  \caption{A comparison of the two learning components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
+  \caption{\textbf{Social Learning Only vs. Neuroevolution}A comparison of the two learning components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
   \label{fig:social-neuro}
 \end{figure}
 
@@ -210,7 +210,7 @@ Genetic inheritance paradigms in evolution fall into one of two main categories:
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{darwinian_vs_lamarckian_evolution.pdf}
-  \caption{The effects of Darwinian and Lamarckian evolution when using a monocultural variant of ESL.  While both evolutionary paradigms converge rapidly Lamarckian evolution is more effective than Darwinian in the foraging domain.  Consequently, Lamarckian evolution is the paradigm used in all remaining experiments.}
+  \caption{\textbf{Social Darwinian vs. Social Lamarckian}The effects of Darwinian and Lamarckian evolution when using a monocultural variant of ESL.  While both evolutionary paradigms converge rapidly Lamarckian evolution is more effective than Darwinian in the foraging domain.  Consequently, Lamarckian evolution is the paradigm used in all remaining experiments.}
   \label{fig:darwin-lamarck}
 \end{figure}
 
@@ -227,7 +227,7 @@ In order to address this problem, we introduce a subcultural version of egalitar
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{monocultural_vs_subcultural_learning.pdf}
-  \caption{Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures.  Subcultural agents outperform monocultural agents, converging to a much higher ultimate fitness.}
+  \caption{\textbf{Monocultural vs. Subcultural learning} Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures.  Subcultural agents outperform monocultural agents, converging to a much higher ultimate fitness.}
   \label{fig:population-social}
 \end{figure}
 
@@ -236,14 +236,14 @@ Figure \ref{fig:population-social} shows results comparing monocultural and subc
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{velocity_diversity.pdf}
-  \caption{Behavioral diversity of the population's velocity actions for both monocultural and subcultural egalitarian social learning.   Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.  This shows that subcultural ESL does not inhibit convergence when it is useful.}
+  \caption{\textbf{Velocity Diversity} Behavioral diversity of the population's velocity actions for both monocultural and subcultural egalitarian social learning.   Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.  This shows that subcultural ESL does not inhibit convergence when it is useful.}
   \label{fig:velocity}
 \end{figure}
 
 \begin{figure}
   \centering
     \includegraphics[scale=.41]{orientation_diversity.pdf}
-  \caption{Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between small, close rewards and large, distant rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
+  \caption{\textbf{Orientation Diverity} Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between small, close rewards and large, distant rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
 \label{fig:orientation}
 \end{figure}
 
@@ -258,14 +258,14 @@ The next experiment compares the ESL algorithm to a benchmark student-teacher mo
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_simple.pdf}
-  \caption{ESL compared to simple neuroevolution, and student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations.}
+  \caption{\textbf{Egalitarian vs. Student-Teacher (Simple World)}ESL compared to simple neuroevolution, and student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations.}
   \label{fig:reward-studentteacher-simple}
 \end{figure}
 
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.41]{egalitarian_vs_student_teacher_complex.pdf}
-  \caption{ESL compared to simple neuroevolution, and student-teacher learning in the complex world.  ESL is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either comparison method achieves by generation 500.}
+  \caption{\textbf{Egalitarian vs. Student-Teacher (Complex World)} ESL compared to simple neuroevolution, and student-teacher learning in the complex world.  ESL is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either comparison method achieves by generation 500.}
   \label{fig:reward-studentteacher-complex}
 \end{figure}
 
