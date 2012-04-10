@@ -16,20 +16,25 @@ namespace SocialLearningOnly
 {
     class Program
     {
-        const string EXPERIMENTS_DIR = @"..\..\..\experiments\";
-        const string SIMPLE_PREFIX = "";
-        const string CONFIG_FILE = EXPERIMENTS_DIR + SIMPLE_PREFIX + "social_only.config.xml";
-        const string FEED_FORWARD_NETWORK_FILE = EXPERIMENTS_DIR + SIMPLE_PREFIX + @"social_only_feedforward_network.xml";
-        static string RESULTS_FILE_BASE = SIMPLE_PREFIX + @"social_only_results";
+        static string EXPERIMENTS_DIR;
+        static string CONFIG_FILE;
+        static string FEED_FORWARD_NETWORK_FILE;
+        static string RESULTS_FILE_BASE = @"social_only_results";
         static string RESULTS_FILE = null;
         static SocialExperiment _experiment;
         static ForagingEvaluator<NeatGenome> _evaluator;
         static FastRandom _random;
-
+        static int MaxGenerations;
+        static int CurrentGeneration;
+        
         static void Main(string[] args)
         {
-            for (int i = 0; i < 30; i++)
-                RunTrial(i);
+            EXPERIMENTS_DIR = args[0];
+            CONFIG_FILE = EXPERIMENTS_DIR + "config.xml";
+            MaxGenerations = int.Parse(args[1]);
+            int offset = int.Parse(args[2]);
+            FEED_FORWARD_NETWORK_FILE = EXPERIMENTS_DIR + "social_only_feedforward_network" + offset + ".xml";
+            RunTrial(offset);
         }
         static void RunTrial(int offset)
         {
@@ -91,21 +96,26 @@ namespace SocialLearningOnly
 
             if (_experiment.World.CurrentStep > 0 && _experiment.World.CurrentStep % (int)_experiment.TimeStepsPerGeneration == 0)
             {
-                Console.WriteLine("Step {0} Best: {1} Avg: {2} Updates: {3}",
-                                _evaluator.CurrentTimeStep / 1000,
+                Console.WriteLine("Gen {0} Best: {1} Avg: {2} Updates: {3}",
+                                CurrentGeneration,
                                 _experiment.World.Agents.Max(f => f.Fitness),
                                 _experiment.World.Agents.Average(f => f.Fitness),
                                 _evaluator.UpdatesThisGeneration
                                 );
 
                 using (TextWriter writer = new StreamWriter(RESULTS_FILE, true))
-                    writer.WriteLine("{0},{1},{2}", _evaluator.CurrentTimeStep / _experiment.TimeStepsPerGeneration, 
+                    writer.WriteLine("{0},{1},{2}", CurrentGeneration, 
                                                     _experiment.World.Agents.Max(f => f.Fitness),
                                                     _experiment.World.Agents.Average(f => f.Fitness));
                 _experiment.World.Reset();
                 _evaluator.UpdatesThisGeneration = 0;
-                
+                CurrentGeneration++;
+
+                if (CurrentGeneration == MaxGenerations)
+                    _evaluator.MaxTimeSteps = 0;
             }
+
+
 
             //if (_evaluator.CurrentTimeStep > 0 && _evaluator.CurrentTimeStep % 50000 == 0)
             //    SocialAgent.DEFAULT_MEMORY_SIZE++;
