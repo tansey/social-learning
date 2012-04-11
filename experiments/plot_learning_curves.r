@@ -3,23 +3,27 @@
 #--Define data file directory:
 dir <- "C:/Users/Wesley/Downloads"
 
-fileone <- "same_species_lamarck_v.csv"
-titleone <- "Subcultural"
+fileone <- "test.csv"
+titleone <- "Social Only"
 
-filetwo <- "social_lamarck_v.csv"
-titletwo <- "Monocultural"
+filetwo <- "test2.csv"
+titletwo <- "Evolution Only"
+
+#filethree <- "simple_neural_only.csv"
+#titlethree <- "Neuroevolution"
 
 #--Define axis labels:
 xlabel <- "Generations"
-ylabel <- "Average Response Variance"
+ylabel <- "Champion Fitness"
 
-outfile <- "diversity_velocity.pdf"
+outfile <- "egalitarian_vs_student_teacher_complex.pdf"
 
 #####################################
 
 # Read in all the data
 SL <- read.csv(paste(dir, fileone, sep="/"), header=TRUE)
 NE <- read.csv(paste(dir, filetwo, sep="/"), header=TRUE)
+#TT <- read.csv(paste(dir, filethree, sep="/"), header=TRUE)
 
 #--Load extra library:
 ## if not already installed, then run:
@@ -29,13 +33,17 @@ require(ggplot2)
 #--Combine datasets into a single data frame:
 SL$type <- titleone
 NE$type <- titletwo
+#TT$type <- titlethree
+#A <- rbind(SL, NE, TT)
 A <- rbind(SL, NE)
 
 p <- ggplot(data=A, aes(x=Gen, y=Best, ymin=Best.down, ymax=Best.up, fill=type, linetype=type)) + 
  geom_line() + 
  geom_ribbon(alpha=0.5) + 
+ scale_linetype_manual(values=c("solid", "dashed", "dotted")) +
  xlab(xlabel) + 
- ylab(ylabel)
+ ylab(ylabel) 
+ #scale_y_continuous(limits = c(500, 3000), breaks=seq(500, 3000, 500))
 
  p <- p + opts(
     panel.background = theme_rect(fill = "transparent",colour = NA),
@@ -44,7 +52,7 @@ p <- ggplot(data=A, aes(x=Gen, y=Best, ymin=Best.down, ymax=Best.up, fill=type, 
     panel.grid.major = theme_blank(),
     axis.line = theme_segment(),
     plot.background = theme_rect(fill = "transparent",colour = NA),
-    legend.position = c(0.85, 0.85),
+    legend.position = c(0.85, 0.75),
     legend.title = theme_blank(),
     legend.text = theme_text(colour = 'black', face='bold'),
     axis.text.x = theme_text(colour = 'black', face='bold'),
