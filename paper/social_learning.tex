@@ -23,7 +23,7 @@ Wesley Tansey, Eliana Feasley, Risto Miikkulainen\\
 
 \maketitle
 \begin{abstract}
-Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Historically, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. This paper presents ESL, an egalitarian model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of egalitarian social learning with simple neuroevolution and a variant of student-teacher social learning. ESL converges to near-optimal strategies faster than either benchmark approach, outperforming both in a complex foraging task by more than an order of magnitude. The results indicate that egalitarian social learning is a promising new paradigm for social learning in intelligent agents.
+Social learning is an extension to evolutionary algorithms that enables agents to learn from observations of others in the population. Historically, social learning algorithms have employed a student-teacher model where the behavior of one or more high-fitness agents is used to train a subset of the remaining agents in the population. This paper presents ESL, an egalitarian model of social learning in which agents are not labeled as teachers or students, instead allowing any individual receiving a sufficiently high reward to teach other agents to mimic its recent behavior. We validate our approach through a series of experiments in a robot foraging domain, including comparisons of egalitarian social learning with baseline neuroevolution and a variant of student-teacher social learning. In a complex foraging task, ESL converges to near-optimal strategies faster than either benchmark approach, outperforming both by more than an order of magnitude. The results indicate that egalitarian social learning is a promising new paradigm for social learning in intelligent agents.
 \end{abstract}
 
 \category{I.2.6}{Computing Methodologies}{Artificial Intelligence}[Learning, Problem Solving, Control Methods, and Search]
@@ -42,9 +42,9 @@ This paper presents Egalitarian Social Learning (ESL) as an alternative to the s
 
 %inspired by mirror neurons \cite{gallese-98}, in which agents learn by observing the actions of other individuals. Primate brains contain mirror neurons that activate when other primates are observed, in effect mirroring the observed primate's action internally. Analogously, agents in our algorithm observe the population and, when a positive reward is received, mimic that action in order to learn a policy similar to that of the observed agent. This algorithm separates itself from other social learning algorithms in that the quality of a training example is measured by the reward received rather than the hierarchical role of the agent generating the example.
 
-We validate our algorithm in a well-known foraging domain \cite{denaro1996cultural,haasdijk2008social,vogt2010modeling,acerbi2007social,de2011incremental} in which agents must learn to navigate the world efficiently, gathering nutritious food while avoiding poisonous food. The empirical results indicate that egalitarian social learning is able to quickly find near-optimal strategies more than an order of magnitude faster than either a student-teacher variant or baseline neuroevolution. Additionally, the use of subcultures in ESL is shown to promote behavioral diversity and prevent premature convergence to sub-optimal strategies that would otherwise emerge if agents observed all individuals in the population.
+We validate our algorithm in a well-known foraging domain \cite{denaro1996cultural,haasdijk2008social,vogt2010modeling,acerbi2007social,de2011incremental} in which agents must learn to navigate the world efficiently, gathering nutritious food while avoiding poisonous food. The empirical results indicate that egalitarian social learning is able to quickly find near-optimal strategies more than an order of magnitude faster than either a student-teacher variant or baseline neuroevolution in a complex domain. Additionally, the use of subcultures in ESL is shown to promote behavioral diversity and prevent premature convergence to sub-optimal strategies that would otherwise emerge if agents observed all individuals in the population.
 
-This paper makes the following contributions:
+This paper makes the following novel contributions:
  
 \begin{itemize}
 \item An egalitarian social learning algorithm, in which all individuals in a subculture observe, learn from, and teach each other;
@@ -57,7 +57,7 @@ Background information and prior work is discussed in Section \ref{sec:backgroun
 Section \ref{sec:rbsl} details the how the Egalitarian Social Learning algorithm works. Section \ref{sec:setup} describes both the experimental setup and the foraging domain in detail.
 Section \ref{sec:results} presents experimental results.
 A discussion of the results and planned future work are described in Section \ref{sec:future}.
-Finally, in Section \ref{sec:conclusions} we present our conclusions.
+Section \ref{sec:conclusions} presents conclusions.
 
 \section{Background}
 \label{sec:background}
@@ -88,19 +88,19 @@ NeuroEvolution of Augmenting Topologies (NEAT)\cite{stanley2002evolving} is an e
 
 In the foraging domain, NEAT is used to generate a population of individual neural networks that control agents in the world. The input to each network is the agent's sensors, and the outputs control the agent's velocity and orientation. The fitness of each network is determined by the success of the agent it controls--- over the course of a generation, networks that control agents who eat a good deal of rewarding food and very little poison will have high fitness and those that control agents with less wise dietary habits will have low fitness.
 
-In standard NEAT, the networks that are created do not change within one generation. To facilitate social learning, we must perform backpropagation \cite{rumelhart1986learning} on the networks that NEAT creates in order to train agents on accepted examples. Since NEAT networks are recurrent, ESL enhances NEAT with backpropagation capabilities using the backpropagation through time algorithm \cite{werbos1990backpropagation} .
+In standard NEAT, the networks that are created do not change within one generation. To facilitate social learning, we must perform backpropagation \cite{rumelhart1986learning} on the networks that NEAT creates in order to train agents on accepted examples. Since NEAT networks are recurrent, ESL enhances NEAT with backpropagation capabilities using the backpropagation through time algorithm \cite{werbos1990backpropagation}.
 
 The final fitness of each phenome, then, reflects the performance of the individual that used that phenome and elaborated on it over the course of a generation. This elaboration drives evolution in two alternate ways.  In Darwinian evolution, the changes that were made to the phenome only affect selection and are not saved; in Lamarckian, the genome itself is modified.
 
 \begin{figure}[t]
   \centering
     \includegraphics[scale=.333]{world.pdf}
-  \caption{\textbf{The foraging domain.} This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
+  \caption{The foraging domain. This domain is a foraging world in which agents gain fitness by consuming plants that they approach.  A) A piece of nutritious food which increases fitness. B) A piece of poisonous food which decreases fitness. C) An agent, the architecture of which is described in Figure \ref{fig:agent-architecture}.}
   \label{fig:foraging-world}
 \end{figure}
 \begin{figure}[t]
   \centering
-    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{\textbf{The architecture of our foraging agents.} A) Each agent has a 180$^{\circ}$ field of vision, discretized into eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
+    \includegraphics[scale=.665]{foraging_agent_architecture.pdf}  \caption{The architecture of our foraging agents. A) Each agent has a 180$^{\circ}$ field of vision, represented as eight sensors for each plant type. B) Each agent is controlled by a neural network taking the agent's current velocity and sensor activations as inputs and outputting the desired change in orientation and velocity.}
   \label{fig:agent-architecture}
 \end{figure}
 
@@ -120,7 +120,7 @@ The final fitness of each phenome, then, reflects the performance of the individ
       \FOR{each $agent$ in $subculture$}
         \STATE $s \leftarrow $ReceiveAgentInputs()
         \STATE $a \leftarrow $GetResponse($agent, s$)
-        \STATE $r \leftarrow $TakeAction(action)
+        \STATE $r \leftarrow $TakeAction($a$)
         \STATE $agent.memory \leftarrow $UpdateMemory($\{s, a, r\}$)
       \ENDFOR
     \FOR{each $agent$ in $subculture$}
@@ -156,15 +156,14 @@ To promote diversity and prevent the population from prematurely converging to l
 
 %As a pragmatic note, by focusing on rewards rather than overall agent fitness, social learning can begin immediately in the first generation of the algorithm. In contrast, generational student-teacher models typically require a preliminary evaluation phase to determine high-quality agents and an off-line teaching phase to train new agents \cite{denaro1996cultural}. Thus, we expect our approach to be faster in practice as well as potentially producing stronger strategies.
 
-The next section presents the experimental domain used to evaluate the efficacy of egalitarian social learning.
+The next section presents the experimental domain used to evaluate the efficacy of Egalitarian Social Learning.
 
 \section{Experimental Setup}
 \label{sec:setup}
-This section describes the evaluation domain, including the inputs and outputs that agents receive, and the common parameters across all experiments.
+This section describes the evaluation domain, including the inputs and outputs that agents receive, and the common parameters across all experiments.\footnote{The source code for all experiments is available online at \texttt{http://github.com/tansey/social-learning}.}
 
 \subsection{The Foraging Domain}
-The domain used to evaluate ESL is a foraging world in which agents move freely on a continuous toroidal surface. The world is populated with various plants, some of which are nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. The foraging domain is non-competitive and non-cooperative; each agent acts independently of all other agents, with the exception of the teaching signals that pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plant layout and configuration. Every agent then has a fixed number time steps to move about the surface of the world eating plants--- which happens automatically when an agent draws sufficiently close to one--- before the evaluation is over. Figure \ref{fig:foraging-world} shows an example of a foraging world with two types of plants and eight agents.
-    
+The domain used to evaluate ESL is a foraging world in which agents move freely on a continuous toroidal surface. The world is populated with various plants, some of which are nutritious and bear positive reward, while others are poisonous and bear negative reward. These plants are randomly distributed over the surface of the world. The foraging domain is non-competitive and non-cooperative; each agent acts independently of all other agents, with the exception of the teaching signals that pass between them. At the start of each generation, all individuals begin at the center of the world, oriented in the same direction, and confronted with the same plant layout and configuration. Every agent then has a fixed number of time steps to move about the surface of the world eating plants--- which happens automatically when an agent draws sufficiently close to one--- before the evaluation is over. Figure \ref{fig:foraging-world} shows an example of a foraging world with two types of plants and eight agents.
 
 \subsection{Sensors and Outputs}
 
@@ -172,11 +171,11 @@ Agents ``see'' plants within a 180$^\circ$ field of vision with a 100-unit horiz
 
 \subsection{Common Parameters}
 
-Two separate configurations of the robot foraging world are used in the experiments. The first three experiments use a ``simple'' world where the toroidal surface is 2000 by 2000 units, with a single plant type of value 100 and 50 randomly distributed instances of the plant. In this world, the agents have a straightforward task of learning to navigate efficiently and gather as many plants as possible.
+Two separate configurations of the robot foraging world are used in the experiments. The experiments presented in Figures \ref{fig:social-neuro}, \ref{fig:darwin-lamarck}, \ref{fig:population-social}, and \ref{fig:reward-studentteacher-simple} use a ``simple'' world where the toroidal surface is 2000 by 2000 units, with a single plant type of value 100 and 100 randomly distributed instances of the plant. In this world, the agents have a straightforward task of learning to navigate efficiently and gather as many plants as possible.
 
-The fourth set of experiments uses both the simple world and a second, more complex world to evaluate performance. The ``complex'' world has a surface of 500 by 500 units, with five different plant types of value -100, -50, 0, 50, and 100. For each plant type, 20 instances are created and randomly distributed across the surface. This world presents the agents with a more difficult task as they must efficiently gather nutritious food while simultaneously avoiding the poisonous food.
+The remaining set of experiments uses a second, more complex world to evaluate performance. The ``complex'' world has a surface of 500 by 500 units, with five different plant types of value -100, -50, 0, 50, and 100. For each plant type, 20 instances are created and randomly distributed across the surface. This world presents the agents with a more difficult task as they must efficiently gather nutritious food while simultaneously avoiding the poisonous food.
 
-In all four experiments, 100 different agents are created in each generation. All networks are initialized with fully-connected weights with no hidden neurons and a learning rate of 0.1 is used when performing backpropagation. Agents automatically eat any plant within five units. Each evaluation lasts 1000 timesteps and the results for each experiment are the average of 30 independent runs. The acceptability function for all experiments is to learn from any action yielding a positive reward.
+In all four experiments, 100 different agents are created in each generation. All networks are initialized with fully-connected weights with no hidden neurons and a learning rate of 0.1 is used when performing backpropagation. Agents automatically eat any plant within five units. Each evaluation lasts 1000 timesteps and the results for each experiment are the average of 30 independent runs. In all plots, error bands denote standard error. The acceptability function for all experiments is to learn from any action yielding a positive reward.
 
 The next section describes each experiment and its outcome in detail.
 
@@ -184,22 +183,22 @@ The next section describes each experiment and its outcome in detail.
 
 \section{Results}
 \label{sec:results}
-Four main experiments were conducted: 1) determining the baseline performance of egalitarian social learning and simple neuroevolution, each in isolation, 2) measuring the performance of a monocultural ESL in Darwinian and Lamarckian evolutionary paradigms, 3) evaluating whether subcultural learning improves performance compared to having a monoculture population, and 4) comparing ESL to a student-teacher learning algorithm in both simple and complex foraging tasks. The first three experiments examine the efficacy of the various components of the ESL algorithm while the fourth experiment serves to validate the final algorithm against a variant of a related approach in the literature. The experimental results show that ESL is able to evolve high-quality strategies with substantially fewer agent evaluations than previous algorithms.
+Four main experiments were conducted: 1) determining the baseline performance of egalitarian social learning and simple neuroevolution, each in isolation, 2) measuring the performance of a monocultural ESL in Darwinian and Lamarckian evolutionary paradigms, 3) evaluating whether subcultural learning improves performance compared to having a monoculture population, and 4) comparing ESL to a student-teacher learning algorithm in both simple and complex foraging tasks. The first three experiments examine the efficacy of the various components of the ESL algorithm while the fourth experiment serves to validate the final algorithm against a variant of a related approach in the literature. The experimental results show that ESL is able to evolve high-quality strategies with substantially fewer agent evaluations in the complex task than previous algorithms.
 
 %determining the feasibility of reward-based social learning in isolation without any evolution and establishing a baseline result for pure neuroevolution with no on-line learning
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.41]{social_learning_vs_neuroevolution.pdf}
-  \caption{\textbf{Social Learning Only vs. Neuroevolution}A comparison of the two learning components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
+    \includegraphics[scale=.42]{social_learning_vs_neuroevolution.pdf}
+  \caption{A comparison of the two learning components of ESL in isolation.  The evolution-free social learning algorithm collapses after several generations, while neuroevolution alone slowly converges to a stable strategy.  Egalitarian social learning combines both methods.}
   \label{fig:social-neuro}
 \end{figure}
 
 \subsection{Egalitarian Learning vs. Neuroevolution}
 
-The first experiment establishes a baseline for understanding the ability of our two component methods, social learning and neuroevolution, to evolve high-quality strategies in isolation. To evaluate social learning in isolation, a monocultural population of 100 randomly initialized neural networks is created and evaluated without selection or reproduction for 200K time steps. After every 1000 time steps, the population champion is recorded and the population fitness and world are reset. This is treated as a ``generation'' in order to compare it to simple neuroevolution.
+The first experiment establishes a baseline for understanding the ability of our two component methods, social learning and neuroevolution, to evolve high-quality strategies in isolation. To evaluate social learning in isolation, a monocultural population of 100 randomly initialized neural networks is created and evaluated without selection or reproduction for 200K time steps. After every 1000 time steps, the population champion is recorded and the population fitness and world are reset. This is treated as a ``generation'' in order to compare it to baseline neuroevolution.
 
-Figure \ref{fig:social-neuro} shows the results of the experiment. While egalitarian social learning alone is able to improve initially, after several epochs a regression-to-the-mean effect is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}, suggesting that some form of mutation is needed to prevent population collapse. In contrast, neuroevolution evolves solutions with fitnesses two to three times higher than that of egalitarian social learning alone after approximately 50 generations.
+Figure \ref{fig:social-neuro} shows the results of the experiment. While evolution-free social learning alone is able to improve initially, after several epochs a regression-to-the-mean effect is observed in which the entire population converges to a mediocre average score. A similar effect has been observed in previous social learning experiments \cite{denaro1996cultural}, suggesting that some form of mutation is needed to prevent population collapse. In contrast, neuroevolution evolves solutions with fitnesses two to three times higher than that of egalitarian social learning alone after approximately 50 generations.
 
 Having validated that social learning alone is not sufficient, the next experiment compares the performance of social learning when used as an enhancement to two different forms of simulated evolution.
 
@@ -209,15 +208,15 @@ Genetic inheritance paradigms in evolution fall into one of two main categories:
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.41]{darwinian_vs_lamarckian_evolution.pdf}
-  \caption{\textbf{Social Darwinian vs. Social Lamarckian}The effects of Darwinian and Lamarckian evolution when using a monocultural variant of ESL.  While both evolutionary paradigms converge rapidly Lamarckian evolution is more effective than Darwinian in the foraging domain.  Consequently, Lamarckian evolution is the paradigm used in all remaining experiments.}
+    \includegraphics[scale=.42]{darwinian_vs_lamarckian_evolution.pdf}
+  \caption{The effects of Darwinian and Lamarckian evolution when using a monocultural variant of ESL.  While both evolutionary paradigms converge rapidly Lamarckian evolution is more effective than Darwinian in the foraging domain.  Consequently, Lamarckian evolution is the paradigm used in all remaining experiments.}
   \label{fig:darwin-lamarck}
 \end{figure}
 
 
 Figure \ref{fig:darwin-lamarck} shows the results of applying a monocultural egalitarian social learning algorithm to the foraging domain in both the Lamarckian and Darwinian paradigms. The performance of both algorithms quickly converges, with Lamarckian reaching a higher-fitness solution than Darwinian evolution. In the context of \textit{on-line} evolutionary learning algorithms, previous work \cite{whiteson2006evolutionary} showed that Darwinian evolution is likely to be preferable to Lamarckian evolution in dynamic environments where adaptation is essential and the Baldwin effect \cite{simpson1953baldwin} may be advantageous. However, as adaptation is not necessary for foraging agents (i.e., the rewards of each plant type are the same in every generation), in this experiment Lamarckian evolution outperforms Darwinian evolution.
 
-Nevertheless, in both cases performance converges to a lower score than that of simple neuroevolution (Figure \ref{fig:social-neuro}. The next experiment presents the results of introducing subcultures into the egalitarian model to overcome the tendency to converge.
+Nevertheless, in both cases performance converges to a lower score than that of simple neuroevolution (Figure \ref{fig:social-neuro}). The next experiment presents the results of introducing subcultures into the egalitarian model to overcome the tendency to converge.
 
 \subsection{Monocultural vs. Subcultural Learning}
 On one hand, monocultural Lamarckian social learning is able to find good results quickly, while on the other hand, it is likely to provide redundant information that may result in getting stuck in local optima.  
@@ -226,28 +225,28 @@ In order to address this problem, we introduce a subcultural version of egalitar
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.41]{monocultural_vs_subcultural_learning.pdf}
-  \caption{\textbf{Monocultural vs. Subcultural learning} Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures.  Subcultural agents outperform monocultural agents, converging to a much higher ultimate fitness.}
+    \includegraphics[scale=.42]{monocultural_vs_subcultural_learning.pdf}
+  \caption{Monocultural agents learning from the entire population and subcultural agents learning only from their subcultures.  Subcultural agents outperform monocultural agents, converging to a much higher ultimate fitness.}
   \label{fig:population-social}
 \end{figure}
 
-Figure \ref{fig:population-social} shows results comparing monocultural and subcultural learning. Subcultural learning not only reaches a higher peak than the monocultural method, but also arrives at this level of fitness more rapidly than the simple neuroevolution approach. When every mutated organism has the opportunity to train every other, as is the case in monocultural learning, the entire population may be negatively impacted by any one individual. By preventing agents that lead the population towards local optima from impacting the remainder of the population, subcultural learning provides safety and protection from premature convergence.  Because subcultural evolution is more efficient and provides better results we incorporate it in our final algorithm.
+Figure \ref{fig:population-social} shows results comparing monocultural and subcultural learning. Subcultural learning has a steeper learning curve than the monocultural method. When every mutated organism has the opportunity to train every other, as is the case in monocultural learning, the entire population may be negatively impacted by any one individual. By preventing agents that lead the population towards local optima from impacting the remainder of the population, subcultural learning provides safety and protection from premature convergence.  Because subcultural evolution is more efficient and provides better results we incorporate it in our final algorithm.
 
 \begin{figure}
   \centering
-    \includegraphics[scale=.41]{velocity_diversity.pdf}
-  \caption{\textbf{Velocity Diversity} Behavioral diversity of the population's velocity actions for both monocultural and subcultural egalitarian social learning.   Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.  This shows that subcultural ESL does not inhibit convergence when it is useful.}
+    \includegraphics[scale=.42]{velocity_diversity.pdf}
+  \caption{Behavioral diversity of the population's velocity actions for both monocultural and subcultural egalitarian social learning.   Velocity converges quickly in both models, as there is rarely cause to move at any velocity below the maximum.  This shows that subcultural ESL does not inhibit convergence when it is useful.}
   \label{fig:velocity}
 \end{figure}
 
+To better understand why subcultural ESL is able to prevent premature convergence, the behavioral diversity of the population was analyzed after every generation. After each evaluation, a new instance of the simple world was generated and a set of input states was created corresponding to random locations, orientations, and velocities. For every agent, its output response (i.e., the desired change in velocity and orientation) was observed for each of the input states. Figures \ref{fig:velocity} and \ref{fig:orientation} show the average variance of the population response to each of the 100 input states after every generation in the complex domain, effectively measuring the behavioral diversity of the population.  Velocity response converges for both models almost immediately, while orientation response remains more diverse in subcultural than in monocultural learning.
+
 \begin{figure}
   \centering
-    \includegraphics[scale=.41]{orientation_diversity.pdf}
-  \caption{\textbf{Orientation Diverity} Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between small, close rewards and large, distant rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
+    \includegraphics[scale=.42]{orientation_diversity.pdf}
+  \caption{Behavioral diversity of the population's orientation actions for both monocultural and subcultural egalitarian social learning.   There are many possible good responses for change in orientation--- tradeoffs between small, close rewards and large, distant rewards mean that exploring large portions of the search space can be fruitful.  Subcultural ESL maintains a higher level of diversity and avoids converging to local optima.}
 \label{fig:orientation}
 \end{figure}
-
-To better understand why subcultural ESL is able to prevent premature convergence, the behavioral diversity of the population was analyzed after every generation. After each evaluation, a new instance of the simple world was generated and a set of input states was created corresponding to random locations, orientations, and velocities. For every agent, its output response (i.e., the desired change in velocity and orientation) was observed for each of the input states. Figures \ref{fig:velocity} and \ref{fig:orientation} show the average variance of the population response to each of the 100 input states after every generation, effectively measuring the behavioral diversity of the population.  Velocity response converges for both models almost immediately, while orientation response remains more diverse in subcultural than in monocultural learning.
 
 Although the orientation and velocity results may seem contradictory, they actually reflect a desirable property of subcultural learning. In the case of velocity, both the population and cultural algorithms quickly converge to low diversity. Since even at full speed the agents can sense plants up to ten timesteps away, there is no clear benefit to slowing down in the current domain and one would expect a strong strategy to always output the maximum value for velocity. Thus, preserving diversity in this area would be detrimental to the performance of the population. Conversely, the diversity of orientation should be preserved, as there is a tradeoff between turning toward an immediate but small reward, such as a single plant within one step, and turning toward a delayed reward, such as a cluster of plants a few steps away. This complexity suggests that the fitness landscape for orientation  is likely filled with numerous local optima and diversity preservation should be beneficial to evolution. 
 
@@ -255,26 +254,21 @@ The results of the diversity analysis suggest that the subcultural algorithm pre
 
 The next experiment compares the ESL algorithm to a benchmark student-teacher model and baseline neuroevolution in NEAT.
 
-\begin{figure}[t]
-  \centering
-    \includegraphics[scale=.41]{egalitarian_vs_student_teacher_simple.pdf}
-  \caption{\textbf{Egalitarian vs. Student-Teacher (Simple World)}ESL compared to simple neuroevolution, and student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with egalitarian learning converging in the fewest evaluations.}
-  \label{fig:reward-studentteacher-simple}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-    \includegraphics[scale=.41]{egalitarian_vs_student_teacher_complex.pdf}
-  \caption{\textbf{Egalitarian vs. Student-Teacher (Complex World)} ESL compared to simple neuroevolution, and student-teacher learning in the complex world.  ESL is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either comparison method achieves by generation 500.}
-  \label{fig:reward-studentteacher-complex}
-\end{figure}
-
 \subsection{ESL vs. Student-Teacher}
 In the final set of experiments, subcultural ESL is compared to an on-line student-teacher learning algorithm inspired by the NEW TIES system \cite{haasdijk2008social}. The system utilizes a steady-state evolution in which at every timestep each agent probabilistically teaches the lowest-fitness member of the population within some radius, effectively forming geographical subcultures. The original system relies on a steady-state evolution where weaker agents eventually die out and do not have as much of a chance to propagate poor training examples as long-lasting agents. To adapt this approach to a generational EA, and to maximize the fairness of the comparison, a population of 10 subcultures is created with 10 agents each. At each time step, the current champion from each subculture teaches its group's lowest-fitness member on its most recent action regardless of whether the teaching agent received any reward.
 
 It is worth noting that many social learning algorithms focus on off-line training, where teachers are the previous generation's champion(s). In these models, students are trained before the actual evaluation to mimic the champion(s), often with Gaussian noise added to the teacher's outputs to promote diversity in the population \cite{denaro1996cultural}. While such approaches may have also performed well in the foraging domain, they are not on-line learning algorithms. Rather, agents in these algorithms are static at evaluation time and do not learn from their own experiences or those of others. Thus, we chose to adapt the NEW TIES model to a generational EA as it is the most closely related approach in the literature.
 
-Figures \ref{fig:reward-studentteacher-simple} and \ref{fig:reward-studentteacher-complex} show the results of the subcultural ESL algorithm compared to the student-teacher variant of NEW TIES and baseline neuroevolution. While subcultural ESL slightly underperforms the student-teacher algorithm in the simple domain, in a complex world where many behaviors must be learned, the results are reversed, and ESL is far stronger.  Subcultural ESL converges to a near-optimal solution faster than the student-teacher variant in the complex world.\footnote{Note that in this task, near-optimal is often the best that can be accomplished as poisonous plants may be randomly laid out too close to nutritious ones, requiring an agent to eat either both or none.} In the complex world (Figure  \ref{fig:reward-studentteacher-complex}) the egalitarian approach is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either the student-teacher or simple neuroevolution methods achieve by generation 500.
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.42]{egalitarian_vs_student_teacher_simple.pdf}
+  \caption{ESL compared to baseline neuroevolution, and student-teacher learning in the simple world. All strategies converge to solutions of similar quality, with the student-teacher approach converging slightly faster than ESL.}
+  \label{fig:reward-studentteacher-simple}
+\end{figure}
+
+Figures \ref{fig:reward-studentteacher-simple} and \ref{fig:reward-studentteacher-complex} show the results of the subcultural ESL algorithm compared to the student-teacher variant of NEW TIES and baseline neuroevolution. In the simple domain, all three approaches converge to solutions of approximately equivalent fitness after 200 generations. The student-teacher method converges to a near-optimal strategy slightly faster than ESL, though both are improvements over baseline neuroevolution. However, subcultural ESL converges to a near-optimal solution much faster than the student-teacher variant in the complex world.\footnote{Note that in the foraging domain, near-optimal is often the best that can be accomplished as poisonous plants may be randomly laid out too close to nutritious ones, requiring an agent to eat either both or none.} The egalitarian approach is more than an order of magnitude faster in this domain, reaching a higher fitness by generation 50 than either the student-teacher or baseline neuroevolution methods achieve by generation 500.
+
+The contrasting performance in the two foraging domains highlights a key property of ESL--- namely, its ability to combine a variety of sub-strategies into a single composite strategy. In the simple domain, with only a single plant type and relatively low dimensionality, such composite strategies are unnecessary as agents need only learn to navigate the world efficiently. Student-teacher methods are ideally suited for this class of tasks as they teach only a single strategy. In the complex world, ESL excels as it enables agents to combine effective sub-strategies for gathering or avoiding each plant type. Thus, ESL is likely best suited for domains where sophisticated agent behaviors are required.
 
 The next section presents a discussion of the experimental results and indicates possible future directions for ESL.
 
@@ -282,11 +276,18 @@ The next section presents a discussion of the experimental results and indicates
 \label{sec:future}
 The results of the above experiments in egalitarian social learning suggest that learning from strong actions, rather than high-fitness agents, is a powerful approach to social learning. The success of our algorithm in a given domain is predicated on two main user-defined parameters: the grouping of agents into subcultures and the criteria of the acceptability function.
 
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.42]{egalitarian_vs_student_teacher_complex.pdf}
+  \caption{ESL compared to simple neuroevolution, and student-teacher learning in the complex world.  ESL is more than an order of magnitude faster, reaching a higher fitness by generation 50 than either comparison method achieves by generation 500.}
+  \label{fig:reward-studentteacher-complex}
+\end{figure}
+
 For the experiments where subcultures were used, a simple division of 10 groups of equal size was chosen for the subculture creation strategy. Preliminary experiments showed that ESL results in the foraging domain were robust to moderate variations in the number of equal-sized subcultures, with 5 groups and 20 groups both demonstrating strong speedup compared to our benchmarks. However, it is possible that equal-sized groups are not optimal or that a dynamic subculture creation algorithm that maximizes behavioral diversity would perform better; such issues will be addressed in future work.
 
-Creating an acceptability function is a closely related task to that of creating a fitness function. Consequently, the performance of ESL depends on the ability of the user to craft a useful acceptability function. This task is not always easy and may require paying attention to the subtle details of one's domain. The acceptability function was intentionally kept simple in both foraging domains so as to demonstrate the strength of the general egalitarian learning approach. However, it is possible that employing a more sophisticated heuristic could speed up learning even more.
+Creating an acceptability function is a closely related task to that of creating a fitness function. Consequently, the performance of ESL depends on the ability of the user to craft a useful acceptability function. This task may require paying attention to the subtle details of one's domain as the definition of this function may not always be obvious. The acceptability function was intentionally kept simple in both foraging domains so as to demonstrate the strength of the general egalitarian learning approach. However, it is possible that employing a more sophisticated heuristic could speed up learning even more.
 
-The robot foraging domain is well-suited for exploring extensions and improvements to egalitarian social learning. Whereas the current version only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require larger memory sizes. One interesting future work direction may be to introduce obstacles or walls that block the agent from immediately receiving the reward, necessitating that agents learn compound trajectories to navigate to the food.
+The robot foraging domain is well-suited for exploring extensions and improvements to egalitarian social learning. Whereas the current version only utilizes a single example at every time step, teaching more complex behaviors using reward-based approaches may require larger memory sizes. One potential future work direction is to introduce obstacles or walls that block the agent from immediately receiving the reward, necessitating that agents learn compound trajectories to navigate to the food.
 %Additionally, we plan to introduce predators into the world and measure the effects reward-based social learning has when present in predators, prey, or both.
 
 Finally, we plan to expand our benchmark suite to include more student-teacher variants in the future. Student-teacher methods can be implemented in many ways, including off-line learning \cite{acerbi2007social}, probabilistic teaching \cite{haasdijk2008social}, and noisy examples \cite{denaro1996cultural}, to name only a few. A more complete set of benchmarks will help us better understand the relative performance of each approach and how they compare to ESL both in the foraging domain and on future tasks.
@@ -296,7 +297,7 @@ Finally, we plan to expand our benchmark suite to include more student-teacher v
 \section{Conclusions}
 \label{sec:conclusions}
 
-This paper presented an egalitarian approach to social learning in evolutionary algorithms that enables agents to learn from high-quality actions. Unlike traditional social learning algorithms that follow a student-teacher model, ESL teaches agents based on acceptable actions taken by any agent in its subculture. By constraining teaching samples to those from the same subcultural group, ESL promotes diversity in the overall population and prevents premature convergence. Experiments in a complex robot foraging domain demonstrated that this approach is highly effective at quickly learning a near-optimal policy with Lamarckian evolution. Our results suggest that egalitarian social learning is a strong technique and represents a promising new paradigm for social learning algorithms.
+This paper presented an egalitarian approach to social learning in evolutionary algorithms that enables agents to learn from high-quality actions. Unlike traditional social learning algorithms that follow a student-teacher model, ESL teaches agents based on acceptable actions taken by any agent in its subculture. By constraining teaching samples to those from the same subcultural group, ESL promotes diversity in the overall population and prevents premature convergence. Experiments in a complex robot foraging domain demonstrated that this approach is highly effective at quickly learning a near-optimal policy with Lamarckian evolution. Our results suggest that Egalitarian Social Learning is a strong technique and represents a promising new paradigm for social learning algorithms.
 
 \bibliographystyle{abbrv}
 \bibliography{sigproc}
