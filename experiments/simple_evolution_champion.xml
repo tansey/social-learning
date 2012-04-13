@@ -3,7 +3,7 @@
     <Fn id="0" name="PlainSigmoid" prob="1" />
   </ActivationFunctions>
   <Networks>
-    <Network id="156" birthGen="1" fitness="1050">
+    <Network id="15" birthGen="0" fitness="500">
       <Nodes>
         <Node type="bias" id="0" />
         <Node type="in" id="1" />
@@ -53,8 +53,8 @@
         <Node type="out" id="45" />
       </Nodes>
       <Connections>
-        <Con id="47" src="1" tgt="45" wght="3.5031191039445537" />
-        <Con id="66" src="20" tgt="45" wght="2.2008655420836876" />
+        <Con id="65" src="19" tgt="45" wght="3.2466777926310897" />
+        <Con id="77" src="31" tgt="45" wght="4.3431709939613938" />
       </Connections>
     </Network>
   </Networks>
