@@ -15,5 +15,5 @@ booktitle={Proceedings of the 14th Annual Genetic and Evolutionary Computation C
 month={July},
 address={Philadelphia, Pennsylvania, USA},
 url="http://nn.cs.utexas.edu/?tansey:gecco12",
-year={2011}
+year={2012}
 }
