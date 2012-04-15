@@ -16,6 +16,7 @@ namespace social_learning
         public float Velocity { get; set; }
         public double Fitness { get; set; }
         public float MaxVelocity { get { return 5f; } }
+        public bool collide { get; set; }
         public int Id { get { return _id; } }
 
         public Agent(int id)
