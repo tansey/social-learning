@@ -29,7 +29,7 @@ namespace VisualizeWorld
         const string NEURAL_CONFIG_FILE = @"..\..\..\experiments\neural.config.xml";
         const string QLEARNING_CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
         const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
-        const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
+        const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config2.xml";
         const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_lamark.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
@@ -126,6 +126,14 @@ namespace VisualizeWorld
                                                    (int)((plant.Species.Radius * 2) * scaleX),
                                                    (int)((plant.Species.Radius * 2) * scaleY)));
                 brush.Dispose();
+            }
+            
+            // Draw the walls
+            foreach (var wall in world.Walls)
+            {
+                Pen myPen = new Pen(Color.Black, 5);
+
+                g.DrawLine(myPen, (float)wall.X1 * scaleX, (float)wall.Y1 * scaleY, (float)wall.X2 * scaleX, (float)wall.Y2 * scaleY);
             }
 
             // Draw the _agents

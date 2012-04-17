@@ -10,6 +10,8 @@ namespace social_learning
         private readonly int _id;
         public float X { get; set; }
         public float Y { get; set; }
+        public float prevX { get; set; }
+        public float prevY { get; set; }
         public float Orientation { get; set; }
         public float Velocity { get; set; }
         public double Fitness { get; set; }

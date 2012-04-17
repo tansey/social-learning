@@ -174,7 +174,7 @@ namespace social_learning
             var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");
             _outputs = outputs.HasValue ? outputs.Value : 2;
             var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
-            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1;
+            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1 + World.SENSORS_PER_WALL;
 
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;

@@ -10,6 +10,10 @@ namespace social_learning
     {
         private Random _random = new Random();
         public const int SENSORS_PER_PLANT_TYPE = 8;
+        public const int SENSORS_PER_WALL = 8;
+        private const int wallRadius = 40;
+        private const int MAX_NUM_WALLS = 20;
+        
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
@@ -38,6 +42,11 @@ namespace social_learning
         /// nom nom nom
         /// </summary>
         public IList<Plant> Plants { get; set; }
+
+        /// <summary>
+        /// block block block
+        /// </summary>
+        public IList<Wall> Walls { get; set; }
 
         /// <summary>
         /// The types of plants in the world.
@@ -101,6 +110,11 @@ namespace social_learning
             foreach (var s in species)
                 for (int i = 0; i < s.Count; i++)
                     Plants.Add(new Plant(s));
+
+            Walls = new List<Wall>();
+
+            for (int n = 0; n < MAX_NUM_WALLS; n++)
+                Walls.Add(new Wall(n));
         }
 
         /// <summary>
@@ -118,7 +132,40 @@ namespace social_learning
             {
                 var sensors = calculateSensors(agent);
 
+                agent.prevX = agent.X;
+                agent.prevY = agent.Y;
+
                 agent.Step(sensors);
+
+                foreach (var wall in Walls)
+                {
+                    if (wall.checkCollision(agent.X, agent.Y, agent.prevX, agent.prevY))
+                    {
+                        agent.Velocity = 0;
+                        float[] XYintersect = new float[2];
+                        XYintersect = wall.getXYinteresect(agent.X, agent.Y, agent.prevX, agent.prevY);
+
+                        float Xintersect = XYintersect[0];
+                        float Yintersect = XYintersect[1];
+                        if (Xintersect == -1)
+                        {
+                            agent.X = agent.prevX;
+                            agent.Y = agent.prevY;
+
+                        }
+                        else
+                        {
+                            float[] agentLine = new float[2];
+                            agentLine = wall.getFormula(agent.X, agent.Y, agent.prevX, agent.prevY);
+
+                            agent.X = Xintersect + 2 * (agent.prevX - agent.X);
+
+                            agent.Y = agentLine[0] * agent.X + agentLine[1];
+
+                        }
+                    }
+                }
+
                 if (agent.X >= Width)
                     agent.X -= Width;
                 if (agent.Y > Height)
@@ -183,11 +230,14 @@ namespace social_learning
             {
                 agent.X = Width / 2;
                 agent.Y = Height / 2;
+                agent.prevX = Width / 2;
+                agent.prevY = Height / 2;
                 agent.Orientation = 0;
                 agent.Fitness = 0;
             }
 
             layoutPlants();
+            layoutWalls();
 
             _step = 0;
 
@@ -285,11 +335,58 @@ namespace social_learning
         }
         #endregion
 
+        #region Walls Layouts
+        private void layoutWalls()
+        {
+            int numWalls = 0;
+            Random r = new Random();
+
+            foreach (var plant in Plants)
+            {
+                if (numWalls < MAX_NUM_WALLS)
+                {
+                    Wall wall = Walls[numWalls];
+                    wall.Reset();
+                    double randInt = r.Next(4);
+                    double theta = 0.0;
+                    double theta2 = 0.0;
+
+                    if (randInt == 0)
+                    {
+                        theta = (90 * Math.PI) / 180;
+                        theta2 = theta + Math.PI / 2;
+                    }
+                    else if (randInt == 1)
+                    {
+                        theta = (180 * Math.PI) / 180;
+                        theta2 = theta + Math.PI / 2;
+                    }
+                    else if (randInt == 2)
+                    {
+                        theta = (270 * Math.PI) / 180;
+                        theta2 = theta + Math.PI / 2;
+                    }
+                    else if (randInt == 3)
+                    {
+                        theta = (0 * Math.PI) / 180;
+                        theta2 = theta + Math.PI / 2;
+                    }
+
+                    wall.X1 = (float)(wallRadius * Math.Cos(theta) + plant.X);
+                    wall.Y1 = (float)(wallRadius * Math.Sin(theta) + plant.Y);
+                    wall.X2 = (float)(wallRadius * Math.Cos(theta2) + plant.X);
+                    wall.Y2 = (float)(wallRadius * Math.Sin(theta2) + plant.Y);
+                    numWalls++;
+                }
+            }
+        }
+        #endregion
+
         #region Helper methods for calculating mathy things
         public double[] calculateSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
-            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1];
+            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + SENSORS_PER_WALL];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
@@ -319,7 +416,68 @@ namespace social_learning
                 sensors[sIdx] += 1.0 - dist / AgentHorizon;
             }
 
+            foreach (var wall in Walls)
+            {
+                //get shortest point of a wall to the agent
+                float shortestX = 0;
+                float shortestY = 0;
+
+                // Identify the appropriate sensor
+                int sIdx = getWallSensorIndex(agent, wall, ref shortestX, ref shortestY);
+
+                if (sIdx == -1)
+                    continue;
+
+                // Calculate the distance to the object from the agent
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)shortestX, (int)shortestY);
+                int dist = distanceAndOrientation[0];
+
+                // If it's too far away for the agent to see
+                if (dist > AgentHorizon)
+                    continue;
+
+                // Add the signal strength for this wall to the sensor
+                sensors[sIdx] += 1.0 - dist / AgentHorizon;
+            }
+
             return sensors;
+        }
+        
+        private int getWallSensorIndex(IAgent agent, Wall wall, ref float shortestX, ref float shortestY)
+        {
+            double sensorWidth = 180.0 / (double)SENSORS_PER_WALL;
+
+            //finding intersection points per each sensor
+            float[] wallXYdistances = new float[SENSORS_PER_WALL];
+            float[][] wallXYintersects = new float[SENSORS_PER_WALL][];
+            for (int i = 0; i < wallXYdistances.Length; i++)
+            {
+                float sensorX = agent.X + (float)Math.Cos(sensorWidth * i);
+                float sensorY = agent.Y + (float)Math.Sin(sensorWidth * i);
+                wallXYintersects[i] = wall.getXYinteresect(agent.X, agent.Y, sensorX, sensorY);
+                wallXYdistances[i] = (float)Math.Sqrt(Math.Pow((wallXYintersects[i][0] - agent.X), 2)
+                                                    + Math.Pow((wallXYintersects[i][1] - agent.Y), 2));
+            }
+
+            float closestPoint = float.MaxValue;
+
+            int idx = -1;
+
+            //finding cloesest intersecting points of the wall
+            for (int i = 0; i < wallXYdistances.Length; i++)
+            {
+                if (wallXYdistances[i] < closestPoint)
+                {
+                    closestPoint = wallXYdistances[i];
+                    //Changing index to start from end of the index of plant sensors
+                    idx = PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1 + i;
+
+                    shortestX = wallXYintersects[i][0];
+                    shortestY = wallXYintersects[i][1];
+                }
+            }
+
+            return idx;
         }
 
         private int getSensorIndex(IAgent agent, Plant plant, int pos)
