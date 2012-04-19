@@ -12,7 +12,7 @@ namespace social_learning
         public const int SENSORS_PER_PLANT_TYPE = 8;
         public const int SENSORS_PER_WALL = 8;
         private const int wallRadius = 40;
-        private const int MAX_NUM_WALLS = 20;
+        private const int MAX_NUM_WALLS = 10;
         
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
@@ -339,9 +339,109 @@ namespace social_learning
         private void layoutWalls()
         {
             int numWalls = 0;
+            
+            Wall wall = Walls[numWalls];   
+            wall.Reset();
+
+            // top wall
+            wall.X1 = 0;
+            wall.Y1 = 25;
+            wall.X2 = Width;
+            wall.Y2 = 25;
+
+            numWalls++;
+            
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // bottom wall
+            wall.X1 = 0;
+            wall.Y1 = Height;
+            wall.X2 = Width;
+            wall.Y2 = Height;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Upper wall Left
+            wall.X1 = 0;
+            wall.Y1 = 75;
+            wall.X2 = (3 * Width) / 4;
+            wall.Y2 = 75;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Upper wall Right
+            wall.X1 = Width / 4;
+            wall.Y1 = 150;
+            wall.X2 = Width;
+            wall.Y2 = 150;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Bottom wall Left
+            wall.X1 = 0;
+            wall.Y1 = 225;
+            wall.X2 = (3*Width)/4;
+            wall.Y2 = 225;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Bottom wall Right
+            wall.X1 = Width / 4;
+            wall.Y1 = 300;
+            wall.X2 = Width;
+            wall.Y2 = 300;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Bottom wall Left Slanted
+            wall.X1 = 0;
+            wall.Y1 = 300;
+            wall.X2 = Width/4;
+            wall.Y2 = 375;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Bottom wall Right connected to slanted
+            wall.X1 = Width/4;
+            wall.Y1 = 375;
+            wall.X2 = (3*Width)/4;
+            wall.Y2 = 375;
+
+            numWalls++;
+
+            wall = Walls[numWalls];
+            wall.Reset();
+
+            // Bottom wall Right connected to slanted
+            wall.X1 = Width;
+            wall.Y1 = 450;
+            wall.X2 = Width/4;
+            wall.Y2 = 450;
+
+            /*
+            int numWalls = 0;
             Random r = new Random();
 
-            foreach (var plant in Plants)
+             * foreach (var plant in Plants)
             {
                 if (numWalls < MAX_NUM_WALLS)
                 {
@@ -378,7 +478,7 @@ namespace social_learning
                     wall.Y2 = (float)(wallRadius * Math.Sin(theta2) + plant.Y);
                     numWalls++;
                 }
-            }
+            }*/
         }
         #endregion
 
