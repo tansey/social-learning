@@ -1,0 +1,13 @@
+universe = vanilla
+Initialdir =/u/sungjin/condor_experiments/neuralevo/
+
+Executable = /lusr/opt/mono-2.10.8/bin/mono 
++Group   = "UNDER"
++Project = "AI_ROBOTICS"
++ProjectDescription = "Running simple neural evoultion experiments"
+Log = /u/sungjin/condor_experiments/nerualevo/1.log
+Arguments = /u/sungjin/condorapp/CondorApp.exe /u/sungjin/condor_experiments/simple_social_darwin/ 200 1
+
+Output=/u/elie/condor_experiments/simple_social_darwin/30.out
+Error=/u/elie/condor_experiments/simple_social_darwin/30.err
+Queue 1
