@@ -18,8 +18,8 @@ namespace CondorApp
         string _name;
         SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
-        const int DEFAULT_MAX_GENS = 500;
-        static int MaxGenerations = 500;
+        const int DEFAULT_MAX_GENS = 200;
+        static int MaxGenerations = 200;
         string _filename;
         public bool finished = false;
         static string ROOT_DIR = @"../../../experiments/";
