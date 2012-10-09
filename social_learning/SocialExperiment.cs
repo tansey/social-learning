@@ -165,7 +165,14 @@ namespace social_learning
                 agents.Add(new SpinningAgent(i) { X = random.Next(500), Y = random.Next(500), Orientation = random.Next(360) });
             }
 
-            _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species)
+            List<Predator> predators = new List<Predator>();
+            int preds = XmlUtils.GetValueAsInt(xmlConfig, "Predators");
+            for (int i = 1; i <= preds; i++)
+            {
+                predators.Add(new Predator(_populationSize * 2, i));
+            }
+
+            _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species, predators)
             {
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
                 PlantLayoutStrategy = _plantLayout
@@ -174,7 +181,7 @@ namespace social_learning
             var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");
             _outputs = outputs.HasValue ? outputs.Value : 2;
             var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
-            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * (World.SENSORS_PER_PLANT_TYPE) + 1;
+            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + _world.Predators.Count() * World.SENSORS_PER_OBJECT_TYPE + 1;
 
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;

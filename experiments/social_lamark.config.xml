@@ -2,8 +2,6 @@
 <Config>
   <PopulationSize>100</PopulationSize>
   <SpecieCount>10</SpecieCount>
-  <Inputs>44</Inputs>
-  <Outputs>1</Outputs>
   <Activation>
     <Scheme>CyclicFixedIters</Scheme>
     <Iters>4</Iters>
@@ -17,7 +15,7 @@
     <Size>1</Size>
     <MaxSize>10</MaxSize>
   </Memory>
-  <TeachingParadigm>EgalitarianEvolvedAcceptability</TeachingParadigm>
+  <TeachingParadigm>EveryoneRewards</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
   <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>

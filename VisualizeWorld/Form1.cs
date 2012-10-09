@@ -20,6 +20,7 @@ namespace VisualizeWorld
     public partial class Form1 : Form
     {
         Color[] plantColors;
+        Color[] predatorColors;
         Color[] agentColors;
         Random random = new Random();
         static NeatEvolutionAlgorithm<NeatGenome> _ea;
@@ -48,14 +49,17 @@ namespace VisualizeWorld
             agentColors = new Color[NUM_AGENTS];
             for (int i = 0; i < NUM_AGENTS; i++)
             {
-                agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
-                plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                //agentColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                //plantColors[i] = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                agentColors[i] = Color.Blue;
             }
             plantColors[0] = Color.Pink;
             plantColors[1] = Color.Lavender;
             plantColors[2] = Color.Gray;
             plantColors[3] = Color.ForestGreen;
             plantColors[4] = Color.LimeGreen;
+
+            predatorColors = new Color[] { Color.Orange, Color.Orange, Color.Orange };
 
             this.Disposed += new EventHandler(Form1_Disposed);
         }
@@ -128,6 +132,21 @@ namespace VisualizeWorld
                 brush.Dispose();
             }
 
+            // Draw the predators
+            foreach (var pred in world.Predators)
+            {
+                g.FillPie(new SolidBrush(Color.Orange), new Rectangle((int)((pred.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
+                                                    (int)((pred.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
+                                                    (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
+                                                    (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleY)),
+                                                    pred.Orientation - 90,
+                                                    180);
+                g.DrawEllipse(new Pen(Color.Black), new Rectangle((int)((pred.X - 3) * scaleX),
+                                    (int)((pred.Y - 3) * scaleY),
+                                    (int)(6 * scaleX),
+                                    (int)(6 * scaleY)));
+            }
+
             // Draw the _agents
             int i = -1;
             foreach (var agent in agents)
@@ -136,8 +155,10 @@ namespace VisualizeWorld
                 //if (i % 10 != 0)
                 //    continue;
 
+                Color c = agent.EatenRecently(world.CurrentStep, 25) ? Color.Green : Color.Blue;
+
                 //var teacher = world.Agents.First();
-                g.FillPie(new SolidBrush(agentColors[i]), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
+                g.FillPie(new SolidBrush(c), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
                                                     (int)((agent.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleY)),
@@ -185,6 +206,7 @@ namespace VisualizeWorld
             _experiment.PlantLayout = _plantLayout;
 
             _experiment.World.Changed += new World.ChangedEventHandler(world_Changed);
+            _experiment.World.AgentEaten += new World.AgentEatenHandler(World_AgentEaten);
 
             btnEvolve.Text = "Stop!";
 
@@ -199,6 +221,11 @@ namespace VisualizeWorld
                 qLearningThread = new Thread(new ThreadStart(startEvolution));
                 qLearningThread.Start();
             }
+        }
+
+        void World_AgentEaten(object sender, Predator eater, IAgent eaten)
+        {
+            //MessageBox.Show("Agent eaten: " + _experiment.World.CurrentStep);
         }
 
         private void startQLearning()

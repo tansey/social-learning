@@ -65,7 +65,7 @@ namespace social_learning
         {
             if (TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
                 return;
-            _rewards.Add(eaten.Species.Reward);
+            _rewards.Add(eaten.Reward);
         }
 
 
@@ -213,7 +213,9 @@ namespace social_learning
                 InitialInterconnectionsProportion = 1
             };
 
-            int inputs = _world.PlantTypes.Count() * World.SENSORS_PER_PLANT_TYPE + 1;
+            int inputs = _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE
+                        + _world.Predators.Count() * World.SENSORS_PER_OBJECT_TYPE
+                        + 1;
             int outputs = 2;
 
             var factory = new NeatGenomeFactory(inputs, outputs, neatGenomeParams);

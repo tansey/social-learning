@@ -9,7 +9,7 @@ namespace social_learning
     public class World
     {
         private Random _random = new Random();
-        public const int SENSORS_PER_PLANT_TYPE = 8;
+        public const int SENSORS_PER_OBJECT_TYPE = 8;
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
@@ -38,6 +38,11 @@ namespace social_learning
         /// nom nom nom
         /// </summary>
         public IList<Plant> Plants { get; set; }
+
+        /// <summary>
+        /// Run!
+        /// </summary>
+        public IEnumerable<Predator> Predators { get; set; }
 
         /// <summary>
         /// The types of plants in the world.
@@ -83,10 +88,17 @@ namespace social_learning
         /// </summary>
         public event PlantEatenHandler PlantEaten;
         public delegate void PlantEatenHandler(object sender, IAgent eater, Plant eaten);
+
+        /// <summary>
+        /// Event called when a predator catches and eats an pred.
+        /// </summary>
+        public event AgentEatenHandler AgentEaten;
+        public delegate void AgentEatenHandler(object sender, Predator eater, IAgent eaten);
         #endregion
 
 
-        public World(IEnumerable<IAgent> agents, int height, int width, IEnumerable<PlantSpecies> species, 
+        public World(IEnumerable<IAgent> agents, int height, int width, 
+             IEnumerable<PlantSpecies> species, IEnumerable<Predator> predators,
              PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform, int agentHorizon = DEFAULT_AGENT_HORIZON)
         {
             Agents = agents;
@@ -94,7 +106,7 @@ namespace social_learning
             Height = height;
             Width = width;
             AgentHorizon = agentHorizon;
-            
+            Predators = predators;
 
             // Randomly populate the world with plants
             Plants = new List<Plant>();
@@ -116,41 +128,74 @@ namespace social_learning
             // Advance each teacher by one step
             foreach (var agent in Agents)
             {
-                var sensors = calculateSensors(agent);
+                var sensors = calculateAgentSensors(agent);
 
                 agent.Step(sensors);
-                if (agent.X >= Width)
-                    agent.X -= Width;
-                if (agent.Y > Height)
-                    agent.Y -= Height;
-                if (agent.X < 0)
-                    agent.X += Width;
-                if (agent.Y < 0)
-                    agent.Y += Height;
+                applyToroidalAgentLocationRules(agent);
+            }
 
+            // Advance each predator by one step
+            foreach (var predator in Predators)
+            {
+                var sensors = calculatePredatorSensors(predator);
+                predator.Step(sensors);
+                applyToroidalAgentLocationRules(predator);
             }
 
             // Make a separate pass over all the agents, now that they're in new locations
-            // and determine who is on top of a plant.
+            // and determine who is on top of a plant and who is on top of a predator.
             foreach (var agent in Agents)
+            {
+                foreach (var predator in Predators)
+                {
+                    if (_sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)predator.X, (int)predator.Y)[0]
+                        < agent.Radius && !agent.EatenByRecently(_step, 25, predator))
+                    {
+                        // Eat the agent
+                        agent.EatenBy(predator, _step);
+
+                        // Notify the predator that it received a reward
+                        predator.ReceiveReward(agent.Reward);
+
+                        // Notify listeners that we gobbled up this agent
+                        onAgentEaten(predator, agent);
+                    }
+                }
                 foreach (var plant in Plants)
-                    if (_sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y)[0]
-                        < plant.Species.Radius && plant.AvailableForEating(agent))
+                    if (_sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)plant.X, (int)plant.Y)[0]
+                        < plant.Radius && plant.AvailableForEating(agent))
                     {
                         // Eat the plant
                         plant.EatenBy(agent, _step);
 
                         // Notify the teacher that it received a reward
-                        agent.ReceiveReward(plant.Species.Reward);
+                        agent.ReceiveReward(plant.Reward);
 
                         // Notify listeners that someone has eaten a plant.
                         onPlantEaten(agent, plant);
                     }
+            }
 
             // Notify listeners that the world has stepped and changed.
             onStepped(EventArgs.Empty);
             onChanged(EventArgs.Empty);
             _step++;
+        }
+
+        /// <summary>
+        /// Forces the pred to stay on screen by wrapping them around the other side of
+        /// the world if they run over an edge.
+        /// </summary>
+        private void applyToroidalAgentLocationRules(IAgent agent)
+        {
+            if (agent.X >= Width)
+                agent.X -= Width;
+            if (agent.Y > Height)
+                agent.Y -= Height;
+            if (agent.X < 0)
+                agent.X += Width;
+            if (agent.Y < 0)
+                agent.Y += Height;
         }
 
         // Notify any listeners that the world stateActionPair has changed
@@ -171,6 +216,12 @@ namespace social_learning
         {
             if (PlantEaten != null)
                 PlantEaten(this, eater, plant);
+        }
+
+        private void onAgentEaten(Predator eater, IAgent agent)
+        {
+            if (AgentEaten != null)
+                AgentEaten(this, eater, agent);
         }
 
         /// <summary>
@@ -286,10 +337,10 @@ namespace social_learning
         #endregion
 
         #region Helper methods for calculating mathy things
-        public double[] calculateSensors(IAgent agent)
+        public double[] calculateAgentSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
-            double[] sensors = new double[PlantTypes.Count() * (SENSORS_PER_PLANT_TYPE) + 1];
+            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + Predators.Count() * SENSORS_PER_OBJECT_TYPE + 1];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
@@ -301,7 +352,29 @@ namespace social_learning
                     continue;
 
                 // Calculate the distance to the object from the teacher
-                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, plant.X, plant.Y);
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)plant.X, (int)plant.Y);
+                int dist = distanceAndOrientation[0];
+                int pos = distanceAndOrientation[1];
+
+                // If it's too far away for the pred to see
+                if (dist > AgentHorizon)
+                    continue;
+
+                // Identify the appropriate sensor
+                int sIdx = getSensorIndex(agent, plant.Species.SpeciesId * SENSORS_PER_OBJECT_TYPE + 1, pos);
+
+                if (sIdx == -1)
+                    continue;
+
+                // Add the signal strength for this plant to the sensor
+                sensors[sIdx] += 1.0 - dist / AgentHorizon;
+            }
+
+            // For every predator
+            foreach (var predator in Predators)
+            {
+                // Calculate the distance to the predator from the pred
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)predator.X, (int)predator.Y);
                 int dist = distanceAndOrientation[0];
                 int pos = distanceAndOrientation[1];
 
@@ -310,7 +383,7 @@ namespace social_learning
                     continue;
 
                 // Identify the appropriate sensor
-                int sIdx = getSensorIndex(agent, plant, pos);
+                int sIdx = getSensorIndex(agent, PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + predator.AttackType, pos);
 
                 if (sIdx == -1)
                     continue;
@@ -322,9 +395,45 @@ namespace social_learning
             return sensors;
         }
 
-        private int getSensorIndex(IAgent agent, Plant plant, int pos)
+        public double[] calculatePredatorSensors(Predator predator)
         {
-            double sensorWidth = 180.0 / (double)SENSORS_PER_PLANT_TYPE;
+            // Agents are sensed by predators, plus they have 1 velocity sensor
+            double[] sensors = new double[SENSORS_PER_OBJECT_TYPE + 1];
+
+            sensors[0] = predator.Velocity / predator.MaxVelocity;
+
+            // For every plant
+            foreach (var agent in Agents)
+            {
+                // if the plant isn't available for eating then we do not activate the sensors
+                if (agent.HidingMode == predator.AttackType)
+                    continue;
+
+                // Calculate the distance to the pred from the predator
+                int[] distanceAndOrientation = _sensorDictionary.getDistanceAndOrientation((int)predator.X, (int)predator.Y, (int)agent.X, (int)agent.Y);
+                int dist = distanceAndOrientation[0];
+                int pos = distanceAndOrientation[1];
+
+                // If it's too far away for the predator to see
+                if (dist > AgentHorizon)
+                    continue;
+
+                // Identify the appropriate sensor
+                int sIdx = getSensorIndex(predator, 1, pos);
+
+                if (sIdx == -1)
+                    continue;
+
+                // Add the signal strength for this plant to the sensor
+                sensors[sIdx] += 1.0 - dist / AgentHorizon;
+            }
+
+            return sensors;
+        }
+
+        private int getSensorIndex(IAgent agent, int offset, int pos)
+        {
+            double sensorWidth = 180.0 / (double)SENSORS_PER_OBJECT_TYPE;
             double dtheta = pos - agent.Orientation;
             if (Math.Abs(pos - agent.Orientation) > Math.Abs(pos - (agent.Orientation + 360)))
                 dtheta = pos - (agent.Orientation + 360);
@@ -333,10 +442,10 @@ namespace social_learning
             if(dtheta < -90 || dtheta > 90)
                 return -1;
 
-            int idx = 1;
+            int idx = 0;
             for (double degrees = -90 + sensorWidth; degrees <= 90 + double.Epsilon; degrees += sensorWidth, idx++)
                 if (degrees > dtheta)
-                    return idx + plant.Species.SpeciesId * SENSORS_PER_PLANT_TYPE;
+                    return idx + offset;
             return -1;
         }
         #endregion

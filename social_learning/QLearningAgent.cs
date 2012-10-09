@@ -85,7 +85,7 @@ namespace social_learning
                 return;
 
             // If we receive a reward for taking a step, record it
-            reward += eaten.Species.Reward;
+            reward += eaten.Reward;
         }
 
         /// <summary>

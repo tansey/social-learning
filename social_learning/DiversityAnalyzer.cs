@@ -47,7 +47,7 @@ namespace social_learning
                 a.Y = location[1];
                 a.Orientation = orientations[j];
                 a.Velocity = velocities[j];
-                readings[j] = _world.calculateSensors(a);
+                readings[j] = _world.calculateAgentSensors(a);
                 j++;
             }
             return readings;

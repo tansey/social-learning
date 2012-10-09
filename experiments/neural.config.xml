@@ -49,6 +49,7 @@
       <Count>20</Count>
     </Plant>
   </PlantSpecies>
+  <Predators>3</Predators>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>

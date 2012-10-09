@@ -54,10 +54,14 @@
     <Compile Include="AgentTypes.cs" />
     <Compile Include="DiversityAnalyzer.cs" />
     <Compile Include="DumbAgent.cs" />
+    <Compile Include="EdibleThingy.cs" />
     <Compile Include="EvolutionParadigm.cs" />
     <Compile Include="ForagingEvaluator.cs" />
     <Compile Include="IAcceptabilityFunction.cs" />
     <Compile Include="IAgent.cs" />
+    <Compile Include="IEdibleThingy.cs" />
+    <Compile Include="IWorldThingy.cs" />
+    <Compile Include="Predator.cs" />
     <Compile Include="StateActionReward.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="MemoryParadigm.cs" />
@@ -74,6 +78,7 @@
     <Compile Include="TeachingParadigm.cs" />
     <Compile Include="World.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WorldThingy.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
