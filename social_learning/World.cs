@@ -157,6 +157,9 @@ namespace social_learning
                         // Notify the predator that it received a reward
                         predator.ReceiveReward(agent.Reward);
 
+                        // Notify the agent that it's been eaten.
+                        agent.ReceiveReward(-agent.Reward);
+
                         // Notify listeners that we gobbled up this agent
                         onAgentEaten(predator, agent);
                     }

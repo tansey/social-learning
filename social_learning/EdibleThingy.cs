@@ -27,8 +27,10 @@ namespace social_learning
 
         public void EatenBy(PredatorType pred, int step)
         {
-            //TODO: allow agents to be eaten more than once by the same predator
-            whosEatenMe.Add(pred, step);
+            if (whosEatenMe.ContainsKey(pred))
+                whosEatenMe[pred] = step;
+            else
+                whosEatenMe.Add(pred, step);
             _lastEaten = step;
         }
 
