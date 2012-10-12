@@ -11,6 +11,7 @@ namespace social_learning
         static int seed = 5;
         Random _rand = new Random(seed++);
         public int AttackType { get; set; }
+        public override float MaxVelocity { get { return 7f; } }
 
         public Predator(int id, int attackType)
             : base(id)

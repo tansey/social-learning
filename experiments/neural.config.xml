@@ -18,6 +18,7 @@
   </Description>
   <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
   <PlantSpecies>
+    <!--
     <Plant>
       <Name>Poison_1</Name>
       <Radius>5</Radius>
@@ -48,9 +49,11 @@
       <Reward>50</Reward>
       <Count>20</Count>
     </Plant>
+    -->
   </PlantSpecies>
   <Predators>3</Predators>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>
+  <StepReward>1</StepReward>
 </Config>

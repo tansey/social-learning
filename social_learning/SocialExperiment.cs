@@ -46,6 +46,7 @@ namespace social_learning
         int _outputs;
         int _inputs;
         bool _logDiversity;
+        int _stepReward;
 
         const int PLANT_TYPES = 5;
 
@@ -122,6 +123,7 @@ namespace social_learning
             _complexityThreshold = XmlUtils.TryGetValueAsInt(xmlConfig, "ComplexityThreshold");
             _description = XmlUtils.TryGetValueAsString(xmlConfig, "Description");
             _timeStepsPerGeneration = (ulong)XmlUtils.GetValueAsInt(xmlConfig, "TimeStepsPerGeneration");
+            _stepReward = XmlUtils.GetValueAsInt(xmlConfig, "StepReward");
             _agentType =(AgentTypes) Enum.Parse(typeof(AgentTypes), XmlUtils.TryGetValueAsString(xmlConfig, "AgentType"));
             _plantLayout = (PlantLayoutStrategies)Enum.Parse(typeof(PlantLayoutStrategies), XmlUtils.TryGetValueAsString(xmlConfig, "PlantLayout"));
             _paradigm = (EvolutionParadigm)Enum.Parse(typeof(EvolutionParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "EvolutionParadigm"));
@@ -175,7 +177,8 @@ namespace social_learning
             _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species, predators)
             {
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
-                PlantLayoutStrategy = _plantLayout
+                PlantLayoutStrategy = _plantLayout,
+                StepReward = _stepReward
             };
 
             var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");

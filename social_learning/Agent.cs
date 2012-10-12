@@ -7,14 +7,14 @@ namespace social_learning
 {
     public abstract class Agent : EdibleThingy<Predator>, IAgent 
     {
-        const int AGENT_RADIUS = 20;
+        const int AGENT_RADIUS = 5;
         const int AGENT_REWARD = 100;
 
         private readonly int _id;
         public float Orientation { get; set; }
         public float Velocity { get; set; }
         public double Fitness { get; set; }
-        public float MaxVelocity { get { return 5f; } }
+        public virtual float MaxVelocity { get { return 5f; } }
         public int Id { get { return _id; } }
         public int HidingMode { get; set; } // TODO: Implement hiding from predators
 

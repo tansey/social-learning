@@ -68,6 +68,11 @@ namespace social_learning
         /// The strategy used to layout the plants upon each reset.
         /// </summary>
         public PlantLayoutStrategies PlantLayoutStrategy { get; set; }
+
+        /// <summary>
+        /// The reward every agent receives at every step.
+        /// </summary>
+        public int StepReward { get; set; }
         #endregion
 
         #region Events and Delegates
@@ -177,6 +182,8 @@ namespace social_learning
                         // Notify listeners that someone has eaten a plant.
                         onPlantEaten(agent, plant);
                     }
+
+                agent.Fitness += StepReward;
             }
 
             // Notify listeners that the world has stepped and changed.
