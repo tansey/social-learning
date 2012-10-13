@@ -160,7 +160,7 @@ namespace social_learning
             }
            
             Random random = new Random();
-            var agents = new List<IAgent>();
+            var agents = new List<ForagingAgent>();
             const int NUM_AGENTS = 10;
             for (int i = 0; i < NUM_AGENTS; i++)
             {

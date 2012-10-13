@@ -23,7 +23,7 @@ namespace social_learning
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
         private ulong _evaluationCount;
         private World _world;
-        private IAgent[] _agents;
+        private ForagingAgent[] _agents;
         private IList<NeatGenome> _genomeList;
         private int _generations;
         private FastRandom _random;
@@ -139,7 +139,7 @@ namespace social_learning
         public void Evaluate(IList<TGenome> genomeList)
         {
             _genomeList = (IList<NeatGenome>)genomeList;
-            _agents = new IAgent[genomeList.Count];
+            _agents = new ForagingAgent[genomeList.Count];
             UpdatesThisGeneration = 0;
 
             if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
@@ -338,7 +338,7 @@ namespace social_learning
                 return;
 			int num_teachers = 1;
             var teacherIdx = getTeacherIndexes(num_teachers);
-            var teachers = new List<IAgent>();
+            var teachers = new List<ForagingAgent>();
             foreach(var i in teacherIdx)
                 teachers.Add(_agents[i]);
             
@@ -366,13 +366,15 @@ namespace social_learning
             }
         }
 		
-		private Agent getAgent(int i, IBlackBox phenome){
+		private ForagingAgent getAgent(int i, IBlackBox phenome){
 			switch (AgentType)
                     {
                         case AgentTypes.Neural:
-                            return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
+                            //return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
+                    // TODO: DO NOT KEEP THIS CODE
+                            return new ForagingAgent(i);
                         case AgentTypes.Social:
-                            Agent a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome, sar => sar.Last.Value.Reward > 0)
+                            var a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome, sar => sar.Last.Value.Reward > 0)
                             {
                                 MemorySize = CurrentMemorySize
                             };

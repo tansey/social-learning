@@ -6,7 +6,7 @@ using System.Text;
 namespace social_learning
 {
     // A spinning teacher does nothing but sit there and spin.
-    public class SpinningAgent : Agent
+    public class SpinningAgent : ForagingAgent
     {
         public SpinningAgent(int id) : base(id) { }
 

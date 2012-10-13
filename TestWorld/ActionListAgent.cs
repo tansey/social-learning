@@ -6,7 +6,7 @@ using social_learning;
 
 namespace TestWorld
 {
-    public class ActionListAgent : Agent
+    public class ActionListAgent : ForagingAgent
     {
         List<float[]> _actions;
 

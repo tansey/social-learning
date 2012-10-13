@@ -54,8 +54,10 @@
     <Compile Include="AgentTypes.cs" />
     <Compile Include="DiversityAnalyzer.cs" />
     <Compile Include="DumbAgent.cs" />
+    <Compile Include="EdibleAgent.cs" />
     <Compile Include="EdibleThingy.cs" />
     <Compile Include="EvolutionParadigm.cs" />
+    <Compile Include="ForagingAgent.cs" />
     <Compile Include="ForagingEvaluator.cs" />
     <Compile Include="IAcceptabilityFunction.cs" />
     <Compile Include="IAgent.cs" />

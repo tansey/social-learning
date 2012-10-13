@@ -7,7 +7,7 @@ using SharpNeat.Phenomes.NeuralNets;
 
 namespace social_learning
 {
-    public class NeuralAgent : Agent
+    public class NeuralAgent : ForagingAgent
     {
         const float MAX_TURNING_RADIUS = 30f;
         const float MAX_SPEED_CHANGE = 1f;

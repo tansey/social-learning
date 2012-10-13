@@ -27,7 +27,7 @@ namespace social_learning
         /// <summary>
         /// All of the agents in the world.
         /// </summary>
-        public IEnumerable<IAgent> Agents { get; set; }
+        public IEnumerable<ForagingAgent> Agents { get; set; }
 
         /// <summary>
         /// The radius of the agents' field of vision.
@@ -102,7 +102,7 @@ namespace social_learning
         #endregion
 
 
-        public World(IEnumerable<IAgent> agents, int height, int width, 
+        public World(IEnumerable<ForagingAgent> agents, int height, int width, 
              IEnumerable<PlantSpecies> species, IEnumerable<Predator> predators,
              PlantLayoutStrategies layout = PlantLayoutStrategies.Uniform, int agentHorizon = DEFAULT_AGENT_HORIZON)
         {
@@ -133,7 +133,7 @@ namespace social_learning
             // Advance each teacher by one step
             foreach (var agent in Agents)
             {
-                var sensors = calculateAgentSensors(agent);
+                var sensors = calculateForagingAgentSensors(agent);
 
                 agent.Step(sensors);
                 applyToroidalAgentLocationRules(agent);
@@ -347,7 +347,7 @@ namespace social_learning
         #endregion
 
         #region Helper methods for calculating mathy things
-        public double[] calculateAgentSensors(IAgent agent)
+        public double[] calculateForagingAgentSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
             double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + Predators.Count() * SENSORS_PER_OBJECT_TYPE + 1];
