@@ -22,6 +22,7 @@ namespace VisualizeWorld
         Color[] plantColors;
         Color[] predatorColors;
         Color[] agentColors;
+        Color[] hidingColors;
         Random random = new Random();
         static NeatEvolutionAlgorithm<NeatGenome> _ea;
         const string CHAMPION_FILE = @"..\..\..\experiments\simple_evolution_champion.xml";
@@ -58,6 +59,7 @@ namespace VisualizeWorld
             plantColors[2] = Color.Gray;
             plantColors[3] = Color.ForestGreen;
             plantColors[4] = Color.LimeGreen;
+            hidingColors = new Color[] { Color.Black, Color.Green, Color.Blue, Color.Yellow, Color.Purple };
 
             predatorColors = new Color[] { Color.Orange, Color.Orange, Color.Orange };
 
@@ -133,15 +135,16 @@ namespace VisualizeWorld
             }
 
             // Draw the predators
+            int predColorIdx = 1;
             foreach (var pred in world.Predators)
             {
-                g.FillPie(new SolidBrush(Color.Orange), new Rectangle((int)((pred.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
+                g.FillPie(new SolidBrush(hidingColors[predColorIdx++]), new Rectangle((int)((pred.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
                                                     (int)((pred.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleY)),
                                                     pred.Orientation - 90,
                                                     180);
-                g.DrawEllipse(new Pen(Color.Black), new Rectangle((int)((pred.X - 3) * scaleX),
+                g.FillEllipse(Brushes.Red, new Rectangle((int)((pred.X - 3) * scaleX),
                                     (int)((pred.Y - 3) * scaleY),
                                     (int)(6 * scaleX),
                                     (int)(6 * scaleY)));
@@ -155,7 +158,7 @@ namespace VisualizeWorld
                 //if (i % 10 != 0)
                 //    continue;
 
-                Color c = agent.EatenRecently(world.CurrentStep, 25) ? Color.Green : Color.Blue;
+                Color c = agent.EatenRecently(world.CurrentStep, 25) ? Color.Green : hidingColors[agent.HidingMode];
 
                 //var teacher = world.Agents.First();
                 g.FillPie(new SolidBrush(c), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),

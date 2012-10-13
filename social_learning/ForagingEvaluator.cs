@@ -32,6 +32,7 @@ namespace social_learning
         private double _rewardThreshold;
         private int[] _agentGroups;
 		private bool _learningEnabled = true;
+        private bool _agentsNavigate, _agentsHide;
 		
         public AgentTypes AgentType { get; set; }
         public int TrialId { get; set; }
@@ -41,9 +42,13 @@ namespace social_learning
         /// Construct with the provided IGenomeDecoder and ICoevolutionPhenomeEvaluator. 
         /// The number of parallel threads defaults to Environment.ProcessorCount.
         /// </summary>
-        public ForagingEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment, AgentTypes agent_type = AgentTypes.Spinning)
+        public ForagingEvaluator(IGenomeDecoder<TGenome,IBlackBox> genomeDecoder, World environment, 
+                                 AgentTypes agent_type = AgentTypes.Spinning, bool agents_navigate = true,
+                                 bool agents_hide = true)
         {
             AgentType = agent_type;
+            _agentsNavigate = agents_navigate;
+            _agentsHide = agents_hide;
             _genomeDecoder = genomeDecoder;
             _world = environment;
             _world.PlantEaten += new World.PlantEatenHandler(_world_PlantEaten);
@@ -239,7 +244,8 @@ namespace social_learning
                 {
                     var controllerGenome = NeatGenomeXmlIO.ReadCompleteGenomeList(xr, false, factory)[0];
                     var controllerPhenome = _genomeDecoder.Decode((TGenome)controllerGenome);
-                    _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, controllerPhenome, accept) { MemorySize = CurrentMemorySize };
+                    _agents[i] = new SocialAgent(i, _genomeList[i].SpecieIdx, controllerPhenome, _agentsNavigate, _agentsHide, accept) 
+                                                { MemorySize = CurrentMemorySize };
                     var network = (FastCyclicNetwork)controllerPhenome;
                     network.Momentum = ((SocialAgent)_agents[i]).Momentum;
                     network.BackpropLearningRate = ((SocialAgent)_agents[i]).LearningRate;
@@ -370,11 +376,10 @@ namespace social_learning
 			switch (AgentType)
                     {
                         case AgentTypes.Neural:
-                            //return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome);
-                    // TODO: DO NOT KEEP THIS CODE
-                            return new ForagingAgent(i);
+                            return new NeuralAgent(i, _genomeList[i].SpecieIdx, phenome, _agentsNavigate, _agentsHide);
                         case AgentTypes.Social:
-                            var a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome, sar => sar.Last.Value.Reward > 0)
+                            var a = new SocialAgent(i, _genomeList[i].SpecieIdx, phenome, _agentsNavigate, _agentsHide,
+                                                    sar => sar.Last.Value.Reward > 0)
                             {
                                 MemorySize = CurrentMemorySize
                             };
@@ -383,7 +388,8 @@ namespace social_learning
                             network.BackpropLearningRate = ((SocialAgent) a).LearningRate;
                             return a ;
                         case AgentTypes.QLearning:
-                            return new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, 8, 4, _world);
+                            return new QLearningAgent(i, _genomeList[i].SpecieIdx, phenome, _agentsNavigate, _agentsHide,
+                                                      8, 4, _world);
                         case AgentTypes.Spinning:
                             return new SpinningAgent(i);
                         default:

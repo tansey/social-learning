@@ -58,8 +58,9 @@ namespace social_learning
         /// <param name="numOrientationActions">The number of buckets to discretize the orientation action spacer into.</param>
         /// <param name="numVelocityActions">The number of buckets to discretize the velocity action spacer into.</param>
         /// <param name="world">The world this teacher will be evaluated in.</param>
-        public QLearningAgent(int id, int speciesId, IBlackBox brain, int numOrientationActions, int numVelocityActions, World world)
-            : base(id, speciesId, brain)
+        public QLearningAgent(int id, int speciesId, IBlackBox brain, bool agentsNavigate, bool agentsHide,
+                              int numOrientationActions, int numVelocityActions, World world)
+            : base(id, speciesId, brain, agentsNavigate, agentsHide)
         {
             Debug.Assert(brain.OutputCount == 1, "Incorrect number of outputs in neural network!");
 

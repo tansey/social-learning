@@ -45,6 +45,8 @@ namespace social_learning
         static FastRandom _random = new FastRandom();
         int _outputs;
         int _inputs;
+        bool _navigationEnabled;
+        bool _hidingEnabled;
         bool _logDiversity;
         int _stepReward;
 
@@ -182,7 +184,19 @@ namespace social_learning
             };
 
             var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");
-            _outputs = outputs.HasValue ? outputs.Value : 2;
+            var navigation = XmlUtils.TryGetValueAsBool(xmlConfig, "AgentsNavigate");
+            var hiding = XmlUtils.TryGetValueAsBool(xmlConfig, "AgentsHide");
+            _navigationEnabled = navigation.HasValue ? navigation.Value : false;
+            _hidingEnabled = hiding.HasValue ? hiding.Value : false;
+            if (!outputs.HasValue)
+            {
+                if (_navigationEnabled || _hidingEnabled)
+                    _outputs = (_navigationEnabled ? 2 : 0) + (_hidingEnabled ? preds + 1 : 0);
+                else
+                    _outputs = outputs.HasValue ? outputs.Value : 2;
+            }
+            else
+                _outputs = outputs.Value;
             var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
             _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + _world.Predators.Count() * World.SENSORS_PER_OBJECT_TYPE + 1;
 
@@ -273,10 +287,9 @@ namespace social_learning
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
 
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
-            _evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _world)
+            _evaluator = new ForagingEvaluator<NeatGenome>(genomeDecoder, _world, _agentType, _navigationEnabled, _hidingEnabled)
             {
                 MaxTimeSteps = _timeStepsPerGeneration,
-                AgentType = _agentType,
                 EvoParadigm = _paradigm,
                 MemParadigm = _memory,
                 GenerationsPerMemorySize = _memGens,

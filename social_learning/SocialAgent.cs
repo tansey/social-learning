@@ -41,7 +41,8 @@ namespace social_learning
         /// <summary>
         /// Constructs a social learning teacher controlled by the brain and using the give acceptability function.
         /// </summary>
-        public SocialAgent(int id, int speciesId, IBlackBox brain, IAcceptabilityFunction accept) : base(id, speciesId, brain)
+        public SocialAgent(int id, int speciesId, IBlackBox brain, bool agentsNavigate, bool agentsHide,
+                           IAcceptabilityFunction accept) : base(id, speciesId, brain, agentsNavigate, agentsHide)
         {
             MemorySize = DEFAULT_MEMORY_SIZE;
             Memory = new LinkedList<StateActionReward>();
@@ -53,8 +54,9 @@ namespace social_learning
         /// <summary>
         /// Constructs a social teacher using a lambda function for the acceptability function.
         /// </summary>
-        public SocialAgent(int id, int speciesId, IBlackBox brain, Predicate<LinkedList<StateActionReward>> accept)
-            : this(id, speciesId, brain, new DynamicAcceptability(accept))
+        public SocialAgent(int id, int speciesId, IBlackBox brain, bool agentsNavigate, bool agentsHide,
+                           Predicate<LinkedList<StateActionReward>> accept)
+            : this(id, speciesId, brain, agentsNavigate, agentsHide, new DynamicAcceptability(accept))
         {
         }
 
