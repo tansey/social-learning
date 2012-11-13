@@ -74,6 +74,11 @@ namespace social_learning
         /// The reward every agent receives at every step.
         /// </summary>
         public int StepReward { get; set; }
+
+        /// <summary>
+        /// The total different types of predators that may be in the world.
+        /// </summary>
+        public int PredatorTypes { get; set; }
         #endregion
 
         #region Events and Delegates
@@ -352,7 +357,7 @@ namespace social_learning
         public double[] calculateForagingAgentSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
-            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + Predators.GroupBy(p => p.AttackType).Count() * SENSORS_PER_OBJECT_TYPE + 1];
+            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + PredatorTypes * SENSORS_PER_OBJECT_TYPE + 1];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 
@@ -395,7 +400,7 @@ namespace social_learning
                     continue;
 
                 // Identify the appropriate sensor
-                int sIdx = getSensorIndex(agent, PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + predator.AttackType, pos);
+                int sIdx = getSensorIndex(agent, PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + (predator.AttackType-1), pos);
 
                 if (sIdx == -1)
                     continue;

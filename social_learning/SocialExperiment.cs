@@ -186,7 +186,8 @@ namespace social_learning
             {
                 AgentHorizon = XmlUtils.GetValueAsInt(xmlConfig, "AgentHorizon"),
                 PlantLayoutStrategy = _plantLayout,
-                StepReward = _stepReward
+                StepReward = _stepReward,
+                PredatorTypes = _predTypes
             };
 
             var outputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Outputs");

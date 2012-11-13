@@ -56,10 +56,10 @@
       <Count>20</Count>
     </Plant>
   </PlantSpecies>
-  <Predators>100</Predators>
+  <Predators>10</Predators>
   <PredatorTypes>2</PredatorTypes>
   <PredatorDistribution>Alternating</PredatorDistribution>
-  <PredatorGenerations>10</PredatorGenerations>
+  <PredatorGenerations>2</PredatorGenerations>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>

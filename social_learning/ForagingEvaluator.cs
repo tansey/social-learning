@@ -219,7 +219,7 @@ namespace social_learning
         private void CreatePredators()
         {
             List<Predator> predators = new List<Predator>();
-            if (PredatorDistribution == PredatorDistributionTypes.Uniform)
+            if (PredatorDistribution == PredatorDistributionTypes.Uniform || PredatorGenerations == 0)
                 for (int i = 0; i < PredatorCount; i++)
                     predators.Add(new Predator(_agents.Length + i, i % PredatorTypes + 1));
             else if (PredatorDistribution == PredatorDistributionTypes.Alternating)
