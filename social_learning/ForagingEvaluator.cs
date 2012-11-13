@@ -56,6 +56,8 @@ namespace social_learning
             _world.PlantEaten += new World.PlantEatenHandler(addRewardToStatisticsList);
             _world.Stepped += new World.StepEventHandler(updateRewardStatistics);
             _world.Stepped += new World.StepEventHandler(esl_step);
+            _world.AgentEaten += new World.AgentEatenHandler(_world_AgentEaten);
+            _world.PlantEaten += new World.PlantEatenHandler(_world_BadPlantEaten);
             BackpropEpochsPerExample = 1;
             MemParadigm = MemoryParadigm.Fixed;
             CurrentMemorySize = 1;
@@ -65,10 +67,9 @@ namespace social_learning
         }
 
         
-
         void addRewardToStatisticsList(object sender, IAgent eater, Plant eaten)
         {
-            if (TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+            if (TeachParadigm != TeachingParadigm.SubcultureRewardFiltering)
                 return;
             _rewards.Add(eaten.Reward);
         }
@@ -76,7 +77,7 @@ namespace social_learning
 
         void updateRewardStatistics(object sender, EventArgs e)
         {
-            if (TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+            if (TeachParadigm != TeachingParadigm.SubcultureRewardFiltering)
                 return;
 
             if (_rewards.Count == 0)
@@ -129,6 +130,10 @@ namespace social_learning
         public World Environment { get { return _world; } }
 
         public EvolutionParadigm EvoParadigm { get; set; }
+        public PredatorDistributionTypes PredatorDistribution { get; set; }
+        public int PredatorTypes { get; set; }
+        public int PredatorCount { get; set; }
+        public int PredatorGenerations { get; set; }
         public MemoryParadigm MemParadigm { get; set; }
         public int GenerationsPerMemorySize { get; set; }
         public int CurrentMemorySize { get; set; }
@@ -147,7 +152,7 @@ namespace social_learning
             _agents = new ForagingAgent[genomeList.Count];
             UpdatesThisGeneration = 0;
 
-            if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
+            if (TeachParadigm == TeachingParadigm.SubcultureRewardFiltering)
             {
                 _rewards = new List<int>();
                 _rewardThreshold = 0;
@@ -172,6 +177,9 @@ namespace social_learning
                 trainPopulationUsingGenerationalChampion();
 
             _world.Agents = _agents;
+
+            CreatePredators();
+
             _world.Reset();
 
             for (CurrentTimeStep = 0; CurrentTimeStep < MaxTimeSteps; CurrentTimeStep++)
@@ -206,6 +214,18 @@ namespace social_learning
 
             _generations++;
             _evaluationCount += (ulong) genomeList.Count;
+        }
+
+        private void CreatePredators()
+        {
+            List<Predator> predators = new List<Predator>();
+            if (PredatorDistribution == PredatorDistributionTypes.Uniform)
+                for (int i = 0; i < PredatorCount; i++)
+                    predators.Add(new Predator(_agents.Length + i, i % PredatorTypes + 1));
+            else if (PredatorDistribution == PredatorDistributionTypes.Alternating)
+                for (int i = 0; i < PredatorCount; i++)
+                    predators.Add(new Predator(_agents.Length + i, (_generations / PredatorGenerations) % PredatorTypes + 1));
+            _world.Predators = predators;
         }
 
         private void GenomesToAcceptability(IList<TGenome> genomeList)
@@ -445,8 +465,8 @@ namespace social_learning
 
             // Only learn from rewards if we're using a reward-based social learning paradigm
             if (TeachParadigm != TeachingParadigm.EveryoneRewards
-                && TeachParadigm != TeachingParadigm.SameSpeciesRewards
-                && TeachParadigm != TeachingParadigm.SameSpeciesRewardFiltering)
+                && TeachParadigm != TeachingParadigm.SubcultureRewards
+                && TeachParadigm != TeachingParadigm.SubcultureRewardFiltering)
                 return;
 
             SocialAgent eater = (SocialAgent)eaterAgent;
@@ -466,13 +486,13 @@ namespace social_learning
 					    continue;
                     
                     // Only update individuals in your subculture
-                    if ((TeachParadigm == TeachingParadigm.SameSpeciesRewards
-                        || TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering)
+                    if ((TeachParadigm == TeachingParadigm.SubcultureRewards
+                        || TeachParadigm == TeachingParadigm.SubcultureRewardFiltering)
                         && _agentGroups[eater.Id] != _agentGroups[i])
 						continue;
                     
                     // Only learn from high-valued actions
-                    //if (TeachParadigm == TeachingParadigm.SameSpeciesRewardFiltering
+                    //if (TeachParadigm == TeachingParadigm.SubcultureRewardFiltering
                     //    && eaten.Species.Reward < _rewardThreshold
                     //    && _rewards.Count > 20)
                     //    //return;
@@ -480,11 +500,56 @@ namespace social_learning
 
                     // Teach the teacher to act like the eater
                     if (agent.AcceptabilityFn.Accept(eater.Memory))
-                            TeachAgent(eater, agent);
+                        TeachAgent(eater, agent);
 
 				}
             //}
         }
+
+        void _world_AgentEaten(object sender, Predator eater, IAgent eaten)
+        {
+            pollAlternativeAction(eaten);
+        }
+
+        void _world_BadPlantEaten(object sender, IAgent eaterAgent, Plant eaten)
+        {
+            if (eaten.Reward < 0)
+                pollAlternativeAction(eaterAgent);
+        }
+
+        void pollAlternativeAction(IAgent agent)
+        {
+            // This will be a negative (bad) reward.
+            // We need to handle this by polling other agents to see if they
+            // could have avoided it.
+            if (TeachParadigm != TeachingParadigm.EveryonePolling &&
+                TeachParadigm != TeachingParadigm.SubculturePolling)
+                return;
+            
+            // If we are using EveryonePolling, the agent can ask the entire population.
+            // If we are using SubculturePolling, the agent can only ask agents in its subculture.
+            var available = TeachParadigm == TeachingParadigm.EveryonePolling ? _agents.Where((a,i) => agent.Id != i)
+                                : _agents.Where((a, i) => _agentGroups[agent.Id] == _agentGroups[i] && i != agent.Id);
+
+            // The teacher is the highest fitness agent available to the eaten agent.
+            var teacher = (SocialAgent)available.OrderByDescending(a => a.Fitness).FirstOrDefault();
+
+            // Get the corrected moves for every action in the eaten agent's memory
+            LinkedList<StateActionReward> badTrajectory = ((SocialAgent)agent).Memory;
+            LinkedList<StateActionReward> correctTrajectory = new LinkedList<StateActionReward>();
+            foreach (var bad in badTrajectory)
+            {
+                double[] state = bad.State;
+                double[] action = new double[bad.Action.Length];
+                teacher.activateNetworkWithoutMemory(bad.State).CopyTo(action, 0, action.Length);
+                StateActionReward good = new StateActionReward(state, action, 0);
+                correctTrajectory.AddLast(good);
+            }
+
+            // Train the agent with the correct trajectory according to the teacher.
+            TeachAgent(agent, correctTrajectory);
+        }
+
 
         // The social learning step for ESL
         void esl_step(object sender, EventArgs e)
@@ -612,6 +677,19 @@ namespace social_learning
             // Get the neural network controlling this teacher
             var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
             
+            // Perform a fixed number of backprop epochs to train this teacher
+            for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
+                foreach (var example in memory)
+                    network.Train(example.State, example.Action);
+        }
+
+        private void TeachAgent(IAgent student, LinkedList<StateActionReward> memory)
+        {
+            UpdatesThisGeneration++;
+
+            // Get the neural network controlling this teacher
+            var network = ((FastCyclicNetwork)((NeuralAgent)student).Brain);
+
             // Perform a fixed number of backprop epochs to train this teacher
             for (int iteration = 0; iteration < BackpropEpochsPerExample; iteration++)
                 foreach (var example in memory)

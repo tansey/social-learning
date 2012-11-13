@@ -49,6 +49,9 @@ namespace social_learning
         bool _hidingEnabled;
         bool _logDiversity;
         int _stepReward;
+        int _predTypes;
+        int _predCount;
+        int _predGens;
 
         const int PLANT_TYPES = 5;
 
@@ -106,6 +109,7 @@ namespace social_learning
         public ForagingEvaluator<NeatGenome> Evaluator { get { return _evaluator; } set { _evaluator = value; } }
         public ulong TimeStepsPerGeneration { get { return _timeStepsPerGeneration; } set { _timeStepsPerGeneration = value; } }
         public int TrialId { get; set; }
+        public PredatorDistributionTypes PredatorDistribution { get; set; }
         
         public SocialExperiment()
         {
@@ -170,11 +174,13 @@ namespace social_learning
             }
 
             List<Predator> predators = new List<Predator>();
-            int preds = XmlUtils.GetValueAsInt(xmlConfig, "Predators");
-            for (int i = 1; i <= preds; i++)
-            {
-                predators.Add(new Predator(_populationSize * 2, i));
-            }
+            _predCount = XmlUtils.GetValueAsInt(xmlConfig, "Predators");
+            var predStr = XmlUtils.TryGetValueAsString(xmlConfig, "PredatorDistribution");
+            if (predStr != null)
+                PredatorDistribution = (PredatorDistributionTypes)Enum.Parse(typeof(PredatorDistributionTypes), predStr, true);
+            _predTypes = XmlUtils.GetValueAsInt(xmlConfig, "PredatorTypes");
+            if (PredatorDistribution == PredatorDistributionTypes.Alternating)
+                _predGens = XmlUtils.GetValueAsInt(xmlConfig, "PredatorGenerations");
 
             _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species, predators)
             {
@@ -191,14 +197,14 @@ namespace social_learning
             if (!outputs.HasValue)
             {
                 if (_navigationEnabled || _hidingEnabled)
-                    _outputs = (_navigationEnabled ? 2 : 0) + (_hidingEnabled ? preds + 1 : 0);
+                    _outputs = (_navigationEnabled ? 2 : 0) + (_hidingEnabled ? _predTypes + 1 : 0);
                 else
                     _outputs = outputs.HasValue ? outputs.Value : 2;
             }
             else
                 _outputs = outputs.Value;
             var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
-            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + _world.Predators.Count() * World.SENSORS_PER_OBJECT_TYPE + 1;
+            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + _predTypes * World.SENSORS_PER_OBJECT_TYPE + 1;
 
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
@@ -207,7 +213,7 @@ namespace social_learning
                 ActivationFn = PlainSigmoid.__DefaultInstance
             };
             if (_teaching != TeachingParadigm.EgalitarianEvolvedAcceptability)
-                _neatGenomeParams.InitialInterconnectionsProportion = 1;
+                _neatGenomeParams.InitialInterconnectionsProportion = 0.1;
         }
 
         /// <summary>
@@ -295,7 +301,11 @@ namespace social_learning
                 GenerationsPerMemorySize = _memGens,
                 MaxMemorySize = _maxMemorySize,
                 TeachParadigm = _teaching,
-                TrialId = TrialId
+                TrialId = TrialId,
+                PredatorCount = _predCount,
+                PredatorDistribution = PredatorDistribution,
+                PredatorTypes = _predTypes,
+                PredatorGenerations = _predGens
             };
             
             // Initialize the evolution algorithm.

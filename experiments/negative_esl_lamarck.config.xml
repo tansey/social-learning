@@ -8,13 +8,20 @@
   </Activation>
   <ComplexityRegulationStrategy>Absolute</ComplexityRegulationStrategy>
   <ComplexityThreshold>50</ComplexityThreshold>
-  <AgentType>Neural</AgentType>
+  <AgentType>Social</AgentType>
+  <Memory>
+    <Paradigm>Fixed</Paradigm>
+    <GrowthGenerations>20</GrowthGenerations>
+    <Size>1</Size>
+    <MaxSize>1</MaxSize>
+  </Memory>
+  <TeachingParadigm>SubculturePolling</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
-  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <EvolutionParadigm>Lamarkian</EvolutionParadigm>
   <Description>
     Foraging Evolution
  
-    Fitness is the sum of the scores of the plants an individual ate.
+    Fitness is the sum of the scores of the plants an individual ate minus the predator penalties.
   </Description>
   <TimeStepsPerGeneration>1000</TimeStepsPerGeneration>
   <PlantSpecies>

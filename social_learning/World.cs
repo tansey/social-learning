@@ -10,6 +10,7 @@ namespace social_learning
     {
         private Random _random = new Random();
         public const int SENSORS_PER_OBJECT_TYPE = 8;
+        public const int AGENT_GHOST_TIME = 5; // Amount of time an agent is invincible after being eaten.
         const int DEFAULT_AGENT_HORIZON = 100;
         private int _step;
         SensorDictionary _sensorDictionary;
@@ -153,8 +154,9 @@ namespace social_learning
             {
                 foreach (var predator in Predators)
                 {
-                    if (_sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)predator.X, (int)predator.Y)[0]
-                        < agent.Radius && !agent.EatenByRecently(_step, 25, predator))
+                    if (agent.HidingMode != predator.AttackType &&
+                        _sensorDictionary.getDistanceAndOrientation((int)agent.X, (int)agent.Y, (int)predator.X, (int)predator.Y)[0]
+                        < agent.Radius && !agent.EatenByRecently(_step, AGENT_GHOST_TIME, predator))
                     {
                         // Eat the agent
                         agent.EatenBy(predator, _step);
@@ -193,7 +195,7 @@ namespace social_learning
         }
 
         /// <summary>
-        /// Forces the pred to stay on screen by wrapping them around the other side of
+        /// Forces the agent to stay on screen by wrapping them around the other side of
         /// the world if they run over an edge.
         /// </summary>
         private void applyToroidalAgentLocationRules(IAgent agent)
@@ -350,7 +352,7 @@ namespace social_learning
         public double[] calculateForagingAgentSensors(IAgent agent)
         {
             // Each plant type has its own set of sensors, plus we have one sensor for the velocity input.
-            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + Predators.Count() * SENSORS_PER_OBJECT_TYPE + 1];
+            double[] sensors = new double[PlantTypes.Count() * SENSORS_PER_OBJECT_TYPE + Predators.GroupBy(p => p.AttackType).Count() * SENSORS_PER_OBJECT_TYPE + 1];
 
             sensors[0] = agent.Velocity / agent.MaxVelocity;
 

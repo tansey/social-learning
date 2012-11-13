@@ -75,6 +75,16 @@ namespace social_learning
             return results;
         }
 
+        public ISignalArray activateNetworkWithoutMemory(double[] sensors)
+        {
+            AcceptabilityFn.Reset();
+            var results = base.activateNetwork(sensors);
+            double[] outputs = new double[results.Length];
+            results.CopyTo(outputs, 0);
+
+            return results;
+        }
+
         public override void Reset()
         {
             base.Reset();

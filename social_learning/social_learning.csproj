@@ -64,6 +64,7 @@
     <Compile Include="IEdibleThingy.cs" />
     <Compile Include="IWorldThingy.cs" />
     <Compile Include="Predator.cs" />
+    <Compile Include="PredatorDistributionTypes.cs" />
     <Compile Include="StateActionReward.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="MemoryParadigm.cs" />

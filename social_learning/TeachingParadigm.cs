@@ -12,19 +12,29 @@ namespace social_learning
         /// </summary>
         EveryoneRewards,
         /// <summary>
-        /// Everyone observes and learns only from others in their species whenever an action leads to a reward.
+        /// Everyone polls and learns from everyone else whenever an actions leads to a poor reward, in attempt to
+        /// find a better action.
         /// </summary>
-        SameSpeciesRewards,
+        EveryonePolling,
         /// <summary>
-        /// Everyone observes and learns only from others in their species whenever an action leads to a reward.
+        /// Everyone observes and learns only from others in their subculture whenever an action leads to a reward.
+        /// </summary>
+        SubcultureRewards,
+        /// <summary>
+        /// Everyone observes and learns only from others in their subculture whenever an action leads to a reward.
         /// Updates are done in proportion to the reward received.
         /// </summary>
-        SameSpeciesRewardProportional,
+        SubcultureRewardProportional,
         /// <summary>
-        /// Everyone observes and learns only from others in their species whenever an action leads to a reward
+        /// Everyone observes and learns only from others in their subculture whenever an action leads to a reward
         /// where the reward is at least 1 stdev above the average observed reward for this generation.
         /// </summary>
-        SameSpeciesRewardFiltering,
+        SubcultureRewardFiltering,
+        /// <summary>
+        /// Everyone polls the others in their subculture whenever a poor reward occurs, in attempt to find a
+        /// better action.
+        /// </summary>
+        SubculturePolling,
         /// <summary>
         /// All champions from the previous generation teach the children of the current generation on every action (gaussian noise).
         /// </summary>
@@ -38,5 +48,6 @@ namespace social_learning
         /// as the controller network.
         /// </summary>
         EgalitarianEvolvedAcceptability
+        
     }
 }

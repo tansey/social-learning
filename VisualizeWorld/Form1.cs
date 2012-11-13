@@ -31,8 +31,8 @@ namespace VisualizeWorld
         const string NEURAL_CONFIG_FILE = @"..\..\..\experiments\neural.config.xml";
         const string QLEARNING_CONFIG_FILE = @"..\..\..\experiments\qlearning.config.xml";
         const string QLEARNING_FEED_FORWARD_NETWORK_FILE = @"..\..\..\experiments\qlearning_network.xml";
-        const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\social_darwin.config.xml";
-        const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\social_lamark.config.xml";
+        const string SOCIAL_DARWIN_CONFIG_FILE = @"..\..\..\experiments\positive_esl_darwin.config.xml";
+        const string SOCIAL_LAMARK_CONFIG_FILE = @"..\..\..\experiments\positive_esl_lamarck.config.xml";
         string _configFile = NEURAL_CONFIG_FILE;
         Thread qLearningThread;
         bool running = false;
@@ -135,10 +135,9 @@ namespace VisualizeWorld
             }
 
             // Draw the predators
-            int predColorIdx = 1;
             foreach (var pred in world.Predators)
             {
-                g.FillPie(new SolidBrush(hidingColors[predColorIdx++]), new Rectangle((int)((pred.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
+                g.FillPie(new SolidBrush(hidingColors[pred.AttackType]), new Rectangle((int)((pred.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
                                                     (int)((pred.Y - _experiment.World.AgentHorizon / 4.0) * scaleY),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleX),
                                                     (int)(_experiment.World.AgentHorizon * 2 / 4.0 * scaleY)),
@@ -158,7 +157,7 @@ namespace VisualizeWorld
                 //if (i % 10 != 0)
                 //    continue;
 
-                Color c = agent.EatenRecently(world.CurrentStep, 25) ? Color.Green : hidingColors[agent.HidingMode];
+                Color c = agent.EatenRecently(world.CurrentStep, 25) ? Color.Red : hidingColors[agent.HidingMode];
 
                 //var teacher = world.Agents.First();
                 g.FillPie(new SolidBrush(c), new Rectangle((int)((agent.X - _experiment.World.AgentHorizon / 4.0) * scaleX),
