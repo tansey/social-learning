@@ -1,0 +1,10 @@
+universe = vanilla
+Initialdir = ./Social_0_1/ 
+Executable = /lusr/opt/mono-2.10.8/bin/mono 
++Group   = "GRAD"
++Project = "AI_ROBOTICS"
+ProjectDescription = "Running a great many experiments to update social learning statistics"
+Log = ./Social_0_1/2.logArguments = /u/elie/condorapp/CondorApp.exe ./Social_0_1/ 250 1
+Out = ./Social_0_1/2.out
+Err = ./Social_0_1/2.err
+Queue 1
