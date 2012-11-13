@@ -306,7 +306,8 @@ namespace social_learning
                 PredatorCount = _predCount,
                 PredatorDistribution = PredatorDistribution,
                 PredatorTypes = _predTypes,
-                PredatorGenerations = _predGens
+                PredatorGenerations = _predGens,
+                LogDiversity = _logDiversity
             };
             
             // Initialize the evolution algorithm.

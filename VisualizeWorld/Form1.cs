@@ -389,5 +389,15 @@ namespace VisualizeWorld
         {
             _debugOutputs = debugOutputsToolStripMenuItem.Checked;
         }
+
+        private void loadExperimentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var result = openFileDialog1.ShowDialog(this);
+            if (result != System.Windows.Forms.DialogResult.OK)
+                return;
+            
+            uncheckAllExperimentMenusAndStopEvolution();
+            _configFile = openFileDialog1.FileName;
+        }
     }
 }
