@@ -1,0 +1,10 @@
+universe = vanilla
+Initialdir = ./Neuro_1_2/ 
+Executable = /lusr/opt/mono-2.10.8/bin/mono 
++Group   = "GRAD"
++Project = "AI_ROBOTICS"
+ProjectDescription = "Running a great many experiments to update social learning statistics"
+Log = ./Neuro_1_2/7.logArguments = /u/elie/condorapp/CondorApp.exe ./Neuro_1_2/ 250 2
+Out = ./Neuro_1_2/7.out
+Err = ./Neuro_1_2/7.err
+Queue 1
