@@ -12,7 +12,7 @@ def main(args):
   log = init_dir+job_num+'.log'
   out = init_dir+job_num+'.out'
   err = init_dir+job_num+".err"
-  executable = '/u/elie/condorapp/CondorApp.exe'
+  executable = '/u/elie/social-learning/condor_build/CondorApp.exe'
 
 
   f = open("condor_job"+job_num+".txt", 'w')
@@ -22,12 +22,12 @@ def main(args):
   f.write("Executable = %s \n" % (mono))
   f.write("+Group   = \"GRAD\"\n")
   f.write("+Project = \"AI_ROBOTICS\"\n")
-  f.write("ProjectDescription = \"Running a great many experiments to update social learning statistics\"\n")
-  f.write("Log = %s" % log)
+  f.write("+ProjectDescription = \"Running a great many experiments to update social learning statistics\"\n")
+  f.write("Log = %s\n" % log)
   f.write("Arguments = %s %s %s %s\n" %(executable, init_dir, max_gens, offset) )
 
-  f.write("Out = %s\n" % out)
-  f.write("Err = %s\n" % err)
+  f.write("Output = %s\n" % out)
+  f.write("Error = %s\n" % err)
   f.write("Queue 1")
 
   f.close()

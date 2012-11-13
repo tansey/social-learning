@@ -82,6 +82,7 @@ def main(args):
   <AgentsNavigate>True</AgentsNavigate>
   <AgentsHide>True</AgentsHide>
   <StepReward>0</StepReward>
-</Config>""" %(social, learn, switch))
+  <LogDiversity>False</LogDiversity>
+</Config>""" %(agent_type, learn, switch))
 
 main(sys.argv)

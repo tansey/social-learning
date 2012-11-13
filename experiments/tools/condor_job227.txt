@@ -1,0 +1,11 @@
+universe = vanilla
+Initialdir = /u/elie/condor_experiments/SubculturePolling_50_29/ 
+Executable = /lusr/opt/mono-2.10.8/bin/mono 
++Group   = "GRAD"
++Project = "AI_ROBOTICS"
++ProjectDescription = "Running a great many experiments to update social learning statistics"
+Log = /u/elie/condor_experiments/SubculturePolling_50_29/227.log
+Arguments = /u/elie/social-learning/condor_build/CondorApp.exe /u/elie/condor_experiments/SubculturePolling_50_29/ 500 29
+Output = /u/elie/condor_experiments/SubculturePolling_50_29/227.out
+Error = /u/elie/condor_experiments/SubculturePolling_50_29/227.err
+Queue 1

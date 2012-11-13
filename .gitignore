@@ -24,6 +24,7 @@
 *.sdf
 *.opensdf
 *.unsuccessfulbuild
+*condor_job*.txt
 ipch/
 obj/
 [Bb]in
