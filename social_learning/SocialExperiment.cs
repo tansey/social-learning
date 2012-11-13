@@ -51,7 +51,7 @@ namespace social_learning
         int _stepReward;
         int _predTypes;
         int _predCount;
-        int _predGens;
+        double _predGens;
 
         const int PLANT_TYPES = 5;
 
@@ -178,7 +178,7 @@ namespace social_learning
                 PredatorDistribution = (PredatorDistributionTypes)Enum.Parse(typeof(PredatorDistributionTypes), predStr, true);
             _predTypes = XmlUtils.GetValueAsInt(xmlConfig, "PredatorTypes");
             if (PredatorDistribution == PredatorDistributionTypes.Alternating)
-                _predGens = XmlUtils.GetValueAsInt(xmlConfig, "PredatorGenerations");
+                _predGens = XmlUtils.GetValueAsDouble(xmlConfig, "PredatorGenerations");
 
             _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species, predators)
             {

@@ -57,6 +57,7 @@ namespace social_learning
             _world.Stepped += new World.StepEventHandler(esl_step);
             _world.AgentEaten += new World.AgentEatenHandler(_world_AgentEaten);
             _world.PlantEaten += new World.PlantEatenHandler(_world_BadPlantEaten);
+            _world.Stepped += new World.StepEventHandler(intraGenerationalPredatorChange);
             BackpropEpochsPerExample = 1;
             MemParadigm = MemoryParadigm.Fixed;
             CurrentMemorySize = 1;
@@ -132,7 +133,7 @@ namespace social_learning
         public PredatorDistributionTypes PredatorDistribution { get; set; }
         public int PredatorTypes { get; set; }
         public int PredatorCount { get; set; }
-        public int PredatorGenerations { get; set; }
+        public double PredatorGenerations { get; set; }
         public MemoryParadigm MemParadigm { get; set; }
         public int GenerationsPerMemorySize { get; set; }
         public int CurrentMemorySize { get; set; }
@@ -222,9 +223,35 @@ namespace social_learning
                 for (int i = 0; i < PredatorCount; i++)
                     predators.Add(new Predator(_agents.Length + i, i % PredatorTypes + 1));
             else if (PredatorDistribution == PredatorDistributionTypes.Alternating)
-                for (int i = 0; i < PredatorCount; i++)
-                    predators.Add(new Predator(_agents.Length + i, (_generations / PredatorGenerations) % PredatorTypes + 1));
+            {
+                if (PredatorGenerations >= 1)
+                {
+                    for (int i = 0; i < PredatorCount; i++)
+                        predators.Add(new Predator(_agents.Length + i, (_generations / (int)PredatorGenerations) % PredatorTypes + 1));
+                }
+                else
+                {
+                    for (int i = 0; i < PredatorCount; i++)
+                        predators.Add(new Predator(_agents.Length + i, 1));
+                }
+            }
             _world.Predators = predators;
+        }
+
+        void intraGenerationalPredatorChange(object sender, EventArgs e)
+        {
+            if (PredatorGenerations >= 1 || _world.Predators.Count() == 0)
+                return;
+            
+            int freq = (int)Math.Round(MaxTimeSteps * PredatorGenerations);
+            if (_world.CurrentStep % freq == 0)
+            {
+                int attackType = _world.Predators.First().AttackType + 1;
+                if (attackType > PredatorTypes)
+                    attackType = 1;
+                foreach (var predator in _world.Predators)
+                    predator.AttackType = attackType;
+            }
         }
 
         private void GenomesToAcceptability(IList<TGenome> genomeList)
