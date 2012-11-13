@@ -1,0 +1,11 @@
+universe = vanilla
+Initialdir = /u/elie/condor_experiments/Neural_1_15/ 
+Executable = /lusr/opt/mono-2.10.8/bin/mono 
++Group   = "GRAD"
++Project = "AI_ROBOTICS"
++ProjectDescription = "Running a great many experiments to update social learning statistics"
+Log = /u/elie/condor_experiments/Neural_1_15/49.log
+Arguments = /u/elie/social-learning/condor_build/CondorApp.exe /u/elie/condor_experiments/Neural_1_15/ 500 15
+Output = /u/elie/condor_experiments/Neural_1_15/49.out
+Error = /u/elie/condor_experiments/Neural_1_15/49.err
+Queue 1

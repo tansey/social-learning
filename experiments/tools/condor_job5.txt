@@ -1,10 +1,11 @@
 universe = vanilla
-Initialdir = ./Angry_1_1/ 
+Initialdir = /u/elie/condor_experiments/SubcultureRewards_1_11/ 
 Executable = /lusr/opt/mono-2.10.8/bin/mono 
 +Group   = "GRAD"
 +Project = "AI_ROBOTICS"
-ProjectDescription = "Running a great many experiments to update social learning statistics"
-Log = ./Angry_1_1/5.logArguments = /u/elie/condorapp/CondorApp.exe ./Angry_1_1/ 250 1
-Out = ./Angry_1_1/5.out
-Err = ./Angry_1_1/5.err
++ProjectDescription = "Running a great many experiments to update social learning statistics"
+Log = /u/elie/condor_experiments/SubcultureRewards_1_11/5.log
+Arguments = /u/elie/social-learning/condor_build/CondorApp.exe /u/elie/condor_experiments/SubcultureRewards_1_11/ 500 11
+Output = /u/elie/condor_experiments/SubcultureRewards_1_11/5.out
+Error = /u/elie/condor_experiments/SubcultureRewards_1_11/5.err
 Queue 1
