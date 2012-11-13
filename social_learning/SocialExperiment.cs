@@ -147,8 +147,6 @@ namespace social_learning
                     _maxMemorySize = XmlUtils.GetValueAsInt(memSection, "MaxSize");
                 }
                 _teaching = (TeachingParadigm)Enum.Parse(typeof(TeachingParadigm), XmlUtils.TryGetValueAsString(xmlConfig, "TeachingParadigm"));
-				if(_teaching == null)
-					throw new Exception("Failed to read file");
             }
             var species = new List<PlantSpecies>();
 

@@ -15,7 +15,6 @@ namespace BatchExperiment
     class Program
     {
         static int numRuns;
-        static SensorDictionary sensorDict;
         string _name;
         SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
@@ -242,7 +241,6 @@ namespace BatchExperiment
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load(XMLFile);
             _experiment.Initialize("SimpleEvolution", xmlConfig.DocumentElement);
-            _experiment.World.SensorLookup = sensorDict;
 
             // Create the evolution algorithm and attach the update event.
             _ea = _experiment.CreateEvolutionAlgorithm();

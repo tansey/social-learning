@@ -27,7 +27,6 @@ namespace social_learning
         private IList<NeatGenome> _genomeList;
         private int _generations;
         private FastRandom _random;
-        private int _minReward;
         private List<int> _rewards;
         private double _rewardThreshold;
         private int[] _agentGroups;

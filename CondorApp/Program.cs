@@ -13,8 +13,6 @@ namespace CondorApp
 {
     class Program
     {
-        static int numRuns;
-        static SensorDictionary sensorDict;
         string _name;
         SocialExperiment _experiment;
         NeatEvolutionAlgorithm<NeatGenome> _ea;
@@ -63,7 +61,6 @@ namespace CondorApp
             XmlDocument xmlConfig = new XmlDocument();
             xmlConfig.Load(XMLFile);
             _experiment.Initialize("EgalitarianSocialLearning", xmlConfig.DocumentElement);
-            _experiment.World.SensorLookup = sensorDict;
             _experiment.TrialId = _trialNum;
 
             // Create the evolution algorithm and attach the update event.
