@@ -52,6 +52,7 @@ namespace social_learning
         int _predTypes;
         int _predCount;
         double _predGens;
+        bool _distinguishPreds;
 
         const int PLANT_TYPES = 5;
 
@@ -179,6 +180,7 @@ namespace social_learning
             _predTypes = XmlUtils.GetValueAsInt(xmlConfig, "PredatorTypes");
             if (PredatorDistribution == PredatorDistributionTypes.Alternating)
                 _predGens = XmlUtils.GetValueAsDouble(xmlConfig, "PredatorGenerations");
+            _distinguishPreds = XmlUtils.GetValueAsBool(xmlConfig, "DistinguishPredators");
 
             _world = new World(agents, XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), XmlUtils.GetValueAsInt(xmlConfig, "WorldHeight"), species, predators)
             {
@@ -203,7 +205,7 @@ namespace social_learning
             else
                 _outputs = outputs.Value;
             var inputs = XmlUtils.TryGetValueAsInt(xmlConfig, "Inputs");
-            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + _predTypes * World.SENSORS_PER_OBJECT_TYPE + 1;
+            _inputs = inputs.HasValue ? inputs.Value : _world.PlantTypes.Count() * World.SENSORS_PER_OBJECT_TYPE + (_distinguishPreds ? _predTypes : 1) * World.SENSORS_PER_OBJECT_TYPE + 1;
 
             _eaParams = new NeatEvolutionAlgorithmParameters();
             _eaParams.SpecieCount = _specieCount;
@@ -305,6 +307,7 @@ namespace social_learning
                 PredatorDistribution = PredatorDistribution,
                 PredatorTypes = _predTypes,
                 PredatorGenerations = _predGens,
+                DistinguishPredators = _distinguishPreds,
                 LogDiversity = _logDiversity
             };
             

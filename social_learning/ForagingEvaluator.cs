@@ -133,6 +133,7 @@ namespace social_learning
         public PredatorDistributionTypes PredatorDistribution { get; set; }
         public int PredatorTypes { get; set; }
         public int PredatorCount { get; set; }
+        public bool DistinguishPredators { get; set; }// Can agents distinguish predators
         public double PredatorGenerations { get; set; }
         public MemoryParadigm MemParadigm { get; set; }
         public int GenerationsPerMemorySize { get; set; }

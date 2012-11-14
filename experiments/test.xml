@@ -31,35 +31,12 @@
       <Reward>-100</Reward>
       <Count>20</Count>
     </Plant>
-    <Plant>
-      <Name>Poison_2</Name>
-      <Radius>5</Radius>
-      <Reward>-50</Reward>
-      <Count>20</Count>
-    </Plant>
-    <Plant>
-      <Name>Neutral_1</Name>
-      <Radius>5</Radius>
-      <Reward>0</Reward>
-      <Count>20</Count>
-    </Plant>
-    <Plant>
-      <Name>Nutritious_1</Name>
-      <Radius>5</Radius>
-      <Reward>100</Reward>
-      <Count>20</Count>
-    </Plant>
-    <Plant>
-      <Name>Nutritious_2</Name>
-      <Radius>5</Radius>
-      <Reward>50</Reward>
-      <Count>20</Count>
-    </Plant>
   </PlantSpecies>
   <Predators>10</Predators>
   <PredatorTypes>2</PredatorTypes>
   <PredatorDistribution>Alternating</PredatorDistribution>
   <PredatorGenerations>0.1</PredatorGenerations>
+  <DistinguishPredators>False</DistinguishPredators>
   <WorldWidth>500</WorldWidth>
   <WorldHeight>500</WorldHeight>
   <AgentHorizon>100</AgentHorizon>
