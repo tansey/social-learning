@@ -6,6 +6,8 @@ def main(args):
 		init_dir = init_dir + '/'
 	learn= args[2]
 	switch = args[3]
+	evo = args[4]
+	visible = args[5]
 
 	f = open(init_dir+"config.xml","w")
 
@@ -33,7 +35,7 @@ def main(args):
   </Memory>
   <TeachingParadigm>%s</TeachingParadigm>
   <PlantLayout>Uniform</PlantLayout>
-  <EvolutionParadigm>Darwinian</EvolutionParadigm>
+  <EvolutionParadigm>%s</EvolutionParadigm>
   <Description>
     Foraging Evolution
  
@@ -83,6 +85,7 @@ def main(args):
   <AgentsHide>True</AgentsHide>
   <StepReward>0</StepReward>
   <LogDiversity>False</LogDiversity>
-</Config>""" %(agent_type, learn, switch))
+  <DistinguishPredators>%s</DistinguishPredators>
+</Config>""" %(agent_type, learn, evo, switch, visible))
 
 main(sys.argv)
