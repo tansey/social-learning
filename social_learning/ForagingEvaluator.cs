@@ -493,6 +493,8 @@ namespace social_learning
             // Only learn from rewards if we're using a reward-based social learning paradigm
             if (TeachParadigm != TeachingParadigm.EveryoneRewards
                 && TeachParadigm != TeachingParadigm.SubcultureRewards
+                && TeachParadigm != TeachingParadigm.EveryoneRewardsAndPolling
+                && TeachParadigm != TeachingParadigm.SubcultureRewardsAndPolling
                 && TeachParadigm != TeachingParadigm.SubcultureRewardFiltering)
                 return;
 
@@ -514,7 +516,8 @@ namespace social_learning
                     
                     // Only update individuals in your subculture
                     if ((TeachParadigm == TeachingParadigm.SubcultureRewards
-                        || TeachParadigm == TeachingParadigm.SubcultureRewardFiltering)
+                        || TeachParadigm == TeachingParadigm.SubcultureRewardFiltering
+                        || TeachParadigm == TeachingParadigm.SubcultureRewardsAndPolling)
                         && _agentGroups[eater.Id] != _agentGroups[i])
 						continue;
                     
@@ -550,7 +553,9 @@ namespace social_learning
             // We need to handle this by polling other agents to see if they
             // could have avoided it.
             if (TeachParadigm != TeachingParadigm.EveryonePolling &&
-                TeachParadigm != TeachingParadigm.SubculturePolling)
+                TeachParadigm != TeachingParadigm.EveryoneRewardsAndPolling &&
+                TeachParadigm != TeachingParadigm.SubculturePolling &&
+                TeachParadigm != TeachingParadigm.SubcultureRewardsAndPolling)
                 return;
             
             // If we are using EveryonePolling, the agent can ask the entire population.

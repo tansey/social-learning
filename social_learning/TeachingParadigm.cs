@@ -17,6 +17,10 @@ namespace social_learning
         /// </summary>
         EveryonePolling,
         /// <summary>
+        /// Everyone learns from everyone else, using a combination of Rewards and Polling strategies.
+        /// </summary>
+        EveryoneRewardsAndPolling,
+        /// <summary>
         /// Everyone observes and learns only from others in their subculture whenever an action leads to a reward.
         /// </summary>
         SubcultureRewards,
@@ -35,6 +39,10 @@ namespace social_learning
         /// better action.
         /// </summary>
         SubculturePolling,
+        /// <summary>
+        /// Everyone learns from their own subculture, using a combination of Rewards and Polling strategies.
+        /// </summary>
+        SubcultureRewardsAndPolling,
         /// <summary>
         /// All champions from the previous generation teach the children of the current generation on every action (gaussian noise).
         /// </summary>
